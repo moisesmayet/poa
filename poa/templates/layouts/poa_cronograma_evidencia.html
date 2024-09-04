@@ -1,0 +1,13 @@
+
+{% load static %}
+{% load filters %}
+
+{% with modal_id='modal_evidencia_'|concat:cronograma.id %}
+    <a href="#{{ modal_id }}" data-toggle="modal" style="padding: 0px; !important;">
+        <img id="cronograma-evidencia-imagen-{{ cronograma.id }}" src="{% static evidencia_icon %}" style="height: 18px; padding-bottom: 2px;">
+    </a>
+
+    {% with left_marging='5px' %}
+        {% include 'layouts/poa_evidencia.html' %}
+    {% endwith %}
+{% endwith %}

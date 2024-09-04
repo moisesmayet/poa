@@ -1,0 +1,68 @@
+
+<!-- Start Section Edit Objetivo -->
+
+{% load filters %}
+
+{% with modal_edit='modal_section_objetivo_'|concat:objetivo.id|concat:'_edit_form' %}
+    {% with modal_delete='modal_section_objetivo_'|concat:objetivo.id|concat:'_del_form' %}
+    <div class="portlet-color-objetivo">
+        <div class="row">
+            <div class="portlet-col-9">
+                <div class="portlet-header portlet-color-objetivo portlet-cursor">
+                    <span id="objetivo_order_{{ objetivo.id }}" class="ml-2"> {{ objetivo.operativo_order }}. </span>
+                </div>
+            </div>
+            <div class="portlet-col-3">
+                <div class="row float-right">
+                    <div class="col">
+                        <a href="#{{ modal_edit }}" data-toggle="modal"><i class="fas fa-pen pr-2" title="Editar"></i></a>
+                        <a href="#{{ modal_delete }}" data-toggle="modal"><i class="fas fa-trash pr-2" title="Eliminar"></i></a>
+
+                        {% if not objetivo.operativo_selected %}
+                            <span id="radio_objetivo_{{ objetivo.id }}_{{ objetivo.operativo_selected }}"><input onclick="javascript:SelectShowAndHide('{{ objetivo.operativo_portlet }}')" class="mr-2" type="radio" id="select_{{ objetivo.operativo_portlet }}" name="select_objetivo_{{ objetivo.operativo_poa_id }}" value="{{ objetivo.operativo_portlet }}" title="Mostrar metas"></span>
+                        {% else %}
+                            <span id="radio_objetivo_{{ objetivo.id }}_{{ objetivo.operativo_selected }}"><input onclick="javascript:SelectShowAndHide('{{ objetivo.operativo_portlet }}')" class="mr-2" type="radio" id="select_{{ objetivo.operativo_portlet }}" name="select_objetivo_{{ objetivo.operativo_poa_id }}" value="{{ objetivo.operativo_portlet }}" title="Mostrar metas" checked></span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="portlet-content">
+        <div class="pb-2">
+            {% with nota_itemid=objetivo.id %}
+                  {% with notas=objetivo.objetivo_notas %}
+                      {% with nota_itemname='objetivo' %}
+                          {% with form_id='form_objetivo_'|concat:nota_itemid %}
+                              {% with description=objetivo.operativo_description|slice:":110"|default_if_none:""|add:"..." %}
+                                  {% with title='Notas objetivo '|concat:objetivo.operativo_index %}
+                                      {% with popover_id='popover_objetivo_'|concat:nota_itemid %}
+                                          {% with popover_action="popoverModal('"|concat:form_id|concat:"', '"|concat:poa.id|concat:"', '"|concat:nota_itemid|concat:"', '"|concat:nota_itemname|concat:"')" %}
+                                              {% include 'layouts/poa_notas_popover.html' %}
+                                          {% endwith %}
+                                      {% endwith %}
+                                  {% endwith %}
+                              {% endwith %}
+                          {% endwith %}
+                      {% endwith %}
+                  {% endwith %}
+            {% endwith %}
+        </div>
+
+        <div class="scrumboard row portlet-color-meta">
+            <div class="column-meta flex w-100" id="add_objetivo_meta_{{ objetivo.id }}">
+                <div id="total_{{ objetivo.operativo_metas }}">
+                    {% if not objetivo.operativo_selected %}
+                        <div class="portlet-empty" id="add_{{ objetivo.operativo_portlet }}" style="border: none !important;"></div>
+                    {% else %}
+                        <div class="portlet-empty" id="add_{{ objetivo.operativo_portlet }}" style="border: none !important; display: none;"></div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endwith %}
+{% endwith %}
+
+<!-- End Section Edit Objetivo -->

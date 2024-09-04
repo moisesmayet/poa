@@ -1,0 +1,84 @@
+
+{% load filters %}
+
+<div class="row mt-4">
+    {% if poa != None and poa.poa_objetivos > 0 %}
+        <div class="col">
+            {% if poa.poa_estado.id == 2 %}
+                {% if poa.poa_estamento.estamento_user == user and poa.poa_estamento.estamento_sub_id > 0 %}
+                    <a href="#poa_estado_3_edit" class="edit" data-toggle="modal"><button id="btn_poa_notas_edit" class="btn btn-success-tiny">Solicitar revisar</button></a>
+                    {% with poa_estado=3 %}
+                        {% with titulo="Solicitar revisión del POA" %}
+                            {% include 'layouts/poa_estado_edit.html' %}
+                        {% endwith %}
+                    {% endwith %}
+                {% endif %}
+            {% else %}
+                {% if poa.poa_estado.id == 3 %}
+                    <div class="row">
+                        {% if poa.poa_estamento.estamento_user != user %}
+                            <div class="row-cols-2">
+                                <a href="#poa_estado_2_edit" class="edit" data-toggle="modal"><button id="btn_poa_notas_edit" class="btn btn-success-tiny">Sugerir cambios</button></a>
+                                {% with poa_estado=2 %}
+                                    {% with titulo="Sugerir cambios al POA" %}
+                                        {% include 'layouts/poa_estado_edit.html' %}
+                                    {% endwith %}
+                                {% endwith %}
+                            </div>
+                            <div class="col">
+                                <a href="#poa_estado_4_edit" class="edit" data-toggle="modal"><button id="btn_poa_notas_edit" class="btn btn-success-tiny">POA Aprobado</button></a>
+                                {% with poa_estado=4 %}
+                                    {% with titulo="Aprobar el POA" %}
+                                        {% include 'layouts/poa_estado_edit.html' %}
+                                    {% endwith %}
+                                {% endwith %}
+                            </div>
+                        {% else %}
+                            <div class="col">
+                                <p><b><i class="ml-3 mr-2">[ POA en revisión ]</i></b></p>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    {% if poa.poa_estado.id == 4 %}
+                        <div class="row">
+                            <div class="col">
+                                <div class="row">
+                                    <div >
+                                        <b><i class="ml-3 mr-2">[ POA Aprobado ]</i></b>
+                                    </div>
+                                    {% if poa.poa_estamento.estamento_user != user and poa.poa_anno|is_anno_editable %}
+                                        <div class="col-1">
+                                            <a href="#poa_estado_3_edit" class="edit" data-toggle="modal"><i class="fas fa-trash-undo fa-lg pr-2" title="Regresar el POA a revisión"></i></a>
+                                            {% with poa_estado=3 %}
+                                                {% with titulo="Regresar el POA a revisión" %}
+                                                    {% include 'layouts/poa_estado_edit.html' %}
+                                                {% endwith %}
+                                            {% endwith %}
+                                        </div>
+                                        <div class="col-1">
+                                            <a href="#poa_estado_2_edit" class="edit" data-toggle="modal"><i class="fas fa-arrow-alt-circle-left fa-lg pr-2" title="Regresar el POA a edición"></i></a>
+                                            {% with poa_estado=2 %}
+                                                {% with titulo="Regresar el POA a edición" %}
+                                                    {% include 'layouts/poa_estado_edit.html' %}
+                                                {% endwith %}
+                                            {% endwith %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <div class="col text-right">
+        {% with menu_poa=poa %}
+         {% with menu_estamento_id=estamento_id %}
+            {% include 'layouts/poa_menu_icons.html' %}
+        {% endwith %}
+      {% endwith %}
+    </div>
+</div>

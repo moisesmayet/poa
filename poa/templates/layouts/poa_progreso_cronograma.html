@@ -1,0 +1,42 @@
+
+{% load filters %}
+
+{% with cronogramas=actividad_item|item:'cronogramas' %}
+    {% for cronograma in cronogramas %}
+        <table class="table-bordered table-cronograma-progreso">
+            {% if cronograma.cronograma_cumplimiento %}
+                <tr class="tr-cronograma-actividad-realizada">
+                    <td class="td-cronograma-actividad" style="width: 100px;">
+                        <span class="pl-2 pr-2">{{ cronograma.cronograma_mes.mes_name }}</span>
+                    </td>
+                    <td class="td-cronograma-actividad" style="width: 100px;">
+                        <span class="pl-2 pr-2">Realizada</span>
+                    </td>
+                    {% include 'layouts/poa_progreso_estado.html' %}
+                </tr>
+            {% else %}
+                {% if poa_anno|cronograma_atrasado:cronograma.cronograma_mes.mes_number %}
+                    <tr class="tr-cronograma-actividad-atrasada">
+                        <td class="td-cronograma-actividad" style="width: 100px;">
+                            <span class="pl-2 pr-2">{{ cronograma.cronograma_mes.mes_name }}</span>
+                        </td>
+                        <td class="td-cronograma-actividad" style="width: 100px;">
+                            <span class="pl-2 pr-2">Atrasada</span>
+                        </td>
+                        {% include 'layouts/poa_progreso_estado.html' %}
+                    </tr>
+                {% else %}
+                    <tr class="tr-cronograma-actividad-planificada">
+                        <td class="td-cronograma-actividad" style="width: 100px;">
+                            <span class="pl-2 pr-2">{{ cronograma.cronograma_mes.mes_name }}</span>
+                        </td>
+                        <td class="td-cronograma-actividad" style="width: 100px;">
+                            <span class="pl-2 pr-2">Programada</span>
+                        </td>
+                        {% include 'layouts/poa_progreso_estado.html' %}
+                    </tr>
+                {% endif %}
+            {% endif %}
+        </table>
+    {% endfor %}
+{% endwith %}

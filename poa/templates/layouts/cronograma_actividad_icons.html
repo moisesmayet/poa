@@ -1,0 +1,69 @@
+
+{% load static %}
+{% load filters %}
+
+{% if cronograma.cronograma_cumplimiento %}
+    {% if poa and poa.poa_user_owner and not poa.poa_include_subs and poa.poa_estado_id == 4 %}
+        {% if evidencia|exists_file %}
+            <div id="cronograma-iconos-eliminar-{{ cronograma.id }}" name="cronograma-iconos-eliminar-{{ cronograma.id }}">
+                <a href="#{{ modal_edit }}_eliminar" class="mr-2 icon-color" data-toggle="modal">
+                    <img class="icons-coloured-header" src="{% static 'images/icons/eliminar.png' %}" alt="Eliminar evidencia" title="Eliminar evidencia">
+                </a>
+            </div>
+        {% else %}
+            <div id="cronograma-iconos-eliminar-{{ cronograma.id }}" name="cronograma-iconos-eliminar-{{ cronograma.id }}" style="display: none">
+                <a href="#{{ modal_edit }}_eliminar" class="mr-2 icon-color" data-toggle="modal">
+                    <img class="icons-coloured-header" src="{% static 'images/icons/eliminar.png' %}" alt="Eliminar evidencia" title="Eliminar evidencia">
+                </a>
+            </div>
+        {% endif %}
+        <div id="cronograma-iconos-{{ cronograma.id }}">
+            <a href="#{{ modal_edit }}_evidencia" class="mr-2 icon-color" data-toggle="modal">
+                <img class="icons-coloured-header" src="{% static 'images/icons/evidencia.png' %}" alt="Subir evidencia" title="Subir evidencia">
+            </a>
+            {% if actividad.actividad_presupuesto > 0 %}
+                <a href="#{{ modal_edit }}_presupuesto" class="mr-2 icon-color" data-toggle="modal" onclick="presupuestoModal('form_{{ modal_edit }}_presupuesto', '{{ cronograma.id }}')">
+                    <img class="icons-coloured-header" src="{% static 'images/icons/presupuesto.png' %}" alt="Presupuesto" title="Presupuesto">
+                </a>
+            {% endif %}
+            <a href="#{{ modal_edit }}_notas" class="mr-2 icon-color" data-toggle="modal">
+                <img class="icons-coloured-header" src="{% static 'images/icons/notes.png' %}" alt="Agregar notas" title="Agregar notas">
+            </a>
+        </div>
+    {% else %}
+        {% if cronograma.cronograma_notas %}
+            <div>
+                <a href="#{{ modal_edit }}_notas_view" class="mr-2 icon-color" data-toggle="modal">
+                    <img class="icons-coloured-header" src="{% static 'images/icons/notes.png' %}" alt="Agregar notas" title="Agregar notas">
+                </a>
+            </div>
+        {% endif %}
+    {% endif %}
+{% else %}
+    {% if poa and poa.poa_user_owner and not poa.poa_include_subs and poa.poa_estado_id == 4 %}
+        <div id="cronograma-iconos-eliminar-{{ cronograma.id }}" name="cronograma-iconos-eliminar-{{ cronograma.id }}" style="display: none">
+            <a href="#{{ modal_edit }}_eliminar" class="mr-2 icon-color" data-toggle="modal">
+                <img class="icons-coloured-header" src="{% static 'images/icons/eliminar.png' %}" alt="Eliminar evidencia" title="Eliminar evidencia">
+            </a>
+        </div>
+        <div id="cronograma-iconos-{{ cronograma.id }}" style="display: none">
+            <a href="#{{ modal_edit }}_evidencia" class="mr-2 icon-color" data-toggle="modal">
+                <img class="icons-coloured-header" src="{% static 'images/icons/evidencia.png' %}" alt="Subir evidencia" title="Subir evidencia">
+            </a>
+            {% if actividad.actividad_presupuesto > 0 %}
+                <a href="#{{ modal_edit }}_presupuesto" class="mr-2 icon-color" data-toggle="modal">
+                    <img class="icons-coloured-header" src="{% static 'images/icons/presupuesto.png' %}" alt="Presupuesto" title="Presupuesto">
+                </a>
+            {% endif %}
+            <a href="#{{ modal_edit }}_notas" class="mr-2 icon-color" data-toggle="modal">
+                <img class="icons-coloured-header" src="{% static 'images/icons/notes.png' %}" alt="Agregar notas" title="Agregar notas">
+            </a>
+        </div>
+    {% endif %}
+{% endif %}
+
+<div>
+    <a href="#{{ modal_edit }}_info" class="mr-2 icon-color" data-toggle="modal">
+        <img class="icons-coloured-header" src="{% static 'images/icons/informacion.png' %}" alt="Información de la actividad" title="Información de la actividad">
+    </a>
+</div>

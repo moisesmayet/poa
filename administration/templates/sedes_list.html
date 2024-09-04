@@ -1,0 +1,161 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Sedes{% endblock %}
+
+{% load crispy_forms_tags %}
+{% load filters %}
+
+{% block content %}
+    <div class="container-xl">
+        <div class="table-responsive pt-5">
+            <div class="table-wrapper">
+                <div class="table-title">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <h4>Listado de Sedes</h4>
+                        </div>
+                        <div class="col-sm-4">
+                            {% with url_list="sedes_list" %}
+                                {% with buscar="Buscar sedes..." %}
+                                    {% include 'layouts/search.html' %}
+                                {% endwith %}
+                            {% endwith %}
+                        </div>
+                        <div class="col-sm-4">
+                            <a href="#modal_new" class="btn btn-accept" data-toggle="modal"><i class="fas fa-plus-circle"></i> <span>Agregar Sede</span></a>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>
+                                <span class="custom-checkbox">
+                                    #
+                                </span>
+                            </th>
+                            <th>Descripción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sede in sedes_list %}
+                            {% with modal_edit='modal_edit_'|concat:sede.id %}
+                                {% with modal_delete='modal_delete_'|concat:sede.id %}
+                                    <tr>
+                                        <td>
+                                            <span class="custom-checkbox">
+                                                {{ forloop.counter }}
+                                            </span>
+                                        </td>
+                                        <td style="width:85%;">{{ sede.sede_name }}</td>
+                                        <td>
+                                            <a href="#{{ modal_edit }}" class="edit" data-toggle="modal"><i class="fas fa-pen"></i></a>
+                                            <a href="#{{ modal_delete }}" class="delete" data-toggle="modal"><i class="fas fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Edit Modal HTML -->
+                                    <div id="{{ modal_edit }}" class="modal fade">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <form method="POST" action="" class="mt-2" autocomplete="off">
+                                                    {% csrf_token %}
+                                                    {{ form.non_field_errors }}
+
+                                                    <input name="action" id="action" type="text" class="form-control" value="edit" hidden>
+                                                    <input name="id" id="id" type="text" class="form-control" value="{{ sede.id }}" hidden>
+
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title">Editar Sede</h4>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                    </div>
+
+                                                    <div class="modal-body">
+                                                        <div class="form-group">
+                                                            <label>Descripción</label>
+                                                            <textarea name="sede_name" id="sede_name" class="form-control" required>{{ sede.sede_name }}</textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                                                        <input type="submit" class="btn btn-accept" value="Guardar">
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- End Edit Modal HTML -->
+
+                                    <!-- Delete Modal HTML -->
+                                    <div id="{{ modal_delete }}" class="modal fade">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <form method="POST" action="" class="mt-2" autocomplete="off">
+                                                    {% csrf_token %}
+                                                    {{ form.non_field_errors }}
+
+                                                    <input name="action" id="action" type="text" class="form-control" value="delete" hidden>
+                                                    <input name="id" id="id" type="text" class="form-control" value="{{ sede.id }}" hidden>
+
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title">Eliminar Sede</h4>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>¿Desea realmente eliminar la sede?</p>
+                                                        {% if sede.sede_name|length > 40 %}
+                                                            <p>"{{ sede.sede_name|slice:"0:40"|concat:'...' }}"</p>
+                                                        {% else %}
+                                                            <p>"{{ sede.sede_name }}"</p>
+                                                        {% endif %}
+                                                        <p class="text-warning"><small>Puede cancelar esta acción.</small></p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                                                        <input type="submit" class="btn btn-danger" value="Eliminar">
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- End Delete Modal HTML -->
+                                {% endwith %}
+                            {% endwith %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Modal HTML -->
+    <div id="modal_new" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST" action="" class="mt-2" autocomplete="off">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+
+                    <input name="action" id="action" type="text" class="form-control" value="new" hidden>
+
+                    <div class="modal-header">
+                        <h4 class="modal-title">Agregar Sede</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Descripción</label>
+                            <textarea name="sede_name" id="sede_name" class="form-control" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                        <input type="submit" class="btn btn-accept" value="Guardar">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- EndNew Modal HTML -->
+
+{% endblock %}

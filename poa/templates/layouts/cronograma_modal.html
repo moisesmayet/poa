@@ -1,0 +1,218 @@
+
+{% load filters %}
+{% load static %}
+
+<!-- Modal HTML -->
+<!-- Notas -->
+<div id="{{ modal_edit }}_notas" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="form_{{ modal_edit }}_notas" method="POST" action="" class="ajax-form mt-2" autocomplete="off">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+
+                <input name="id" id="id" type="text" class="form-control" value="{{ cronograma.id }}" hidden>
+                <input name="action" id="action" type="text" class="form-control" value="notas" hidden>
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Notas</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <textarea name="cronograma_notas" id="cronograma_notas" class="form-control" rows="10" required>{{ cronograma.cronograma_notas }}</textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                    <input type="submit" class="btn btn-accept" value="Guardar">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- End Notas -->
+
+<!-- View Notas -->
+<div id="{{ modal_edit }}_notas_view" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Notas</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-group">
+                    <p>{{ cronograma.cronograma_notas }}</p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <input type="button" class="btn btn-success" data-dismiss="modal" value="Cerrar">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End View Notas -->
+
+<!-- Evidencia -->
+<div id="{{ modal_edit }}_evidencia" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="form_{{ modal_edit }}_evidencia" method="POST" action="" class="ajax-form mt-2" autocomplete="off" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+
+                <input name="id" id="id" type="text" class="form-control" value="{{ cronograma.id }}" hidden>
+                <input name="action" id="action" type="text" class="form-control" value="evidencia" hidden>
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Evidencia</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    <div id="form_{{ modal_edit }}_value" class="form-group">
+                        {% include 'layouts/cronograma_evidencia_add.html' %}
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                    <input type="submit" class="btn btn-accept" value="Guardar">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- End Evidencia -->
+
+<!-- Eliminar -->
+<div id="{{ modal_edit }}_eliminar" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="form_{{ modal_edit }}_eliminar" method="POST" action="" class="ajax-form mt-2" autocomplete="off" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+
+                <input name="id" id="id" type="text" class="form-control" value="{{ cronograma.id }}" hidden>
+                <input name="action" id="action" type="text" class="form-control" value="eliminar" hidden>
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Eliminar la Evidencia</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        {% if evidencia %}
+                            <input name="evidencia_id" id="evidencia_id" type="text" class="form-control" value="{{ evidencia.id }}" hidden>
+                            <div id="cronograma-evidencia-eliminar-{{ cronograma.id }}" class="file-upload-image-saved">
+                                {% include 'layouts/cronograma_evidencia_preview.html' %}
+                            </div>
+                        {% else %}
+                            <input name="evidencia_id" id="evidencia_id" type="text" class="form-control" value="0" hidden>
+                            <div id="cronograma-evidencia-eliminar-{{ cronograma.id }}" class="file-upload-image-saved" style="display: none">
+                                <img src="" style="height: 25px;margin-left: 80px;">
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                    <input type="submit" class="btn btn-danger" value="Eliminar">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- End Eliminar -->
+
+<!-- Presupuesto -->
+<div id="{{ modal_edit }}_presupuesto" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="form_{{ modal_edit }}_presupuesto" method="POST" action="" class="ajax-form mt-2" autocomplete="off">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+
+                <input name="id" id="id" type="text" class="form-control" value="{{ cronograma.id }}" hidden>
+                <input name="action" id="action" type="text" class="form-control" value="presupuesto" hidden>
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Presupuesto</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div>
+                            <label>Presupuesto disponible (<b><span id="form_{{ modal_edit }}_presupuesto_valor"></span></b>)</label>
+                            <div class="row">
+                                <div class="col-3"><label>Utilizado</label></div>
+                                <div class="col-9">
+                                    <input name="cronograma_presupuesto" id="cronograma_presupuesto" type="number" min="0" class="form-control" value="{{ cronograma.cronograma_presupuesto }}" required>
+                                </div>
+                                <div id="cronograma_error_presupuesto" style="display: none;">
+                                    <label class="text-danger">Presupuesto utilizado es mayor al disponible</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                    <input type="submit" class="btn btn-accept" value="Guardar">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- End Presupuesto -->
+
+<!-- Información -->
+<div id="{{ modal_edit }}_info" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Información</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-group">
+                    <div>
+                        <strong>Estamento</strong>
+                        <p>{{ actividad.actividad_meta.meta_operativo.operativo_poa.poa_estamento.estamento_name }}</p>
+                    </div>
+
+                    <div class="pt-2">
+                        <strong>Objetivo Operativo</strong>
+                        <p>{{ actividad.actividad_meta.meta_operativo.operativo_description }}</p>
+                    </div>
+
+                    <div class="pt-2">
+                        <strong>Meta</strong>
+                        <p>{{ actividad.actividad_meta.meta_description }}</p>
+                    </div>
+
+                    <div class="pt-2">
+                        <strong>Presupuesto</strong>
+                        <p>{{ actividad.actividad_presupuesto|format_pesos }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <input type="button" class="btn btn-success" data-dismiss="modal" value="Cerrar">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Información -->
+<!-- End Modal HTML -->

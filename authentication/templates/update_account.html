@@ -1,0 +1,72 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Registro{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="section mt-5 pb-xl-5">
+        <div class="container">
+             <form method="POST" action="" class="mt-2" autocomplete="off">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+
+                 <div class="row">
+                    <div class="col-4">
+                        <label for="{{ form.email.id_for_label }}">Correo:</label>
+                    </div>
+                    <div class="col-6">
+                        {{ form.email }}
+                        {{ form.email.errors }}
+                    </div>
+                </div>
+
+                <div class="row pt-2">
+                    <div class="col-4">
+                        <label for="{{ form.first_name.id_for_label }}">Nombres:</label>
+                    </div>
+                    <div class="col-6">
+                        {{ form.first_name }}
+                        {{ form.first_name.errors }}
+                    </div>
+                </div>
+
+                <div class="row pt-2">
+                    <div class="col-4">
+                        <label for="{{ form.last_name.id_for_label }}">Apellidos:</label>
+                    </div>
+                    <div class="col-6">
+                        {{ form.last_name }}
+                        {{ form.last_name.errors }}
+                    </div>
+                </div>
+
+                <div class="row pt-2">
+                    <div class="col-4">
+                        <label for="{{ form.password1.id_for_label }}">Contraseña:</label>
+                    </div>
+                    <div class="col-6">
+                        {{ form.password1 }}
+                        {{ form.password1.errors }}
+                    </div>
+                </div>
+
+                <div class="row pt-2">
+                    <div class="col-4">
+                        <label for="{{ form.password2.id_for_label }}">Repetir Contraseña:</label>
+                    </div>
+                    <div class="col-6">
+                        {{ form.password2 }}
+                        {{ form.password2.errors }}
+                    </div>
+                </div>
+
+                 <div class="col-md-7">
+                    <div class="pt-md-3">
+                        <button type="submit" class="btn btn-success-edit">Aceptar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

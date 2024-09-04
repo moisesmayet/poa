@@ -1,0 +1,64 @@
+
+{% load static %}
+{% load filters %}
+
+<div id="{{ modal_id }}" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-content-evidencia">
+                <div class="modal-header">
+                    <h5 class="modal-title">Evidencias</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="font-size: 1.5rem">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="modal-evidencia">
+                        {% if evidencia and evidencia|exists_file %}
+                            {% if evidencia.id|is_evidencia_image %}
+                                <div id="cronograma-evidencia-view-{{ cronograma.id }}">
+                                    <img src="{{ evidencia.evidencia_file.url }}" alt="Evidencia">
+                                </div>
+                            {% else %}
+                                {% if evidencia.id|is_evidencia_pdf %}
+                                    <div id="cronograma-evidencia-view-{{ cronograma.id }}">
+                                        <embed src="{{ url_base }}{{ evidencia.evidencia_file.url }}" frameborder="0" width="100%" height="400px">
+                                    </div>
+                                {% else %}
+                                    {% if evidencia.id|is_evidencia_office %}
+                                        <div id="cronograma-evidencia-view-{{ cronograma.id }}">
+                                            <iframe src="https://view.officeapps.live.com/op/embed.aspx?src={{ url_base }}{{ evidencia.evidencia_file.url }}" width='100%' height='100%' frameborder='0'></iframe>
+                                        </div>
+                                    {% else %}
+                                        {% if evidencia.id|is_evidencia_video %}
+                                            <div id="cronograma-evidencia-view-{{ cronograma.id }}">
+                                                <video src="{{ url_base }}{{ evidencia.evidencia_file.url }}" width="100%"  height="100%">
+                                                    Lo sentimos. Este vídeo no puede reproducirse en este navegador.<br>
+                                                    Puedes descargar el video si deseas abrirlo localmente</a>.
+                                                </video>
+                                            </div>
+                                        {% else %}
+                                            <div id="cronograma-evidencia-view-{{ cronograma.id }}">
+                                                <img src="" alt="Evidencia">
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        {% else %}
+                            <div id="cronograma-evidencia-view-{{ cronograma.id }}">
+                                <img src="" alt="Evidencia">
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar" style="margin-right: {{ left_marging }};">
+                    <a id="cronograma-evidencia-view-download-{{ cronograma.id }}" href="{{ evidencia.evidencia_file.url }}" download="{{ evidencia.evidencia_file.name }}">
+                        <input type="button" class="btn btn-accept" value="Descargar">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,41 @@
+
+{% load crispy_forms_tags %}
+{% load filters %}
+
+<!-- Edit Modal HTML -->
+{% with poa_estado_edit='poa_estado_'|concat:poa_estado|concat:'_edit' %}
+    <div id="{{ poa_estado_edit }}" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST" action="{% url 'poa_estado' estamento_id=estamento_id poa_anno=poa_anno %}" class="mt-2" autocomplete="off">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+
+                    <input name="poa_id" id="poa_id" type="text" class="form-control" value="{{ poa.id }}" hidden>
+                    <input name="poa_estado" id="poa_estado" type="text" class="form-control" value="{{ poa_estado }}" hidden>
+
+                    <div class="modal-header">
+                        <h4 class="modal-title">{{ titulo }}</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Notas</label>
+                            {% with username=user.username|title %}
+                                {% with poa_notas=poa.poa_notas|concat_linebreak:"["|concat:username|concat:"]: " %}
+                                    <textarea name="poa_notas" id="poa_notas" class="form-control">{{ poa_notas }}</textarea>
+                                {% endwith %}
+                            {% endwith %}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                        <input type="submit" class="btn btn-accept" value="Guardar">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endwith %}
+<!-- End Edit Modal HTML -->

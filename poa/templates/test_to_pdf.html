@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="POA">
+        <meta name="author" content="Moisés Mayet">
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+
+        {% for style in styles %}
+            <link rel="stylesheet" href="{{ style }}">
+        {% endfor %}
+    </head>
+
+    <body class="bg-white">
+        <div class="container-xl">
+            <div class="table-responsive pt-4">
+                <div class="table-wrapper-small">
+                    Esto es una prueba de generar PDFs
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

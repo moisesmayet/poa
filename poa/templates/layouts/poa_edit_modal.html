@@ -1,0 +1,518 @@
+
+<!-- Start Section Edit -->
+
+{% load filters %}
+{% load crispy_forms_tags %}
+
+<!-- Add Modal -->
+<!-- Add Objetivos -->
+{% with form_operativo_add=modal_forms.form_operativo_add %}
+    <div id="modal_section_objetivo_add_form" class="modal fade">
+        <div class="modal-dialog modal-dialog-50">
+            <div class="modal-content">
+                <form id="section_objetivo_add_form" name="section_objetivo_add_form" method="POST" action="" class="ajax-form mt-2" autocomplete="off">
+                    {% csrf_token %}
+
+                    <div class="modal-header">
+                        <h4 class="modal-title">Nuevo Objetivo</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+
+                    <div class="modal-body">
+                        {{ form_operativo_add|crispy }}
+                    </div>
+
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                        <input type="submit" class="btn btn-accept" value="Guardar">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endwith %}
+<!-- End Objetivos -->
+
+<!-- Add Metas -->
+{% with form_meta_add=modal_forms.form_meta_add %}
+    <div id="modal_section_meta_add_form" class="modal fade">
+        <div class="modal-dialog modal-dialog-50">
+            <div class="modal-content">
+                {% with indicador_add_error="section_meta_add_indicador_error" %}
+                    <form id="section_meta_add_form" name="section_meta_add_form" method="POST" action="" class="ajax-form mt-2" autocomplete="off">
+                        {% csrf_token %}
+
+                        <div class="modal-header">
+                            <h4 class="modal-title">Nueva Meta</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        </div>
+
+                        <div class="modal-body">
+                            {{ form_meta_add.action }}
+                            {{ form_meta_add.name }}
+                            {{ form_meta_add.meta_id }}
+
+                            <label for="{{ form_meta_add.meta_description.id_for_label }}">Meta*</label>
+                            {{ form_meta_add.meta_description }}
+                        </div>
+
+                        <div class="modal-footer">
+                            <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                            <input type="submit" class="btn btn-accept" value="Guardar">
+                        </div>
+                    </form>
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+{% endwith %}
+<!-- End Metas -->
+
+<!-- Add Actividades -->
+{% with form_actividad_add=modal_forms.form_actividad_add %}
+    <div id="modal_section_actividad_add_form" class="modal fade">
+        <div class="modal-dialog modal-dialog-50">
+            <div class="modal-content">
+                <form id="section_actividad_add_form" name="section_actividad_add_form" method="POST" action="" class="ajax-form mt-2" autocomplete="off">
+                    {% csrf_token %}
+
+                    <div class="modal-header">
+                        <h4 class="modal-title">Nueva Actividad</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+
+                    <div class="modal-body">
+                        {{ form_actividad_add.action }}
+                        {{ form_actividad_add.name }}
+                        {{ form_actividad_add.actividad_id }}
+
+                        <div>
+                            <label for="{{ form_actividad_add.actividad_description.id_for_label }}">Actividad*</label>
+                            {{ form_actividad_add.actividad_description }}
+                        </div>
+
+                        <div class="pt-2">
+                            <label for="{{ form_actividad_add.actividad_description.id_for_label }}">Peso (%)*</label>
+                            {{ form_actividad_add.actividad_peso }}
+                        </div>
+
+                        <div id="section_actividad_add_medio_view" class="pt-2">
+                            <label for="{{ form_actividad_add.actividad_medio.id_for_label }}">Indicador Verificable*</label>
+                            {% if form_actividad_add.actividad_medio.field.choices.queryset.count %}
+                                {{ form_actividad_add.actividad_medio }}
+                            {% else %}
+                                <input type="text" placeholder='Debe ingresar un "Nuevo Indicador"' style="font-style:italic" disabled>
+                            {% endif %}
+                            <div class="text-right">
+                                <a onclick="javascript:ShowAndHide('section_actividad_add_medio')" class="text-primary"><strong>Nuevo Indicador </strong></a>
+                            </div>
+                        </div>
+
+                        <div id="section_actividad_add_medio_edit" style="display: none;">
+                            <label for="{{ form_actividad_add.actividad_medio_nuevo.id_for_label }}">Indicador Verificable (nuevo)*</label>
+                            {{ form_actividad_add.actividad_medio_nuevo }}
+                            <div class="text-right">
+                                <a onclick="javascript:ShowAndHide('section_actividad_add_medio')" class="text-primary"><strong>Cancelar </strong></a>
+                            </div>
+                        </div>
+
+                        <div id="medio_add_error" style="display: none;">
+                            <label class="text-danger">Debe seleccionar un indicador verificable </label>
+                        </div>
+
+                        <div id="section_actividad_add_responsable_view">
+                            <label for="{{ form_actividad_add.actividad_responsable.id_for_label }}">Responsable*</label>
+                            {% if form_actividad_add.actividad_responsable.field.choices.queryset.count %}
+                                {{ form_actividad_add.actividad_responsable }}
+                            {% else %}
+                                <input type="text" placeholder='Debe ingresar un "Nuevo Responsable"' style="font-style:italic" disabled>
+                            {% endif %}
+                            <div class="text-right">
+                                <a onclick="javascript:ShowAndHide('section_actividad_add_responsable')" class="text-primary"><strong>Nuevo Responsable </strong></a>
+                            </div>
+                        </div>
+
+                        <div id="section_actividad_add_responsable_edit" style="display: none;">
+                            <label for="{{ form_actividad_add.actividad_responsable_nuevo.id_for_label }}">Responsable (nuevo)*</label>
+                            {{ form_actividad_add.actividad_responsable_nuevo }}
+                            <div class="text-right">
+                                <a onclick="javascript:ShowAndHide('section_actividad_add_responsable')" class="text-primary"><strong>Cancelar </strong></a>
+                            </div>
+                        </div>
+
+                        <div id="responsable_add_error" style="display: none;">
+                            <label class="text-danger">Debe seleccionar un responsable </label>
+                        </div>
+
+                        <div>
+                            <label for="{{ form_actividad_add.actividad_presupuesto.id_for_label }}">Presupuesto (RD$)</label>
+                            {{ form_actividad_add.actividad_presupuesto }}
+                        </div>
+
+                        <div class="ml-3">
+                            <div class="pt-2 row">
+                                <label for="{{ form_actividad_add.cronograma.id_for_label }}">Cronograma*</label>
+                            </div>
+                        
+                            <div class="row">
+                                {% for mes in meses %}
+                                    <div class="col" style="text-align: center;">{{ mes.mes_name|slice:":3" }}</div>
+                                {% endfor %}
+                            </div>
+                        
+                            <div class="row">
+                                {% for cronograma in form_actividad_add.actividad_cronograma %}
+                                    <div class="col" style="text-align: center;">{{ cronograma }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div id="cronograma_add_error" style="display: none;">
+                                <label class="text-danger">Debe seleccionar al menos un mes del cronograma </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                        <input type="submit" class="btn btn-accept" value="Guardar">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endwith %}
+<!-- End Actividades -->
+<!-- End Add Modal -->
+
+<!-- Edit & Delete -->
+{% for item_objetivo in modal_forms.list_forms_operativos %}
+    <!-- Objetivo -->
+    {% with objetivo=item_objetivo.objetivo %}
+        {% with section_objetivo='section_objetivo_'|concat:objetivo.id %}
+            {% with form_objetivo=item_objetivo.form_operativo %}
+                {% with objetivo_form_id=section_objetivo|concat:"_edit_form" %}
+                    {% with modal_edit='modal_'|concat:objetivo_form_id %}
+                        {% with objetivo_del_form_id=section_objetivo|concat:"_del_form" %}
+                            {% with modal_delete='modal_'|concat:objetivo_del_form_id %}
+                                <!-- Edit Modal -->
+                                <div id="{{ modal_edit }}" class="modal fade">
+                                    <div class="modal-dialog modal-dialog-50">
+                                        <div class="modal-content">
+                                            <form id="{{ objetivo_form_id }}" name="{{ objetivo_form_id }}" method="POST" action="" class="ajax-form mt-2" autocomplete="off">
+                                                {% csrf_token %}
+
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title">Editar Objetivo</h4>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                </div>
+
+                                                <div class="modal-body">
+                                                    {{ form_objetivo|crispy }}
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                                                    <input type="submit" class="btn btn-accept" value="Guardar">
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Edit Modal -->
+
+                                <!-- Delete Modal -->
+                                <div id="{{ modal_delete }}" class="modal fade">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <form id="{{ objetivo_del_form_id }}" name="{{ objetivo_del_form_id }}" method="POST" action="" class="ajax-form mt-2" autocomplete="off">
+                                                {% csrf_token %}
+                                                {{ form.non_field_errors }}
+
+                                                <input name="action" id="action" type="text" class="form-control" value="delete" hidden>
+                                                <input name="name" id="name" type="text" class="form-control" value="objetivo" hidden>
+                                                <input name="id" id="id" type="text" class="form-control" value="{{ objetivo.id }}" hidden>
+
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title">Eliminar Objetivo</h4>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                </div>
+
+                                                <div class="modal-body">
+                                                    <p>¿Desea realmente eliminar el objetivo operativo?</p>
+                                                    {% if objetivo.operativo_description|length > 40 %}
+                                                        <p>"{{ objetivo.operativo_description|slice:"0:40"|concat:'...' }}"</p>
+                                                    {% else %}
+                                                        <p>"{{ objetivo.operativo_description }}"</p>
+                                                    {% endif %}
+                                                    <p class="text-danger"><small>Puede cancelar esta acción.</small></p>
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                                                    <input type="submit" class="btn btn-danger" value="Eliminar">
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Delete Modal -->
+                            {% endwith %}
+                        {% endwith %}
+                    {% endwith %}
+                {% endwith %}
+            {% endwith %}
+        {% endwith %}
+    {% endwith %}
+    <!-- End Objetivo -->
+
+    <!-- Metas -->
+    {% for item_meta in item_objetivo.list_forms_metas %}
+        {% with meta=item_meta.meta %}
+            {% with section_meta='section_meta_'|concat:meta.id %}
+                {% with form_meta=item_meta.form_meta %}
+                    {% with meta_form_id=section_meta|concat:"_edit_form" %}
+                        {% with modal_edit='modal_'|concat:meta_form_id %}
+                            {% with meta_del_form_id=section_meta|concat:"_del_form" %}
+                                {% with modal_delete='modal_'|concat:meta_del_form_id %}
+                                    <!-- Edit Modal -->
+                                    <div id="{{ modal_edit }}" class="modal fade">
+                                        <div class="modal-dialog modal-dialog-50">
+                                            <div class="modal-content">
+                                                {% with indicador_error=section_meta|concat:"_indicador_error" %}
+                                                    <form id="{{ meta_form_id }}" name="{{ meta_form_id }}" method="POST" action="" class="ajax-form mt-2" autocomplete="off">
+                                                        {% csrf_token %}
+
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">Editar Meta</h4>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                        </div>
+
+                                                        <div class="modal-body">
+                                                            {{ form_meta.action }}
+                                                            {{ form_meta.name }}
+                                                            {{ form_meta.meta_id }}
+                                                            {{ form_meta.operativo_id }}
+
+                                                            <label for="{{ form_meta.meta_description.id_for_label }}">Meta*</label>
+                                                            {{ form_meta.meta_description }}
+                                                        </div>
+
+                                                        <div class="modal-footer">
+                                                            <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                                                            <input type="submit" class="btn btn-accept" value="Guardar">
+                                                        </div>
+                                                    </form>
+                                                {% endwith %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- End Edit Modal -->
+
+                                    <!-- Delete Modal -->
+                                    <div id="{{ modal_delete }}" class="modal fade">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <form id="{{ meta_del_form_id }}" name="{{ meta_del_form_id }}" method="POST" action="" class="ajax-form mt-2" autocomplete="off">
+                                                    {% csrf_token %}
+                                                    {{ form.non_field_errors }}
+
+                                                    <input name="action" id="action" type="text" class="form-control" value="delete" hidden>
+                                                    <input name="name" id="name" type="text" class="form-control" value="meta" hidden>
+                                                    <input name="id" id="id" type="text" class="form-control" value="{{ meta.id }}" hidden>
+
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title">Eliminar Meta</h4>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                    </div>
+
+                                                    <div class="modal-body">
+                                                        <p>¿Desea realmente eliminar el meta operativo?</p>
+                                                        {% if meta.meta_description|length > 40 %}
+                                                            <p>"{{ meta.meta_description|slice:"0:40"|concat:'...' }}"</p>
+                                                        {% else %}
+                                                            <p>"{{ meta.meta_description }}"</p>
+                                                        {% endif %}
+                                                        <p class="text-danger"><small>Puede cancelar esta acción.</small></p>
+                                                    </div>
+
+                                                    <div class="modal-footer">
+                                                        <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                                                        <input type="submit" class="btn btn-danger" value="Eliminar">
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- End Delete Modal -->
+                                {% endwith %}
+                            {% endwith %}
+                        {% endwith %}
+                    {% endwith %}
+                {% endwith %}
+
+                <!-- Actividades -->
+                {% with item_list=item_meta.list_actividades %}
+                    {% for item_actividad in item_list.list_forms_actividades %}
+                        {% with actividad=item_actividad.actividad %}
+                            {% with section_actividad='section_actividad_'|concat:actividad.id %}
+                                {% with form_actividad=item_actividad.form_actividad %}
+                                    {% with actividad_form_id=section_actividad|concat:"_edit_form" %}
+                                        {% with modal_edit='modal_'|concat:actividad_form_id %}
+                                            {% with actividad_del_form_id=section_actividad|concat:"_del_form" %}
+                                                {% with modal_delete='modal_'|concat:actividad_del_form_id %}
+                                                    <!-- Edit Modal -->
+                                                    <div id="{{ modal_edit }}" class="modal fade">
+                                                        <div class="modal-dialog modal-dialog-50">
+                                                            <div class="modal-content">
+                                                                <form id="{{ actividad_form_id }}" name="{{ actividad_form_id }}" method="POST" action="" class="ajax-form mt-2" autocomplete="off">
+                                                                    {% csrf_token %}
+
+                                                                    <div class="modal-header">
+                                                                        <h4 class="modal-title">Editar Actividad</h4>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                                    </div>
+
+                                                                    <div class="modal-body">
+                                                                        {% csrf_token %}
+                                                                        {{ form_actividad.action }}
+                                                                        {{ form_actividad.name }}
+                                                                        {{ form_actividad.meta_id }}
+                                                                        {{ form_actividad.actividad_id }}
+
+                                                                        <label for="{{ form_actividad.actividad_description.id_for_label }}">Actividad*</label>
+                                                                        {{ form_actividad.actividad_description }}
+
+                                                                        <label for="{{ form_actividad.actividad_description.id_for_label }}">Peso (%)</label>
+                                                                        {{ form_actividad.actividad_peso }}
+
+                                                                        <div id="{{ section_actividad }}_medio_view">
+                                                                            <label for="{{ form_actividad.actividad_medio.id_for_label }}">Indicador Verificable*</label>
+                                                                            {{ form_actividad.actividad_medio }}
+                                                                            <div class="text-right">
+                                                                                <a onclick="javascript:ShowAndHide('{{ section_actividad }}_medio')" class="text-primary"><strong>Nuevo Indicador </strong></a>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div id="{{ section_actividad }}_medio_edit" style="display: none;">
+                                                                            <label for="{{ form_actividad.actividad_medio_nuevo.id_for_label }}">Indicador Verificable (nuevo)*</label>
+                                                                            {{ form_actividad.actividad_medio_nuevo }}
+                                                                            <div class="text-right">
+                                                                                <a onclick="javascript:ShowAndHide('{{ section_actividad }}_medio')" class="text-primary"><strong>Cancelar </strong></a>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div id="{{ medio_error }}" style="display: none;">
+                                                                            <label class="text-danger">Debe seleccionar un indicador verificable </label>
+                                                                        </div>
+
+                                                                        <div id="{{ section_actividad }}_responsable_view">
+                                                                            <label for="{{ form_actividad.actividad_responsable.id_for_label }}">Responsable*</label>
+                                                                            {{ form_actividad.actividad_responsable }}
+                                                                            <div class="text-right">
+                                                                                <a onclick="javascript:ShowAndHide('{{ section_actividad }}_responsable')" class="text-primary"><strong>Nuevo Responsable </strong></a>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div id="{{ section_actividad }}_responsable_edit" style="display: none;">
+                                                                            <label for="{{ form_actividad.actividad_responsable_nuevo.id_for_label }}">Responsable (nuevo)*</label>
+                                                                            {{ form_actividad.actividad_responsable_nuevo }}
+                                                                            <div class="text-right">
+                                                                                <a onclick="javascript:ShowAndHide('{{ section_actividad }}_responsable')" class="text-primary"><strong>Cancelar </strong></a>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div id="{{ responsable_error }}" style="display: none;">
+                                                                            <label class="text-danger">Debe seleccionar un responsable </label>
+                                                                        </div>
+
+                                                                        <div>
+                                                                            <label for="{{ form_actividad.actividad_presupuesto.id_for_label }}">Presupuesto (RD$)</label>
+                                                                            {{ form_actividad.actividad_presupuesto }}
+                                                                        </div>
+
+                                                                        <div class="ml-3">
+                                                                            <div class="pt-4 row">
+                                                                                <label for="{{ form_actividad.cronograma.id_for_label }}">Cronograma*</label>
+                                                                            </div>
+
+                                                                            <div class="row">
+                                                                                {% for mes in meses %}
+                                                                                    <div class="col" style="text-align: center;">{{ mes.mes_name|slice:":3" }}</div>
+                                                                                {% endfor %}
+                                                                            </div>
+
+                                                                            <div class="row">
+                                                                                {% for cronograma in form_actividad.actividad_cronograma %}
+                                                                                    <div class="col" style="text-align: center;">{{ cronograma }}</div>
+                                                                                {% endfor %}
+                                                                            </div>
+
+                                                                            <div id="{{ cronograma_error }}" style="display: none;">
+                                                                                <label class="text-danger">Debe seleccionar al menos un mes del cronograma </label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="modal-footer">
+                                                                        <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                                                                        <input type="submit" class="btn btn-accept" value="Guardar">
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- End Edit Modal -->
+
+                                                    <!-- Delete Modal -->
+                                                    <div id="{{ modal_delete }}" class="modal fade">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <form id="{{ actividad_del_form_id }}" name="{{ actividad_del_form_id }}" method="POST" action="" class="ajax-form mt-2" autocomplete="off">
+                                                                    {% csrf_token %}
+                                                                    {{ form.non_field_errors }}
+
+                                                                    <input name="action" id="action" type="text" class="form-control" value="delete" hidden>
+                                                                    <input name="name" id="name" type="text" class="form-control" value="actividad" hidden>
+                                                                    <input name="id" id="id" type="text" class="form-control" value="{{ actividad.id }}" hidden>
+
+                                                                    <div class="modal-header">
+                                                                        <h4 class="modal-title">Eliminar Meta</h4>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                                    </div>
+
+                                                                    <div class="modal-body">
+                                                                        <p>¿Desea realmente eliminar el actividad operativo?</p>
+                                                                        {% if actividad.actividad_description|length > 40 %}
+                                                                            <p>"{{ actividad.actividad_description|slice:"0:40"|concat:'...' }}"</p>
+                                                                        {% else %}
+                                                                            <p>"{{ actividad.actividad_description }}"</p>
+                                                                        {% endif %}
+                                                                        <p class="text-danger"><small>Puede cancelar esta acción.</small></p>
+                                                                    </div>
+
+                                                                    <div class="modal-footer">
+                                                                        <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                                                                        <input type="submit" class="btn btn-danger" value="Eliminar">
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- End Delete Modal -->
+                                                {% endwith %}
+                                            {% endwith %}
+                                        {% endwith %}
+                                    {% endwith %}
+                                {% endwith %}
+                            {% endwith %}
+                        {% endwith %}
+                    {% endfor %}
+                {% endwith %}
+            {% endwith %}
+        {% endwith %}
+    {% endfor %}
+    <!-- End Metas -->
+{% endfor %}
+<!-- End Edit & Delete -->
+
+<!-- End Section Edit -->

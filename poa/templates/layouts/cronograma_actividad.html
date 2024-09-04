@@ -1,0 +1,50 @@
+
+{% load static %}
+{% load filters %}
+
+<div id="cronograma-row-{{ cronograma.id }}" class="cronograma-actividad-{{ cronograma.cronograma_color }} m-2">
+    <div class="p-2">
+        <div class="row">
+            <div class="col-10 cronograma-actividad-text">
+                <div class="row pl-3">
+                    <span class="pl-2 pr-2">{{ actividad.actividad_meta.meta_operativo.operativo_poa.poa_estamento.estamento_name }}</span>
+
+                    {% if cronograma.cronograma_mes_id != cronograma.cronograma_cumplimiento_mes_id %}
+                        <div id="cronograma-defasada-{{ cronograma.id }}" class="pl-2 pr-2">REALIZADA EN: {{ cronograma.cronograma_cumplimiento_mes.mes_name|upper }}</div>
+                    {% endif %}
+                    <div id="cronograma-newdefasada-{{ cronograma.id }}" class="pl-2 pr-2" style="display: none">REALIZADA EN: {{ mes_actual.mes_name|upper }}</div>
+
+                    {% if actividad.actividad_presupuesto > 0 %}
+                        <div class="pl-2 pr-2">
+                            PRESUPUESTO USADO: <span id="cronograma-presupuesto-{{ cronograma.id }}">{{ cronograma.cronograma_presupuesto|format_pesos }}</span>
+                        </div>
+                    {% endif %}
+
+                    {% if cronograma.cronograma_cumplimiento %}
+                        <div id="cronograma-evidencia-{{ cronograma.id }}" name="cronograma-evidencia-{{ cronograma.id }}">
+                            {% include 'layouts/cronograma_actividad_evidencia.html' %}
+                        </div>
+                    {% else %}
+                        <div id="cronograma-evidencia-{{ cronograma.id }}" name="cronograma-evidencia-{{ cronograma.id }}" style="display: none">
+                            {% include 'layouts/cronograma_actividad_evidencia.html' %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% with cronograma_poa=actividad.actividad_meta.meta_operativo.operativo_poa %}
+                {% if cronograma_poa.poa_estamento_id == estamento_id and cronograma_poa.poa_anno == poa_anno and cronograma_poa.poa_estado_id == 4 %}
+                    <div class="col-2 text-right cronograma-actividad-icon">
+                        <div class="row float-right pr-3">
+                            {% include 'layouts/cronograma_actividad_icons.html' %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <div class="pl-2 pr-2">
+            <span>{{ actividad_index }} {{ actividad.actividad_description }}</span>
+        </div>
+    </div>
+</div>

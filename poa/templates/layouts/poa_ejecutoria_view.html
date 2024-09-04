@@ -1,0 +1,82 @@
+
+{% load filters %}
+
+<div class="mt-4 text-justify">
+  <div class="row">
+      <div class="col">
+          <div class="pt-5"><strong>PLAN OPERATIVO {{ poa_anno }} </strong></div>
+
+          {% if objetivos_list|length > 0 %}
+              {% for item in objetivos_list %}
+                  <div> <strong>ESTAMENTO: </strong> {{ item.estamento_name }}</div>
+                  <div class="pt-2 pb-4">
+                      {% for objetivo_item in item.objetivos_list %}
+                          <table class="Table-POA" border="1" cellpadding="2" cellspacing="2">
+                                <tbody>
+                                    <tr style="background-color: #F0F2F5">
+                                      <td class="td-meta table-header-color" rowspan="2" colspan="1"><div><b>EJE:</b> </div><div><span>{{ objetivo_item.objetivo.operativo_linea.linea_objetivo.objetivo_eje.eje_description }}</span></div></td>
+                                      <td class="td-peso table-header-color"><b><span>OBJETIVO ESTRATÉGICO</span></b></td>
+                                      <td colspan="5" rowspan="1" class="td-big-column table-header-color"><span>{{ objetivo_item.objetivo.operativo_linea.linea_objetivo.objetivo_description }} </span></td>
+                                    </tr>
+                                    <tr style="background-color: #F0F2F5">
+                                      <td class="td-peso table-header-color"><b><span>LÍNEA DE ACTUACIÓN</span></b></td>
+                                      <td colspan="5" rowspan="1" class="td-big-column table-header-color"><span>{{ objetivo_item.objetivo.operativo_linea.linea_description }} </span></td>
+                                    </tr>
+                                    <tr style="background-color: #F0F2F5">
+                                      <td class="td-meta table-header-color"><b><span>OBJETIVO OPERATIVO</span></b></td>
+                                      <td class="td-meta table-header-color"><b><span>METAS</span></b></td>
+                                      <td class="td-actividad table-header-color"><b><span>ACTIVIDADES REALIZADAS</span></b></td>
+                                      <td class="td-presupuesto table-header-color"><b><span>LOGRO META (%)</span></b></td>
+                                      <td class="td-peso table-header-color"><b><span>PPTO</span></b></td>
+                                      <td class="td-peso table-header-color"><b><span>GTO</span></b></td>
+                                      <td class="td-medio table-header-color"><b><span>INDICADOR VERIFICABLE</span></b></td>
+                                    </tr>
+
+                                    {% with objetivos_count=objetivo_item.objetivo.id|count_actividades %}
+                                        {% with objetivo_index=objetivo_item.objetivo.operativo_order|concat:"." %}
+                                            {% for meta_item in objetivo_item.metas_list %}
+                                                {% with actividades_count=meta_item.actividades_list|length %}
+                                                    {% with metas_counter=forloop.counter %}
+                                                        {% with meta_index=objetivo_index|concat:meta_item.meta.meta_order|concat:"." %}
+                                                            {% for actividad_item in meta_item.actividades_list %}
+                                                                <tr>
+                                                                    {% with actividad_index=meta_index|concat:actividad_item.actividad.actividad_order|concat:"." %}
+                                                                          {% if forloop.counter == 1 %}
+                                                                              {% if metas_counter == 1 %}
+                                                                                  <td class="td-meta-text-col" colspan="1" rowspan="{{ objetivos_count }}"><span>{{ objetivo_index }} {{ objetivo_item.objetivo.operativo_description }} </span></td>
+                                                                              {% endif %}
+                                                                              <td class="td-meta-text-col" colspan="1" rowspan="{{ actividades_count }}"><span> {{ meta_index }} {{ meta_item.meta.meta_description }} </span></td>
+                                                                          {% endif %}
+                                                                          <td class="td-actividad-text-col" colspan="1"><span>{{ actividad_index }} {{ actividad_item.actividad.actividad_description }} </span></td>
+
+                                                                          {% if forloop.counter == 1 %}
+                                                                              <td class="td-presupuesto-text" colspan="1" rowspan="{{ actividades_count }}"><span>{{ meta_item.porciento }}%</span></td>
+                                                                              {% with presupuesto=meta_item.presupuesto|format_pesos %}
+                                                                                    <td class="td-peso-text" colspan="1" rowspan="{{ actividades_count }}"><b><span>{{ presupuesto }} </span></b></td>
+                                                                              {% endwith %}
+                                                                              {% with presupuesto_gastado=meta_item.presupuesto_gastado|format_pesos %}
+                                                                                    <td class="td-peso-text" colspan="1" rowspan="{{ actividades_count }}"><b><span>{{ presupuesto_gastado }} </span></b></td>
+                                                                              {% endwith %}
+                                                                          {% endif %}
+
+                                                                          <td class="td-medio-text" colspan="1"><span>{{ actividad_item.actividad.actividad_medio }} </span></td>
+                                                                    {% endwith %}
+                                                                </tr>
+                                                            {% endfor %}
+                                                        {% endwith %}
+                                                    {% endwith %}
+                                                {% endwith %}
+                                            {% endfor %}
+                                        {% endwith %}
+                                    {% endwith %}
+                                </tbody>
+                          </table>
+                      {% endfor %}
+                  </div>
+              {% endfor %}
+          {% else %}
+              <div> <strong>ESTAMENTO: </strong> {{ estamento_name }}</div>
+          {% endif %}
+      </div>
+  </div>
+</div>

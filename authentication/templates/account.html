@@ -1,0 +1,45 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Datos de Perfil{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="section mt-5 pb-xl-5">
+        <div class="container">
+            <div class="container-fluid">
+                <div id="container_login" class="container">
+                    <div class="card shadow-2-strong" style="border-radius: 3px 3px 0 0;">
+                        <div class="card-body p-5 text-center">
+                            <h5>Datos de Perfil</h5>
+
+                             <form method="POST" action="" class="mt-2" autocomplete="off">
+                                {% csrf_token %}
+                                {{ form.non_field_errors }}
+
+                                <input name="id" id="id" type="text" class="form-control" value="{{ usuario.id }}" hidden>
+
+                                <div class="form-group">
+                                    <div class="text-left"><label>Correo</label></div>
+                                    <input name="email" id="email" type="email" class="form-control" value="{{ usuario.email }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <div class="text-left"><label>Nombres</label></div>
+                                    <input name="first_name" id="first_name" type="text" class="form-control" value="{{ usuario.first_name }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <div class="text-left"><label>Apellidos</label></div>
+                                    <input name="last_name" id="last_name" type="text" class="form-control" value="{{ usuario.last_name }}">
+                                </div>
+
+                                <div class="pt-3 text-right">
+                                    <button type="submit" class="btn btn-accept">Aceptar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

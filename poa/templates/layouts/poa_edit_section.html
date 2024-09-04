@@ -1,0 +1,126 @@
+
+<!-- Start Section Edit -->
+
+{% load filters %}
+
+<div class="mt-4 text-justify">
+    {% for item in objetivos_list %}
+        <div class="row">
+            <div class="col-4">
+                <div class="text-center pb-2">
+                    <h5>Obejtivos Operativos</h5>
+                </div>
+
+                <div class="scrumboard row">
+                    <div class="column-objetivo flex w-100" id="poa_objetivo_{{ poa.id }}">
+                        {% for objetivo in item.objetivos %}
+                            <div class="portlet" id="{{ objetivo.operativo_portlet }}" data-objetivo-estamento-id="{{ estamento_id }}" data-objetivo-poa-anno="{{ poa_anno }}">
+                                {% include 'layouts/poa_edit_objetivo.html' %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="button_view float-right">
+                    <a href="#modal_section_objetivo_add_form" class="btn btn-success-edit" data-toggle="modal">
+                        <span>Nuevo Objetivo</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="text-center pb-2">
+                            <h5>Metas</h5>
+                        </div>
+
+                        {% if item.metas_list|length > 0 %}
+                            {% for item_meta in item.metas_list %}
+                                {% with objetivo_id=item_meta.objetivo_id %}
+                                    {% with metas=item_meta.metas %}
+                                        <div class="scrumboard row">
+                                            <div class="column-meta flex w-100" id="objetivo_meta_{{ objetivo_id }}">
+                                                {% if metas|length > 0 %}
+                                                    {% if objetivo_id != current_objetivo.id %}
+                                                        {% for meta in metas %}
+                                                            <div class="portlet" id="{{ meta.meta_portlet }}" data-meta-estamento-id="{{ estamento_id }}" data-meta-poa-anno="{{ poa_anno }}" style="display: none;">
+                                                                {% include 'layouts/poa_edit_meta.html' %}
+                                                            </div>
+                                                        {% endfor %}
+                                                    {% else %}
+                                                        {% for meta in metas %}
+                                                            <div class="portlet" id="{{ meta.meta_portlet }}" data-meta-estamento-id="{{ estamento_id }}" data-meta-poa-anno="{{ poa_anno }}">
+                                                                {% include 'layouts/poa_edit_meta.html' %}
+                                                            </div>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endwith %}
+                                {% endwith %}
+                            {% endfor %}
+
+                            <div class="button_view float-right">
+                                <a href="#modal_section_meta_add_form" class="btn btn-success-edit" data-toggle="modal">
+                                    <span>Nueva Meta</span>
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-6">
+                        <div class="text-center pb-2">
+                            <h5>Actividades</h5>
+                        </div>
+
+                        {% if item.actividades_list|length > 0 %}
+                            {% for item_actividad in item.actividades_list %}
+                                {% with meta_id=item_actividad.meta_id %}
+                                    {% with actividades=item_actividad.actividades %}
+                                        <div class="scrumboard row">
+                                            <div class="column-actividad flex w-100" id="meta_actividad_{{ meta_id }}">
+                                                {% if actividades|length > 0 %}
+                                                    {% if meta_id != current_meta.id %}
+                                                        {% for actividad in actividades %}
+                                                            <div class="portlet" id="{{ actividad.actividad_portlet }}" data-actividad-estamento-id="{{ estamento_id }}" data-actividad-poa-anno="{{ poa_anno }}" style="display: none;">
+                                                                {% include 'layouts/poa_edit_actividad.html' %}
+                                                            </div>
+                                                        {% endfor %}
+                                                    {% else %}
+                                                        {% for actividad in actividades %}
+                                                            <div class="portlet" id="{{ actividad.actividad_portlet }}" data-actividad-estamento-id="{{ estamento_id }}" data-actividad-poa-anno="{{ poa_anno }}">
+                                                                {% include 'layouts/poa_edit_actividad.html' %}
+                                                            </div>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endwith %}
+                                {% endwith %}
+                            {% endfor %}
+
+                            {% if current_meta %}
+                                <div id="modal_add_actividad_button" class="button_view float-right">
+                                    <a href="#modal_section_actividad_add_form" class="btn btn-success-edit" data-toggle="modal">
+                                        <span>Nueva Actividad</span>
+                                    </a>
+                                </div>
+                            {% else %}
+                                <div id="modal_add_actividad_button" class="button_view float-right" style="display: none">
+                                    <a href="#modal_section_actividad_add_form" class="btn btn-success-edit" data-toggle="modal">
+                                        <span>Nueva Actividad</span>
+                                    </a>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- End Section Edit -->

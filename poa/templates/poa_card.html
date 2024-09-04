@@ -1,0 +1,49 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}POA{% endblock %}
+
+{% load filters %}
+
+{% block content %}
+    <div class="container-xl">
+        <div class="table-responsive pt-4">
+            <div class="table-wrapper-small">
+                <div class="text-center">
+                    <h4 class="title">POA</h4>
+                </div>
+
+                {% include 'layouts/poa_estamentos_section.html' %}
+
+                <div class="row">
+                    <span class="pl-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="16" fill="#FF8300" class="bi bi-square-fill" viewBox="0 0 24 16">
+                          <path d="M0 2a2 2 0 0 1 2-2h20a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2z"/>
+                        </svg>
+                        Principal
+                    </span>
+                    <span class="pl-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="16" fill="#49A1FF" class="bi bi-square-fill" viewBox="0 0 24 16">
+                          <path d="M0 2a2 2 0 0 1 2-2h20a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2z"/>
+                        </svg>
+                        Secundario
+                    </span>
+                    <span class="pl-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="16" fill="#FFE066" class="bi bi-square-fill" viewBox="0 0 24 16">
+                          <path d="M0 2a2 2 0 0 1 2-2h20a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2z"/>
+                        </svg>
+                        Colaboración
+                    </span>
+                    <span class="pl-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="16" fill="#B7BBCA" class="bi bi-square-fill" viewBox="0 0 24 16">
+                          <path d="M0 2a2 2 0 0 1 2-2h20a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2z"/>
+                        </svg>
+                        No creado
+                    </span>
+                </div>
+
+                {% include 'layouts/poa_card_section.html' %}
+                {% include 'layouts/poa_pagination.html' %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

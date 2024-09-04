@@ -1,0 +1,41 @@
+
+{% extends "layouts/base.html" %}
+
+{% load static %}
+
+{% block title %}Ayuda{% endblock %}
+
+{% block content %}
+    <div class="container-xl">
+        <div class="table-responsive pt-4">
+            <div class="table-wrapper-small pb-25">
+                <div class="text-center">
+                    <h4 class="title">Instructivos de ayuda</h4>
+                </div>
+                <div class="text-center pt-5">
+                    <h6>Ingresar información y solicitar revisión POA</h6>
+                </div>
+                {% with video_url="https://www.youtube.com/embed/LljyTPFh1U0" %}
+                    {% include 'layouts/help_video.html' %}
+                {% endwith %}
+
+                <div class="text-center pt-5">
+                    <h6>Revisar y Aprobar POA</h6>
+                </div>
+                {% with video_url="https://www.youtube.com/embed/0MH4HgfGo80" %}
+                    {% include 'layouts/help_video.html' %}
+                {% endwith %}
+
+                <div class="text-center pt-5">
+                    <h6>Ingresar datos de cumplimiento y visualizar progreso</h6>
+                </div>
+                {% with video_url="https://www.youtube.com/embed/kFSeY2Dsd-Q" %}
+                    {% include 'layouts/help_video.html' %}
+                {% endwith %}
+
+                <div style="padding-bottom: 150px;">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

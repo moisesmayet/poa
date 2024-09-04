@@ -1,0 +1,67 @@
+
+{% load filters %}
+
+<form method="POST" action="{% url 'poa_load' %}" class="mt-2" autocomplete="off">
+    {% csrf_token %}
+
+    <input name="request_from" id="request_from" type="text" class="form-control" value="{{ request_from }}" hidden>
+
+    <div class="row">
+        <div class="col-3">
+            <div class="form-group">
+                <select class="form-control" id="selectlevel1" name="selectlevel1">
+                    <option value="{{ estamentos_options_todos }}">TODOS</option>
+                    {% for item_select in estamentos_select %}
+                        {% with estamento_tipo=item_select|item:'estamento_tipo' %}
+                            {% with estamentos_options=item_select|item:'estamentos_options' %}
+                                <option value="{{ estamentos_options }}">{{ estamento_tipo.tipo_name }}</option>
+                            {% endwith %}
+                        {% endwith %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="col-5">
+            <div class="form-group">
+                <select class="form-control" id="selectlevel2" name="selectlevel2">
+                    {% for item_estamento in estamentos_list %}
+                        {% if item_estamento.id != estamento_id %}
+                            <option value="{{ item_estamento.id }}">{{ item_estamento.estamento_name }}</option>
+                        {% else %}
+                            <option value="{{ item_estamento.id }}" selected>{{ item_estamento.estamento_name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="col-2">
+            <div class="form-group">
+                <select class="form-control" id="selectlevel3" name="selectlevel3">
+                    {% for poa_year in poa_years %}
+                        {% if poa_year not in new_years %}
+                            {% if poa_year != poa_anno %}
+                                <option value="{{ poa_year }}">{{ poa_year }}</option>
+                            {% else %}
+                                <option value="{{ poa_year }}" selected>{{ poa_year }}</option>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% for year in new_years %}
+                        {% if year != poa_anno %}
+                            <option value="{{ year }}">{{ year }}</option>
+                        {% else %}
+                            <option value="{{ year }}" selected>{{ year }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="col-2">
+            <input type="submit" class="btn btn-accept" value="Mostrar" onclick="Preload(false)">
+        </div>
+    </div>
+</form>

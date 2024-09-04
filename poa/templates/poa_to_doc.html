@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="POA">
+        <meta name="author" content="Moisés Mayet">
+
+        {% for style in styles %}
+            <link rel="stylesheet" href="{{ style }}">
+        {% endfor %}
+    </head>
+
+    <body class="bg-white">
+        <div class="container-xl">
+            <div class="table-responsive pt-4">
+                <div class="table-wrapper-small">
+                    {% include 'layouts/poa_view.html' %}
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,56 @@
+
+<!-- Start Section Edit Actividad -->
+
+{% load filters %}
+
+{% with modal_edit='modal_section_actividad_'|concat:actividad.id|concat:'_edit_form' %}
+    {% with modal_delete='modal_section_actividad_'|concat:actividad.id|concat:'_del_form' %}
+        <div class="portlet-color-actividad">
+            <div class="row">
+                <div class="portlet-col-10">
+                    <div class="portlet-header portlet-color-actividad portlet-cursor">
+                        <span id="objetivo_order_{{ actividad.actividad_meta.meta_operativo.id }}" class="ml-2"> {{ actividad.actividad_meta.meta_operativo.operativo_order }}. </span>
+                        <span id="meta_order_{{ actividad.actividad_meta.id }}" class="ml-n1"> {{ actividad.actividad_meta.meta_order }}. </span>
+                        <span id="actividad_order_{{ actividad.id }}" class="ml-n1"> {{ actividad.actividad_order }}. </span>
+                        {% if actividad.meta_peso != 100 %}
+                            <span><i class="fas fa-exclamation-triangle pl-3"></i> {{ actividad.actividad_peso }}%</span>
+                        {% endif %}
+                        {% if actividad.actividad_presupuesto > 0 %}
+                            <span><i class="fas fa-sack-dollar pl-3"></i> {{ actividad.actividad_presupuesto|format_pesos }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="portlet-col-2">
+                    <div class="row float-right">
+                        <div class="col">
+                            <a href="#{{ modal_edit }}" data-toggle="modal"><i class="fas fa-pen pr-2" title="Editar"></i></a>
+                            <a href="#{{ modal_delete }}" data-toggle="modal"><i class="fas fa-trash pr-3" title="Eliminar"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="portlet-content">
+            {% with nota_itemid=actividad.id %}
+                {% with notas=actividad.actividad_notas %}
+                    {% with nota_itemname='actividad' %}
+                        {% with form_id='form_actividad_'|concat:nota_itemid %}
+                            {% with description=actividad.actividad_description|slice:":115"|default_if_none:""|add:"..." %}
+                                {% with title='Notas actividad '|concat:actividad.actividad_index %}
+                                    {% with popover_id='popover_actividad_'|concat:nota_itemid %}
+                                        {% with popover_action="popoverModal('"|concat:form_id|concat:"', '"|concat:poa.id|concat:"', '"|concat:nota_itemid|concat:"', '"|concat:nota_itemname|concat:"')" %}
+                                            {% include 'layouts/poa_notas_popover.html' %}
+                                        {% endwith %}
+                                    {% endwith %}
+                                {% endwith %}
+                            {% endwith %}
+                        {% endwith %}
+                    {% endwith %}
+                 {% endwith %}
+            {% endwith %}
+        </div>
+    {% endwith %}
+{% endwith %}
+
+<!-- End Section Edit Actividad -->

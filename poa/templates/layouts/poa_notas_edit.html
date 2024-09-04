@@ -1,0 +1,55 @@
+
+{% load crispy_forms_tags %}
+{% load filters %}
+
+<!-- Edit Modal HTML -->
+<div id="{{ modal_id }}" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="{{ form_id }}" method="POST" action="{% url 'poa_notas' %}" class="mt-2" autocomplete="off" onsubmit="submitForm('{{ form_id }}', ''); return false;">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+
+                <input id="estamento_id" name="estamento_id" type="text" class="form-control" value="{{ menu_estamento_id }}" hidden>
+                <input id="poa_anno" name="poa_anno" type="text" class="form-control" value="{{ poa_anno }}" hidden>
+                <input id="poa_id" name="poa_id" type="text" class="form-control" value="{{ menu_poa.id }}" hidden>
+                <input id="nota_itemid" name="nota_itemid" type="text" class="form-control" value="{{ menu_estamento_id }}" hidden>
+                <input id="nota_itemname" name="nota_itemname" type="text" class="form-control" value="" hidden>
+
+                <div class="modal-header">
+                    <h4 class="modal-title">Notas del POA</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group text-left">
+                        <div id="{{ container_id }}" class="notas-container" style="max-height: 200px; overflow-y: auto;">
+                            {% for nota in notas_poa %}
+                                <div id="{{ container_id }}_{{ nota.id }}">
+                                    <div>
+                                        <strong>{{ nota.nota_user.username|title }}</strong>
+                                        <span style="font-size: 11px;">, {{ nota.nota_date|date:"d M Y H:i" }} <strong>{{ nota.id|get_nota_componente }}</strong></span>
+                                    </div>
+                                    <div>{{ nota.nota_description }}</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div id="{{ form_id }}_nota" class="pt-2">
+                            <textarea id="nota_description" name="nota_description" class="form-control" rows="2" required minlength="0"></textarea>
+                        </div>
+                        <div class="text-left pt-2">
+                            <label for="notificar">Notificar a {{ menu_poa.poa_estamento.estamento_user.username|title }}</label>
+                            <input type="checkbox" id="nota_send" checked>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                    <input type="submit" class="btn btn-accept" value="Guardar">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- End Edit Modal HTML -->

@@ -1,0 +1,45 @@
+
+{% extends "layouts/base.html" %}
+
+{% load filters %}
+
+{% block title %}Organigrama{% endblock %}
+
+{% block content %}
+    <div class="container-xl">
+        <div class="table-responsive pt-4">
+            <div class="table-wrapper-small">
+                  <div class="text-center">
+                    <h4 class="title">Organigrama</h4>
+                  </div>
+
+                  <div class="row">
+                      {% for i in "0123" %}
+                          {% with index_start=i|multiplicar:4 %}
+                              {% with index_end=index_start|sumar:4 %}
+                                  {% with indexs=index_start|concat:':'|concat:index_end %}
+                                      <div class="mt-4">
+                                          <ul>
+                                              {% for estamento_tipo in estamento_tipos|get_sublist:indexs %}
+                                                  <li style="list-style:none;">{{ estamento_tipo.tipo_faicon|safe|escape }} {{ estamento_tipo.tipo_name }}</li>
+                                              {% endfor %}
+                                          </ul>
+                                      </div>
+                                  {% endwith %}
+                              {% endwith %}
+                          {% endwith %}
+                      {% endfor %}
+                  </div>
+
+                      <div class="mt-4">
+                            <ul id="tree3">
+                                <li>{{ estamento_root.estamento_tipo.tipo_faicon|safe|escape }} {{ estamento_root.estamento_tipo.tipo_name }}</li>
+                                {% with estamento_sub_id=estamento_root.id %}
+                                    {% include 'layouts/organization_level.html' %}
+                                {% endwith %}
+                            </ul>
+                      </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

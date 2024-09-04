@@ -1,0 +1,23 @@
+
+{% load filters %}
+
+{% with modal_edit='modal_edit_'|concat:cronograma.id %}
+    {% with actividad_id=cronograma.cronograma_actividad_id %}
+        {% with actividad=cronograma.cronograma_actividad %}
+            {% with actividad_index=actividad.actividad_meta.meta_operativo.operativo_order|concat:"."|concat:actividad.actividad_meta.meta_order|concat:"."|concat:actividad.actividad_order|concat:". " %}
+                {% with evidencia=evidencia|get_evidencia:cronograma.id %}
+                    <div id="filtro_meta_{{ actividad.actividad_meta_id }}">
+                        <div class="portlet">
+                            <div class="row portlet-card-row">
+                                 <div class="portlet-card-col-1 {% if cronograma.id|cronograma_desfasado %}portlet-color-desfasada{% else %}portlet-color-realizada{% endif %}">
+                            </div>
+                            <div class="portlet-card-col-11">
+                                 {% include 'layouts/cronograma_card_realizadas_header.html' %}</div>
+                            </div>
+                        </div>
+                    </div>
+                {% endwith %}
+            {% endwith %}
+        {% endwith %}
+    {% endwith %}
+{% endwith %}

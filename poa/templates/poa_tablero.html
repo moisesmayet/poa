@@ -1,0 +1,44 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Tableros{% endblock %}
+
+{% load filters %}
+
+{% block content %}
+    <div class="container-xl">
+        <div class="table-responsive pt-4">
+            <div class="table-wrapper-small">
+                <div class="text-center">
+                    <h4 class="title">Tableros</h4>
+                </div>
+
+                {% include 'layouts/poa_estamentos_section.html' %}
+
+                <div class="mt-4 text-justify">
+                    <div id="showhide_card" class="row row-cols-1 row-cols-md-3">
+                        {% for tablero in tablero_list %}
+                            <div class="col mb-4">
+                                <div class="card pmd-card">
+                                    <div class="card-header d-flex flex-row" style="background-color: #ADD8E6;">
+                                        <div class="media-body">
+                                            <span class="font-weight-bold" style="font-size: 14px;">{{ tablero.tablero_tableau.tableau_title }}</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="card-body">
+                                        <div>{{ tablero.tablero_tableau.tableau_description }}</div>
+                                        <div class="text-right pt-2">
+                                             <a href="{% url 'poa_tableau' estamento_id=estamento_id poa_anno=poa_anno tableau_id=tablero.tablero_tableau.id %}">
+                                                 <i class="fas fa-arrow-right pr-2 fa-lg" title="Ver el tablero"></i>
+                                             </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

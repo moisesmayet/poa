@@ -1,0 +1,34 @@
+
+{% load filters %}
+
+<div class="accordionl3 js-accordion">
+    {% for eje in ejes_list %}
+        {% with objetivos_list=objetivos_list|get_objetivos:eje.id %}
+            <div class="accordion__item js-accordion-item">
+                <div class="accordion-header js-accordion-header">
+                    {{ eje.eje_description }}
+                </div>
+                <div class="accordion-body js-accordion-body">
+                    <div class="accordionl3 js-accordion">
+                        {% for objetivo in objetivos_list %}
+                            {% with lineas_list=lineas_list|get_lineas:objetivo.id %}
+                                <div class="accordion__item js-accordion-item">
+                                    <div class="accordion-header js-accordion-header">
+                                        {{ objetivo.objetivo_description }}
+                                    </div>
+                                    <div class="accordion-body js-accordion-body">
+                                        {% for linea in lineas_list %}
+                                            <div class="accordion-body__contents">
+                                                {{ linea.linea_description }}
+                                            </div><!-- end of sub accordion item body contents -->
+                                        {% endfor %}
+                                    </div><!-- end of sub accordion item body -->
+                                </div><!-- end of sub accordion item -->
+                            {% endwith %}
+                        {% endfor %}
+                    </div><!-- end of sub accordion -->
+                </div><!-- end of accordion body -->
+            </div><!-- end of accordion item -->
+        {% endwith %}
+    {% endfor %}
+</div><!-- end of accordion -->

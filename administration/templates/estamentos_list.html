@@ -1,0 +1,429 @@
+{% extends 'layouts/base.html' %}
+
+
+{% block title %}{{ tipo.plural|lower|capfirst }}{% endblock %}
+
+{% load crispy_forms_tags %}
+{% load filters %}
+
+{% block content %}
+    <div class="container-xl">
+        <div class="table-responsive pt-5">
+            <div class="table-wrapper">
+                <div class="table-title">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <h4>Listado de {{ tipo.plural|lower|capfirst }}</h4>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="search-box">
+                                <div class="container-1">
+                                    <form action="{% url 'estamentos_list' tipo_code=tipo.code %}" id="searchForm" method="get">
+                                        <input name="search" type="search" id="search" placeholder="Buscar estamentos..." />
+                                        <span class="search-icon"><a href="#" onclick="document.getElementById ('searchForm').submit();"><i class="fa fa-search"></i></a></span>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <a href="#modal_new" class="btn btn-accept" data-toggle="modal"><i class="fas fa-plus-circle"></i> <span>Agregar {{ tipo.single|lower|capfirst }}</span></a>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>
+                                <span class="custom-checkbox">
+                                    #
+                                </span>
+                            </th>
+                            <th>Sede</th>
+                            <th>Nombre</th>
+                            <th>{{ tipo.cargo }}</th>
+                            <th>Subordinación</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% with list_forms_estamentos=seccion_estamentos|item:'list_forms_estamentos' %}
+                            {% for form_estamento_item in list_forms_estamentos %}
+                                {% with estamento=form_estamento_item|item:'estamento' %}
+                                    {% with modal_colaboradores='modal_colaboradores_'|concat:estamento.id %}
+                                        {% with modal_tableros='modal_tableros'|concat:estamento.id %}
+                                            {% with modal_edit='modal_edit_'|concat:estamento.id %}
+                                                {% with modal_delete='modal_delete_'|concat:estamento.id %}
+                                                    <tr>
+                                                        <td>
+                                                            <span class="custom-checkbox">
+                                                                {{ forloop.counter }}
+                                                            </span>
+                                                        </td>
+
+                                                        <td>{{ estamento.estamento_sede }}</td>
+                                                        <td>{{ estamento.estamento_name }}</td>
+                                                        <td>{{ estamento.estamento_user.first_name }} {{ estamento.estamento_user.last_name }}</td>
+
+                                                        {% if estamento.estamento_sub != None %}
+                                                            <td>{{ estamento.estamento_sub }}</td>
+                                                        {% else %}
+                                                            <td></td>
+                                                        {% endif %}
+
+                                                        <td style="width: 150px">
+                                                            <a href="#{{ modal_colaboradores }}" class="" data-toggle="modal"><i class="fas fa-users"></i></a>
+                                                            <a href="#{{ modal_tableros }}" class="" data-toggle="modal"><i class="fas fa-table"></i></a>
+                                                            <a href="#{{ modal_edit }}" class="edit" data-toggle="modal"><i class="fas fa-pen"></i></a>
+                                                            <a href="#{{ modal_delete }}" class="delete" data-toggle="modal"><i class="fas fa-trash"></i></a>
+                                                        </td>
+                                                    </tr>
+
+                                                    <!-- Colaboradores Modal HTML -->
+                                                    {% with colaboradores_list=form_estamento_item|item:'colaboradores_list' %}
+                                                        <div id="{{ modal_colaboradores }}" class="modal fade">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <form method="POST" id="form_{{ modal_colaboradores }}" action="" class="ajax-form mt-2" autocomplete="off">
+                                                                        {% csrf_token %}
+                                                                        {{ form.non_field_errors }}
+
+                                                                        <input name="action" id="action" type="text" class="form-control" value="colaboradores" hidden>
+                                                                        <input name="form_{{ modal_colaboradores }}_id" id="form_{{ modal_colaboradores }}_id" type="text" class="form-control" value="{{ estamento.id }}" hidden>
+
+                                                                        <div class="modal-header">
+                                                                            <h4 class="modal-title">Seleccionar</h4>
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                                        </div>
+
+                                                                        <div class="modal-body">
+                                                                            <div class="form-group">
+                                                                                <label>Colaboradores</label>
+                                                                                <select id="form_{{ modal_colaboradores }}_select" name="form_{{ modal_colaboradores }}_select" class="selectpicker form-control" multiple data-max-options="20" required>
+                                                                                    {% for colaborador in colaboradores_list %}
+                                                                                        {% if colaborador.selected %}
+                                                                                            <option value="{{ colaborador.id }}" selected>{{ colaborador.username }}</option>
+                                                                                        {% else %}
+                                                                                            <option value="{{ colaborador.id }}">{{ colaborador.username }}</option>
+                                                                                        {% endif %}
+                                                                                    {% endfor %}
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="modal-footer">
+                                                                            <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                                                                            <input type="submit" class="btn btn-accept" value="Guardar">
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    {% endwith %}
+                                                    <!-- End Colaboradores Modal HTML -->
+
+                                                    <!-- Tableros Modal HTML -->
+                                                    {% with tableros_list=form_estamento_item|item:'tableros_list' %}
+                                                        <div id="{{ modal_tableros }}" class="modal fade">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <form method="POST" id="form_{{ modal_tableros }}" action="" class="ajax-form mt-2" autocomplete="off">
+                                                                        {% csrf_token %}
+                                                                        {{ form.non_field_errors }}
+
+                                                                        <input name="action" id="action" type="text" class="form-control" value="tableros" hidden>
+                                                                        <input name="id" id="id" type="text" class="form-control" value="{{ estamento.id }}" hidden>
+
+                                                                        <div class="modal-header">
+                                                                            <h4 class="modal-title">Tableros</h4>
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                                        </div>
+
+                                                                        <div class="modal-body">
+                                                                            <div class="form-group">
+                                                                                <label>Listado</label>
+                                                                                {% for tablero in tableros_list %}
+                                                                                    <div class="row">
+                                                                                        <div class="col-2">
+                                                                                            <strong>{{ tablero.tableau_anno }}</strong>
+                                                                                        </div>
+                                                                                        <div class="col-9">
+                                                                                            <span>{{ tablero.tableau_title }}</span>
+                                                                                        </div>
+                                                                                        <div class="col-1">
+                                                                                            {% if tablero.tableau_checked %}
+                                                                                                <input id="tablero_{{ tablero.id }}" name="tablero_{{ tablero.id }}" type="checkbox" checked>
+                                                                                            {% else %}
+                                                                                                <input id="tablero_{{ tablero.id }}" name="tablero_{{ tablero.id }}" type="checkbox">
+                                                                                            {% endif %}
+                                                                                        </div>
+                                                                                    </div>
+                                                                                {% endfor %}
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="modal-footer">
+                                                                            <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                                                                            <input type="submit" class="btn btn-accept" value="Guardar">
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    {% endwith %}
+                                                    <!-- End Tableros Modal HTML -->
+
+                                                    <!-- Edit Modal HTML -->
+                                                    {% with form_estamento=form_estamento_item|item:'form_estamento' %}
+                                                        <div id="{{ modal_edit }}" class="modal fade">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <form method="POST" id="{{ modal_edit|concat:"_form" }}" action="{% url 'estamento_save' tipo_code=tipo.code %}" class="mt-2" autocomplete="off">
+                                                                        {% csrf_token %}
+                                                                        {{ form_estamento.non_field_errors }}
+
+                                                                        {{ form_estamento.action }}
+                                                                        {{ form_estamento.id }}
+                                                                        {{ form_estamento.estamento_tipo }}
+
+                                                                        <input name="action" id="action" type="text" class="form-control" value="edit" hidden>
+                                                                        <input name="id" id="id" type="text" class="form-control" value="{{ estamento.id }}" hidden>
+
+                                                                        <div class="modal-header">
+                                                                            <h4 class="modal-title">Editar</h4>
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                                        </div>
+
+                                                                        <div class="modal-body">
+                                                                            <div class="form-group">
+                                                                                <label for="{{ form_estamento.estamento_name.id_for_label }}">Nombre</label>
+                                                                                {{ form_estamento.estamento_name }}
+                                                                                {{ form_estamento.estamento_name.errors }}
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="modal-body mt-n4">
+                                                                            <div class="form-group">
+                                                                                <label for="{{ form_estamento.estamento_user.id_for_label }}">{{ tipo.cargo }}</label>
+                                                                                {{ form_estamento.estamento_user }}
+                                                                                {{ form_estamento.estamento_user.errors }}
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="modal-body mt-n4">
+                                                                            <div class="form-group">
+                                                                                <label for="{{ form_estamento.estamento_sede.id_for_label }}">Sede</label>
+                                                                                {{ form_estamento.estamento_sede }}
+                                                                                {{ form_estamento.estamento_sede.errors }}
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="modal-body mt-n4">
+                                                                            <div class="form-group">
+                                                                                <label>Subordinación (Tipo de Estamento)</label>
+                                                                                <select class="form-control" id="selectlevel1_{{ estamento.id }}" name="selectlevel1_{{ estamento.id }}">
+                                                                                    {% for item_select in estamento_tipos %}
+                                                                                        {% with estamento_tipo=item_select|item:'estamento_tipo' %}
+                                                                                            {% with estamentos_options=item_select|item:'estamentos_options' %}
+                                                                                                {% if estamento_tipo.id != estamento.estamento_sub.estamento_tipo_id %}
+                                                                                                    <option value="{{ estamentos_options }}">{{ estamento_tipo.tipo_name }}</option>
+                                                                                                {% else %}
+                                                                                                    <option value="{{ estamentos_options }}" selected>{{ estamento_tipo.tipo_name }}</option>
+                                                                                                {% endif %}
+                                                                                            {% endwith %}
+                                                                                        {% endwith %}
+                                                                                    {% endfor %}
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="modal-body mt-n4">
+                                                                            <div class="form-group">
+                                                                                <label>Subordinación (Estamento)</label>
+                                                                                <select class="form-control" id="selectlevel2_{{ estamento.id }}" name="selectlevel2_{{ estamento.id }}">
+                                                                                    {% for estamento_sub in estamento_subs %}
+                                                                                        {% if estamento_sub.id != estamento.id %}
+                                                                                            {% if estamento_sub.id != estamento.estamento_sub_id %}
+                                                                                                <option value="{{ estamento_sub.id }}">{{ estamento_sub.estamento_name }}</option>
+                                                                                            {% else %}
+                                                                                                <option value="{{ estamento_sub.id }}" selected>{{ estamento_sub.estamento_name }}</option>
+                                                                                            {% endif %}
+                                                                                        {% endif %}
+                                                                                    {% endfor %}
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="modal-body mt-n4">
+                                                                            <div class="form-group">
+                                                                                <label for="{{ form_estamento.estamento_has_poa.id_for_label }}">Tiene POA</label>
+                                                                                {{ form_estamento.estamento_has_poa }}
+                                                                                {{ form_estamento.estamento_has_poa.errors }}
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="modal-footer">
+                                                                            <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                                                                            <input type="submit" class="btn btn-accept" value="Guardar">
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    {% endwith %}
+                                                    <!-- End Edit Modal HTML -->
+
+                                                    <!-- Delete Modal HTML -->
+                                                    <div id="{{ modal_delete }}" class="modal fade">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <form method="POST" action="{% url 'estamento_save' tipo_code=tipo.code %}" class="mt-2" autocomplete="off">
+                                                                    {% csrf_token %}
+                                                                    {{ form.non_field_errors }}
+
+                                                                    <input name="action" id="action" type="text" class="form-control" value="delete" hidden>
+                                                                    <input name="id" id="id" type="text" class="form-control" value="{{ estamento.id }}" hidden>
+
+                                                                    <div class="modal-header">
+                                                                        <h4 class="modal-title">Eliminar</h4>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <p>¿Desea realmente eliminar {{ tipo.single }}?</p>
+                                                                        <p>"{{ estamento.estamento_name }}"</p>
+                                                                        <p class="text-warning"><small>Puede cancelar esta acción.</small></p>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                                                                        <input type="submit" class="btn btn-danger" value="Eliminar">
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- End Delete Modal HTML -->
+                                                {% endwith %}
+                                            {% endwith %}
+                                        {% endwith %}
+                                    {% endwith %}
+                                {% endwith %}
+                            {% endfor %}
+                        {% endwith %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Modal HTML -->
+    {% with form_estamento_add=seccion_estamentos|item:'form_estamento_add' %}
+        <div id="modal_new" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form method="POST" id="{{ modal_edit|concat:"_form" }}" action="{% url 'estamento_save' tipo_code=tipo.code %}" class="mt-2" autocomplete="off" onSubmit="return checkEstamentoSub(this)">
+                        {% csrf_token %}
+                        {{ form_estamento_add.non_field_errors }}
+
+                        {{ form_estamento_add.action }}
+                        {{ form_estamento_add.id }}
+                        {{ form_estamento_add.estamento_tipo }}
+
+                        <div class="modal-header">
+                            <h4 class="modal-title">Agregar {{ tipo.single }}</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="{{ form_estamento_add.estamento_name.id_for_label }}">Nombre</label>
+                                {{ form_estamento_add.estamento_name }}
+                                {{ form_estamento_add.estamento_name.errors }}
+                            </div>
+                        </div>
+
+                        <div class="modal-body mt-n4">
+                            <div class="form-group">
+                                <label for="{{ form_estamento_add.estamento_user.id_for_label }}">{{ tipo.cargo }}</label>
+                                {{ form_estamento_add.estamento_user }}
+                                {{ form_estamento_add.estamento_user.errors }}
+                            </div>
+                        </div>
+
+                        <div class="modal-body mt-n4">
+                            <div class="form-group">
+                                <label for="{{ form_estamento_add.estamento_sede.id_for_label }}">Sede</label>
+                                {{ form_estamento_add.estamento_sede }}
+                                {{ form_estamento_add.estamento_sede.errors }}
+                            </div>
+                        </div>
+
+                        <div class="modal-body mt-n4">
+                            <div class="form-group">
+                                <label>Subordinación (Tipo de Estamento)</label>
+                                <select class="form-control" id="selectlevel1_0" name="selectlevel1_0">
+                                    {% for item_select in estamento_tipos %}
+                                        {% with estamento_tipo=item_select|item:'estamento_tipo' %}
+                                            {% with estamentos_options=item_select|item:'estamentos_options' %}
+                                                {% if estamento_tipo.id > 1 %}
+                                                    <option value="{{ estamentos_options }}">{{ estamento_tipo.tipo_name }}</option>
+                                                {% else %}
+                                                    <option value="{{ estamentos_options }}" selected>{{ estamento_tipo.tipo_name }}</option>
+                                                {% endif %}
+                                            {% endwith %}
+                                        {% endwith %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="modal-body mt-n4">
+                            <div class="form-group">
+                                <label>Subordinación (Estamento)</label>
+                                <select class="form-control" id="selectlevel2_0" name="selectlevel2_0">
+                                    {% for estamento_sub in estamento_subs %}
+                                        <option value="{{ estamento_sub.id }}">{{ estamento_sub.estamento_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <div id="estamento_sub_error" style="display: none;">
+                                    <label class="text-danger">Debe seleccionar una Subordinación </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-body mt-n4">
+                            <div class="form-group">
+                                <label for="{{ form_estamento_add.estamento_has_poa.id_for_label }}">Tiene POA</label>
+                                {{ form_estamento_add.estamento_has_poa }}
+                                {{ form_estamento_add.estamento_has_poa.errors }}
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                            <input type="submit" class="btn btn-accept" value="Guardar">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endwith %}
+    <!-- EndNew Modal HTML -->
+
+{% endblock %}
+
+{% block js %}
+    <script>
+        function checkEstamentoSub(form) {
+            if (form.level2.value == '') {
+                var error = 'estamento_sub_error';
+                var section_error = document.getElementById(error);
+                section_error.style.display = 'block';
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,52 @@
+
+{% load filters %}
+
+<div class="mt-4 text-justify">
+    <div class="row row-cols-1 row-cols-md-3">
+        {% for item in poa_list %}
+            {% with menu_poa=item.poa %}
+                {% with poa_estamento=menu_poa.poa_estamento %}
+                    <div class="col mb-4">
+                        <div class="card custom-card text-left">
+                            {% if not poa_estamento.id == estamento_id %}
+                                <div class="card-header">
+                                    <div class="card-header-color" style="background-color: {{ menu_poa.poa_color }};"></div>
+                                    <div class="card-header-text">
+                                        <span class="font-weight-bold" style="font-size: 14px;">{{ poa_estamento.estamento_name }}</span>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="card-header">
+                                    <div class="card-header-color" style="background-color: {{ menu_poa.poa_color }};"></div>
+                                    <div class="card-header-text">
+                                        <span class="font-weight-bold" style="font-size: 14px;">{{ poa_estamento.estamento_name }}</span>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <div class="card-body">
+                                <div><strong>Responsable:</strong> {{ poa_estamento.estamento_user.username|title }}</div>
+                                <div><strong>Cumplimiento:</strong> {{ item.poa_porciento }}</div>
+                                <div><strong>Cumplimiento parcial:</strong> {{ item.poa_porciento_parcial }}</div>
+                                <div><strong>Tipo:</strong> {{ poa_estamento.estamento_tipo|title }}</div>
+                                <div><strong>Estado:</strong> {{ menu_poa.poa_estado }}</div>
+                                <div><strong>Sede:</strong> {{ poa_estamento.estamento_sede|title }}</div>
+                                {% if menu_poa.id > 0 or menu_poa.poa_user_owner %}
+                                    <div class="text-center pt-3">
+                                         {% with menu_estamento_id=poa_estamento.id %}
+                                             {% with notas_poa=item.notas_poa %}
+                                                 {% with users_roots=item.users_roots %}
+                                                     {% include 'layouts/poa_menu_icons.html' %}
+                                                 {% endwith %}
+                                             {% endwith %}
+                                         {% endwith %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endwith %}
+            {% endwith %}
+        {% endfor %}
+    </div>
+</div>

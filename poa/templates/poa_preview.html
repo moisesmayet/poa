@@ -1,0 +1,22 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}POA{% endblock %}
+
+{% load filters %}
+
+{% block content %}
+    <div class="container-xl">
+        <div class="table-responsive pt-4">
+            <div class="table-wrapper-small">
+                <div class="text-center">
+                    <h4 class="title">POA</h4>
+                </div>
+
+                {% include 'layouts/poa_estamentos_section.html' %}
+                {% include 'layouts/poa_menu_row.html' %}
+                {% include 'layouts/poa_view.html' %}
+                {% include 'layouts/poa_pagination.html' %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

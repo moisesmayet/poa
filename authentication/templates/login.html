@@ -1,0 +1,46 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Acceder{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="section mt-5 pb-xl-5">
+        <div class="container">
+            <div class="container-fluid">
+                <div id="container_login" class="container">
+                    <div class="card shadow-2-strong" style="border-radius: 3px 3px 0 0;">
+                        <div class="card-body p-5 text-center">
+                            <h5>ENTRAR</h5>
+
+                            <form method="POST" action="" class="mt-2">
+                                {% csrf_token %}
+                                {{ form.non_field_errors }}
+
+                                <div>
+                                    <div>
+                                        {{ form.username }}
+                                        {{ form.username.errors }}
+                                    </div>
+
+                                    <div class="pt-2">
+                                        {{ form.password }}
+                                        {{ form.password.errors }}
+                                    </div>
+
+                                    <div class="pt-md-3 text-right">
+                                        <button type="submit" class="btn btn-success-login">Entrar</button>
+                                    </div>
+
+                                    <div class="pt-md-2">
+                                        <a href="{% url 'recover' %}">Recuperar Contraseña</a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

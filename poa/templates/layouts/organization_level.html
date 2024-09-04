@@ -1,0 +1,19 @@
+
+{% load filters %}
+
+{% with estamentos=estamentos_list|get_estamentos:estamento_sub_id %}
+    <ul>
+        {% for estamento in estamentos %}
+            {% if childs|count_children_estamentos:estamento.id > 0 %}
+                <li>{{ estamento.estamento_tipo.tipo_faicon|safe|escape }} {{ estamento.estamento_name }}
+                    {% with estamento_sub_id=estamento.id %}
+                        {% include 'layouts/organization_level.html' %}
+                    {% endwith %}
+                </li>
+            {% else %}
+                <li>{{ estamento.estamento_tipo.tipo_faicon|safe|escape }} {{ estamento.estamento_name }}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endwith %}
+

@@ -1,0 +1,287 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Usuarios{% endblock %}
+
+{% load crispy_forms_tags %}
+{% load filters %}
+
+{% block content %}
+    <div class="container-xl">
+        <div class="table-responsive pt-5">
+            <div class="table-wrapper">
+                <div class="table-title">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <h4>Listado de Usuarios</h4>
+                        </div>
+                        <div class="col-sm-4">
+                            {% with url_list="usuarios_list" %}
+                                {% with buscar="Buscar usuarios..." %}
+                                    {% include 'layouts/search.html' %}
+                                {% endwith %}
+                            {% endwith %}
+                        </div>
+                        <div class="col-sm-4">
+                            <a href="#modal_new" class="btn btn-accept" data-toggle="modal"><i class="fas fa-plus-circle"></i> <span>Nuevo Usuario</span></a>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>
+                                <span class="custom-checkbox">
+                                    #
+                                </span>
+                            </th>
+                            <th>Nombres</th>
+                            <th>Apellidos</th>
+                            <th>Correo Electrónico</th>
+                            <th>Activo</th>
+                            <th>Admin</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for usuario in users_list %}
+                            {% with modal_edit='modal_edit_'|concat:usuario.id %}
+                                {% with modal_password='modal_password_'|concat:usuario.id %}
+                                    {% with modal_delete='modal_delete_'|concat:usuario.id %}
+                                        <tr>
+                                            <td>
+                                                <span class="custom-checkbox">
+                                                    {{ forloop.counter }}
+                                                </span>
+                                            </td>
+                                            <td>{{ usuario.first_name }}</td>
+                                            <td>{{ usuario.last_name }}</td>
+                                            <td>{{ usuario.email }}</td>
+                                            {% if usuario.is_active %}
+                                                <td><input type="checkbox" disabled="disabled" checked></td>
+                                            {% else %}
+                                                <td><input type="checkbox" disabled="disabled"></td>
+                                            {% endif %}
+                                            {% if usuario.is_superuser %}
+                                                <td><input type="checkbox" disabled="disabled" checked></td>
+                                            {% else %}
+                                                <td><input type="checkbox" disabled="disabled"></td>
+                                            {% endif %}
+                                            <td style="width: 115px">
+                                                <a href="#{{ modal_edit }}" class="edit" data-toggle="modal"><i class="fas fa-pen"></i></a>
+                                                <a href="#{{ modal_password }}" class="password" data-toggle="modal"><i class="fas fa-key"></i></a>
+                                                <a href="#{{ modal_delete }}" class="delete" data-toggle="modal"><i class="fas fa-trash"></i></a>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Edit Modal HTML -->
+                                        <div id="{{ modal_edit }}" class="modal fade">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <form method="POST" action="" class="mt-2" autocomplete="off">
+                                                        {% csrf_token %}
+                                                        {{ form.non_field_errors }}
+
+                                                        <input name="action" id="action" type="text" class="form-control" value="edit" hidden>
+                                                        <input name="id" id="id" type="text" class="form-control" value="{{ usuario.id }}" hidden>
+
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">Editar Usuario</h4>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                        </div>
+
+                                                        <div class="modal-body">
+                                                            <div class="form-group">
+                                                                <label>Correo</label>
+                                                                <input name="email" id="email" type="email" class="form-control" value="{{ usuario.email }}" required>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Nombres</label>
+                                                                <input name="first_name" id="first_name" type="text" class="form-control" value="{{ usuario.first_name }}" required>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Apellidos</label>
+                                                                <input name="last_name" id="last_name" type="text" class="form-control" value="{{ usuario.last_name }}">
+                                                            </div>
+                                                            <div class="form-group pt-3">
+                                                                <label>Activo&nbsp;</label>
+                                                                {% if usuario.is_active %}
+                                                                    <input name="is_active" id="is_active" type="checkbox" style="height:13px;width:13px;" checked>
+                                                                {% else %}
+                                                                    <input name="is_active" id="is_active" type="checkbox" style="height:13px;width:13px;">
+                                                                {% endif %}
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Administrador&nbsp;</label>
+                                                                {% if usuario.is_superuser %}
+                                                                    <input name="is_superuser" id="is_superuser" type="checkbox" style="height:13px;width:13px;" checked>
+                                                                {% else %}
+                                                                    <input name="is_superuser" id="is_superuser" type="checkbox" style="height:13px;width:13px;">
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                                                            <input type="submit" class="btn btn-accept" value="Guardar">
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- End Edit Modal HTML -->
+
+                                        <!-- Password Modal HTML -->
+                                        <div id="{{ modal_password }}" class="modal fade">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <form method="POST" action="" class="mt-2" autocomplete="off" onSubmit="return checkPassword(this, '{{ modal_password }}')">
+                                                        {% csrf_token %}
+                                                        {{ form.non_field_errors }}
+
+                                                        <input name="action" id="action" type="text" class="form-control" value="password" hidden>
+                                                        <input name="id" id="id" type="text" class="form-control" value="{{ usuario.id }}" hidden>
+                                                        <input name="email" id="email" type="email" class="form-control" value="{{ usuario.email }}" hidden>
+
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">Cambiar Contraseña</h4>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="form-group">
+                                                                <label>Nueva Contraseña</label>
+                                                                <input name="password1" id="password1" type="password" class="form-control" required>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Repetir Contraseña</label>
+                                                                <input name="password2" id="password2" type="password" class="form-control" required>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <div id="{{ modal_password|concat:"_error" }}" style="display: none;">
+                                                                    <label class="text-danger">Las contraseñas no coinciden</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                                                            <input type="submit" class="btn btn-accept" value="Guardar">
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- End Password Modal HTML -->
+
+                                        <!-- Delete Modal HTML -->
+                                        <div id="{{ modal_delete }}" class="modal fade">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <form method="POST" action="" class="mt-2" autocomplete="off">
+                                                        {% csrf_token %}
+                                                        {{ form.non_field_errors }}
+
+                                                        <input name="action" id="action" type="text" class="form-control" value="delete" hidden>
+                                                        <input name="id" id="id" type="text" class="form-control" value="{{ usuario.id }}" hidden>
+                                                        <input name="email" id="email" type="email" class="form-control" value="{{ usuario.email }}" hidden>
+
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">Eliminar Usuario</h4>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p>¿Desea realmente eliminar al usuario {{ usuario.username }}?</p>
+                                                            <p class="text-warning"><small>Puede cancelar esta acción.</small></p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                                                            <input type="submit" class="btn btn-danger" value="Eliminar">
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- End Delete Modal HTML -->
+                                    {% endwith %}
+                                {% endwith %}
+                            {% endwith %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Modal HTML -->
+    <div id="modal_new" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST" action="" class="mt-2" autocomplete="off" onSubmit="return checkPassword(this, 'modal_new')">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+
+                    <input name="action" id="action" type="text" class="form-control" value="new" hidden>
+                    <input name="id" id="id" type="text" class="form-control" value="{{ usuario.id }}" hidden>
+
+                    <div class="modal-header">
+                        <h4 class="modal-title">Nuevo Usuario</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Correo</label>
+                            <input name="email" id="email" type="email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Nombres</label>
+                            <input name="first_name" id="first_name" type="text" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Apellidos</label>
+                            <input name="last_name" id="last_name" type="text" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Contraseña</label>
+                            <input name="password1" id="password1" type="password" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Repetir Contraseña</label>
+                            <input name="password2" id="password2" type="password" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <div id="modal_new_error" style="display: none;">
+                                <label class="text-danger">Las contraseñas no coinciden</label>
+                            </div>
+                        </div>
+                        <div class="form-group pt-1">
+                            <label>Activo&nbsp;</label>
+                            <input name="is_active" id="is_active" type="checkbox" style="height:13px;width:13px;" checked>
+                        </div>
+                        <div class="form-group mt-n3">
+                            <label>Administrador&nbsp;</label>
+                            <input name="is_superuser" id="is_superuser" type="checkbox" style="height:13px;width:13px;">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                        <input type="submit" class="btn btn-accept" value="Guardar">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- EndNew Modal HTML -->
+
+{% endblock %}
+
+{% block js %}
+    <script>
+        function checkPassword(form, section_name) {
+            if (form.password1.value != form.password2.value) {
+                var error = section_name + '_error';
+                var section_error = document.getElementById(error);
+                section_error.style.display = 'block';
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+    </script>
+{% endblock %}

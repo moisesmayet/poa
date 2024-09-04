@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="POA">
+    <meta name="author" content="Moisés Mayet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <![endif]-->
+
+    <title>{% block title %}{% endblock %} - PopIn</title>
+
+    {% load static %}
+    {% include 'layouts/css.html' %}
+
+    {% block css %}{% endblock css %}
+  </head>
+
+  <body>
+    <!-- Indicador de carga (preload) -->
+    {% if not poa or poa.poa_include_subs or request_from == 'poa_cronograma' or request_from == 'poa_edit' %}
+        <div id="preload-overlay"></div>
+    {% endif %}
+
+    {% include 'layouts/menu_header.html' %}
+
+    <!-- Page Banner Section Start -->
+    {% block banner %}{% endblock %}
+    <!-- Page Banner Section End -->
+
+    <div class="container mt-3">
+        {% if messages %}
+            <div class="row mt-3 mb-3">
+                <div class="col-12">
+                    {% for message in messages %}
+                        {% if message.tags == 'danger' %}
+                            <!-- Message Modal HTML -->
+                            <div id="message_modal" class="modal fade">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">Error</h4>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>{{ message }}</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Message Modal HTML -->
+                        {% else %}
+                            <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="section-container">
+        <!-- Feature Section Start -->
+        {% block content %}{% endblock %}
+    </div>
+
+    {% include 'layouts/js.html' %}
+    {% block js  %}{% endblock js %}
+
+    {% include 'layouts/footer.html' %}
+    <script src="//code.tidio.co/knuzxyralgnkf2ode6qn0eowzorlsike.js" async></script>
+  </body>
+</html>

@@ -1,0 +1,33 @@
+{% load filters %}
+
+<form id="{{ form_id }}" method="POST" action="{% url 'popover_notas' %}" class="mt-2" autocomplete="off">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <input id="estamento_id" name="estamento_id" type="text" class="form-control" value="{{ poa.poa_estamento_id }}" hidden>
+    <input id="poa_anno" name="poa_anno" type="text" class="form-control" value="{{ poa.poa_anno }}" hidden>
+    <input id="request_from" name="request_from" type="text" class="form-control" value="{{ request_from }}" hidden>
+
+    <input id="poa_id" name="poa_id" type="text" class="form-control" value="{{ poa.id }}" hidden>
+    <input id="nota_itemid" name="nota_itemid" type="text" class="form-control" value="{{ nota_itemid }}" hidden>
+    <input id="nota_itemname" name="nota_itemname" type="text" class="form-control" value="{{ nota_itemname }}" hidden>
+
+    <div id="{{ popover_id }}">
+    </div>
+
+    <div class="pt-2">
+        <textarea name="nota_description" id="nota_description" class="form-control" rows="2"></textarea>
+    </div>
+    <div class="d-flex justify-content-between">
+        <div class="text-left">
+            {% if not poa.poa_user_owner %}
+                <label for="notificar">Notificar a {{ poa.poa_estamento.estamento_user.username|title }}</label>
+                <input id="nota_send" name="nota_send" type="checkbox">
+            {% endif %}
+        </div>
+
+        <a class="text-right" href="#" onclick="submitForm(&apos;{{ form_id }}&apos;, &apos;&apos;); return false;">
+            <i class="fas fa-save pr-2" title="Guardar nota"></i>
+        </a>
+    </div>
+</form>

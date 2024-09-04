@@ -1,0 +1,14 @@
+
+{% load static %}
+{% load filters %}
+
+{% if evidencia|exists_file %}
+    {% if evidencia.id|is_evidencia_image %}
+        <img class="file-upload-image" src="{{ evidencia.evidencia_file.url }}" alt="">
+    {% else %}
+        {% with evidencia_icon=evidencia_icon|get_evidencia_icon:evidencia.id %}
+            <div><img src="{% static evidencia_icon %}" style="height: 25px;margin-left: 80px;"></div>
+            <div style="text-align: center"><span>{{ evidencia.evidencia_file.name|get_evidencia_name }}</span></div>
+        {% endwith %}
+    {% endif %}
+{% endif %}

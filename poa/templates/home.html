@@ -1,0 +1,62 @@
+
+{% extends 'layouts/base.html' %}
+
+{% load filters %}
+{% load static %}
+
+{% block title %}Portal{% endblock %}
+
+{% block banner %}
+    {% include 'layouts/banner_home.html' %}
+{% endblock %}
+
+{% block content %}
+    <div class="container-xl">
+        <div class="table-responsive pt-4">
+            <div class="table-wrapper-small pb-25">
+                <div class="text-center">
+                    <img class="dark-logo" src="{% static 'images/logo/popin_logo.png' %}" alt="Learts Logo">
+                </div>
+                <div>
+                    <p class="text-justify">
+                        El Sistema Integral de Gestión de Planes Operativos (PopIn) es una herramienta que automatiza la gestión del POA en la UAPA. A través de este sistema, los planes se diseñan, monitorean y evalúan, ofreciendo al responsable del plan información útil del avance de su trabajo en tiempo real, facilitando, de esta manera, la toma de decisiones inteligentes basadas en evidencias.
+                    </p>
+                    <p class="mt-4 text-justify">
+                        El proceso de planeación y presupuesto que se desarrolla en la Universidad, forma parte de su Sistema de Direccionamiento Estratégico. Este ejercicio de panificación se desarrolla en base al trabajo colaborativo y en red, en la que el personal inicia evaluando los niveles de logro de sus planes, de tal modo que le permita obtener información útil para proyectar en un nuevo plan operativo el trabajo que desarrollará el próximo año.
+                    </p>
+                    <p class="mt-4 text-center">
+                        <iframe width="800" height="500" src="https://www.youtube.com/embed/-yE2DImQ7Ro?modestbranding=1&autohide=1&showinfo=0&controls=0" allowfullscreen>
+                        </iframe>
+                    </p>
+                </div>
+                <div class="text-center pt-5">
+                    <p class="mt-4 text-justify">
+                        A continuación, se presenta el cronograma general que guiará el proceso de planificación y presupuesto para el año 2024:
+                    </p>
+                    <h6>Cronograma general del proceso de planeación y presupuesto del año 2024</h6>
+                </div>
+                <div class="mt-25">
+                    <div class="timeline">
+                        {% for noticia in noticias %}
+                            {% if forloop.counter|is_par %}
+                                <div class="timeline-content right">
+                                  <div class="timeline-glove">
+                                     <h5>{{ noticia.noticia_title }}</h5>
+                                     <p>{{ noticia.noticia_description }}</p>
+                                  </div>
+                               </div>
+                            {% else %}
+                                <div class="timeline-content left">
+                                  <div class="timeline-glove">
+                                     <h5>{{ noticia.noticia_title }}</h5>
+                                     <p>{{ noticia.noticia_description }}</p>
+                                  </div>
+                               </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

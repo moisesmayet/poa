@@ -1,0 +1,74 @@
+
+{% load filters %}
+
+<div class="mt-4 text-justify">
+    <div class="scrumboard row">
+        <div class="row">
+            <div class="col-6">
+                <div class="text-center portlet-col-min">
+                    <h5>Actividades Planificadas</h5>
+                </div>
+
+                <div>
+                    {% for item_list in cronogramas_list %}
+                        {% with cronogramas=item_list.planificadas %}
+                            {% with mes=item_list|item:'mes' %}
+                                <div id="filtro_mes_{{ mes.id }}">
+                                    <div class="pt-2 d-flex align-items-center">
+                                        <h5><span class="underline">{{ mes.mes_name }}&nbsp;&nbsp;</span></h5>
+                                    </div>
+
+                                    {% if cronogramas|length > 0 %}
+                                        {% for cronograma in cronogramas %}
+                                            {% if cronograma.cronograma_cumplimiento %}
+                                                <div id="cronograma-card-planificada-{{ cronograma.id }}" style="display: none">
+                                                    {% include 'layouts/cronograma_card_planificadas.html' %}
+                                                </div>
+                                            {% else %}
+                                                <div id="cronograma-card-planificada-{{ cronograma.id }}">
+                                                    {% include 'layouts/cronograma_card_planificadas.html' %}
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            {% endwith %}
+                        {% endwith %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="col-6">
+                <div class="text-center portlet-col-min">
+                    <h5>Actividades Realizadas</h5>
+                </div>
+
+                <div>
+                    {% for item_list in cronogramas_list %}
+                        {% with cronogramas=item_list.realizadas %}
+                            {% with mes=item_list|item:'mes' %}
+                                <div class="pt-2 d-flex align-items-center">
+                                    <h5><span class="underline">{{ mes.mes_name }}&nbsp;&nbsp;</span></h5>
+                                </div>
+
+                                {% if cronogramas|length > 0 %}
+                                    {% for cronograma in cronogramas %}
+                                        {% if cronograma.cronograma_cumplimiento %}
+                                            <div id="cronograma-card-realizada-{{ cronograma.id }}">
+                                                {% include 'layouts/cronograma_card_realizadas.html' %}
+                                            </div>
+                                        {% else %}
+                                            <div id="cronograma-card-realizada-{{ cronograma.id }}" style="display: none">
+                                                {% include 'layouts/cronograma_card_realizadas.html' %}
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            {% endwith %}
+                        {% endwith %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

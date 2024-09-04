@@ -1,0 +1,141 @@
+
+{% load filters %}
+{% load static %}
+
+{% if request_from != 'poa_card' %}
+    {% if menu_poa != None and menu_poa.poa_estamento_id|is_poa_root %}
+        {% if menu_poa.poa_include_subs %}
+            <a href="{% url 'poa_incluir_subs' estamento_id=menu_estamento_id poa_anno=poa_anno action=request_from %}" onclick="Preload(false)">
+                <img class="icons-coloured" src="{% static 'images/icons/user.png' %}"  alt="Ver POA"  title="Ver POA">
+            </a>
+        {% else %}
+            <a href="{% url 'poa_incluir_subs' estamento_id=menu_estamento_id poa_anno=poa_anno action=request_from %}" onclick="Preload(false)">
+                <img class="icons-coloured" src="{% static 'images/icons/users.png' %}" alt="Unir todos los POAs" title="Unir todos los POAs">
+            </a>
+        {% endif %}
+    {% endif %}
+
+    <a href="{% url 'poa_card' estamento_id=menu_estamento_id poa_anno=poa_anno pag=1 %}" onclick="Preload(false)">
+        <img class="icons-coloured" src="{% static 'images/icons/poas.png' %}" alt="Mostrar todos los POAs" title="Mostrar todos los POAs">
+    </a>
+{% endif %}
+
+{% if request_from != 'poa_preview' and menu_poa.id > 0 %}
+    <a href="{% url 'poa_preview' estamento_id=menu_estamento_id poa_anno=poa_anno pag=1 %}" onclick="Preload(false)">
+        <img class="icons-coloured" src="{% static 'images/icons/poa.png' %}" alt="Mostrar el POA" title="Mostrar el POA">
+    </a>
+{% endif %}
+
+{% if can_edit and menu_poa.poa_estado_id < 4 %}
+    {% if request_from != 'poa_edit' %}
+        <a href="{% url 'poa_edit_start' estamento_id=menu_estamento_id poa_anno=poa_anno %}">
+            <img class="icons-coloured" src="{% static 'images/icons/edit.png' %}" alt="Editar el POA" title="Editar el POA">
+        </a>
+    {% endif %}
+
+    {% if menu_estamento_id|clone_poa:poa_anno %}
+        <a href="#modal_clone" data-toggle="modal">
+            <img class="icons-coloured" src="{% static 'images/icons/clone.png' %}" alt="Clonar el POA" title="Clonar el POA">
+        </a>
+        {% include 'layouts/poa_clone_modal.html' %}
+    {% endif %}
+{% endif %}
+
+{% if menu_poa != None and menu_poa.poa_objetivos > 0 %}
+    {% if request_from != 'poa_cronograma' %}
+        <a href="{% url 'poa_cronograma' estamento_id=menu_estamento_id poa_anno=poa_anno %}" onclick="Preload(true)">
+            <img class="icons-coloured" src="{% static 'images/icons/cronograma.png' %}" alt="Cronograma" title="Cronograma">
+        </a>
+    {% endif %}
+
+    {% if request_from != 'poa_progreso' %}
+        <a href="{% url 'poa_progreso' estamento_id=menu_estamento_id poa_anno=poa_anno pag=1 %}" onclick="Preload(false)">
+            <img class="icons-coloured" src="{% static 'images/icons/progreso.png' %}" alt="Progreso" title="Progreso">
+        </a>
+    {% endif %}
+
+    {% if request_from != 'poa_card' %}
+        {% if request_from != 'poa_correlacion' %}
+            <a href="{% url 'poa_correlacion' estamento_id=menu_estamento_id poa_anno=poa_anno pag=1 %}" onclick="Preload(false)">
+                <img class="icons-coloured" src="{% static 'images/icons/correlacion.png' %}" alt="Matriz de correlación" title="Matriz de correlación">
+            </a>
+        {% endif %}
+        {% if request_from != 'poa_ejecutoria' %}
+            <a href="{% url 'poa_ejecutoria' estamento_id=menu_estamento_id poa_anno=poa_anno pag=1 %}" onclick="Preload(false)">
+                <img class="icons-coloured" src="{% static 'images/icons/ejecutoria.png' %}" alt="Informe ejecutoria" title="Informe ejecutoria">
+            </a>
+            <a href="{% url 'poa_to_doc' estamento_id=menu_estamento_id poa_anno=poa_anno doc_type="docx" %}" target="_blank">
+                <img class="icons-coloured" src="{% static 'images/icons/descargarword.png' %}" alt="Imprimir el POA" title="Imprimir el POA en Word">
+            </a>
+            <a href="{% url 'poa_to_doc' estamento_id=menu_estamento_id poa_anno=poa_anno doc_type="pdf" %}" target="_blank">
+                <img class="icons-coloured" src="{% static 'images/icons/descargarpdf.png' %}" alt="Imprimir el POA" title="Imprimir el POA en PDF">
+            </a>
+        {% else %}
+            <a href="{% url 'ejecutoria_to_doc' estamento_id=menu_estamento_id poa_anno=poa_anno doc_type="docx" %}" target="_blank">
+                <img class="icons-coloured" src="{% static 'images/icons/descargarword.png' %}" alt="Imprimir el POA" title="Imprimir el POA en Word">
+            </a>
+            <a href="{% url 'ejecutoria_to_doc' estamento_id=menu_estamento_id poa_anno=poa_anno doc_type="pdf" %}" target="_blank">
+                <img class="icons-coloured" src="{% static 'images/icons/descargarpdf.png' %}" alt="Imprimir el POA" title="Imprimir el POA en PDF">
+            </a>
+        {% endif %}
+    {% endif %}
+
+    {% if request_from != 'poa_card' %}
+        {% with form_id='form_nota_poa_'|concat:menu_poa.id %}
+            {% with modal_id='modal_'|concat:form_id %}
+                <a href="#{{ modal_id }}" class="edit" data-toggle="modal">
+                    <img class="icons-coloured" src="{% static 'images/icons/notes.png' %}" alt="Mostrar notas" title="Mostrar notas">
+                </a>
+                {% with container_id='container_'|concat:modal_id %}
+                    {% include 'layouts/poa_notas_edit.html' %}
+                {% endwith %}
+            {% endwith %}
+        {% endwith %}
+    {% endif %}
+{% endif %}
+
+{% if request_from != 'poa_card' %}
+    <a href="#modal_message_{{ menu_estamento_id }}" class="icon-color" data-toggle="modal">
+        <img class="icons-coloured" src="{% static 'images/icons/message.png' %}" alt="Enviar mensaje" title="Enviar mensaje">
+    </a>
+
+    <!-- Modal Messages -->
+    <div id="modal_message_{{ menu_estamento_id }}" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST" action="{% url 'send_message' %}" class="mt-2" autocomplete="off" onsubmit="SendMessage('{{ menu_estamento_id }}'); return false;">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+
+                    <input name="id" id="id" type="text" class="form-control" value="{{ menu_estamento_id }}" hidden>
+                    <input name="action" id="action" type="text" class="form-control" value="message" hidden>
+                    <input name="notificacion_type" id="notificacion_type" type="text" class="form-control" value="msg" hidden>
+
+                    <div class="modal-header">
+                        <h6 class="modal-title" style="float: left !important;">Mensaje</h6>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <select class="form-control" id="notificacion_user" name="notificacion_user">
+                                {% for users_root in users_roots %}
+                                     <option value="{{ users_root.id }}">{{ users_root.username|title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div id="notificacion_message_{{ menu_estamento_id }}" class="form-group pt-1">
+                            <textarea id="notificacion_message" name="notificacion_message" class="form-control" rows="10" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                        <input type="submit" class="btn btn-accept" value="Enviar">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- End Messages -->
+{% endif %}

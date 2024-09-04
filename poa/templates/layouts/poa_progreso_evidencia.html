@@ -1,0 +1,13 @@
+
+{% load static %}
+{% load filters %}
+
+{% with modal_id='modal_'|concat:evidencia.id %}
+    <a href="#{{ modal_id }}" data-toggle="modal" style="padding: 0px; !important;">
+        <img src="{% static evidencia_icon %}" style="height: 25px;">
+    </a>
+
+    {% with left_marging='-35px' %}
+        {% include 'layouts/poa_evidencia.html' %}
+    {% endwith %}
+{% endwith %}

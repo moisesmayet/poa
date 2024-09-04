@@ -1,0 +1,19 @@
+
+{% load filters %}
+
+{% with modal_edit='modal_edit_'|concat:cronograma.id %}
+    {% with actividad=cronograma.cronograma_actividad %}
+        <div id="filtro_estado_{{ cronograma.cronograma_estado }}">
+            <div id="filtro_meta_{{ actividad.actividad_meta_id }}">
+                <div class="portlet">
+                     <div class="row portlet-card-row">
+                         <div class="portlet-card-col-1 {% if cronograma.cronograma_mes_id < mes_actual.id %}portlet-color-atrasada{% else %}portlet-color-planificada{% endif %}">
+                         </div>
+                         <div class="portlet-card-col-11">
+                         {% include 'layouts/cronograma_card_planificadas_header.html' %}</div>
+                     </div>
+                </div>
+            </div>
+        </div>
+    {% endwith %}
+{% endwith %}

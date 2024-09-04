@@ -1,0 +1,47 @@
+
+{% load static %}
+{% load filters %}
+
+{% if evidencia != None %}
+    {% if evidencia|exists_file %}
+        {% with evidencia_icon=evidencia_icon|get_evidencia_icon:evidencia.id %}
+            {% if evidencia.id|is_evidencia_image or evidencia.id|is_evidencia_pdf or evidencia.id|is_evidencia_office or evidencia.id|is_evidencia_video %}
+                <div id="cronograma-evidencia-modal-{{ cronograma.id }}">
+                    {% include 'layouts/poa_cronograma_evidencia.html' %}
+                </div>
+                <div id="cronograma-evidencia-download-{{ cronograma.id }}" style="display: none">
+                    <a href="{{ evidencia.evidencia_file.url }}" download="{{ evidencia.evidencia_file.name }}" style="padding: 0px; !important;">
+                        <img src="{% static evidencia_icon %}" style="height: 18px; padding-bottom: 2px;">
+                    </a>
+                </div>
+            {% else %}
+                <div id="cronograma-evidencia-modal-{{ cronograma.id }}" style="display: none">
+                    {% include 'layouts/poa_cronograma_evidencia.html' %}
+                </div>
+                <div id="cronograma-evidencia-download-{{ cronograma.id }}">
+                    <a href="{{ evidencia.evidencia_file.url }}" download="{{ evidencia.evidencia_file.name }}" style="padding: 0px; !important;">
+                        <img src="{% static evidencia_icon %}" style="height: 18px; padding-bottom: 2px;">
+                    </a>
+                </div>
+            {% endif %}
+        {% endwith %}
+    {% else %}
+        <div id="cronograma-evidencia-modal-{{ cronograma.id }}" style="display: none">
+            {% include 'layouts/poa_cronograma_evidencia.html' %}
+        </div>
+        <div id="cronograma-evidencia-download-{{ cronograma.id }}" style="display: none">
+            <a href="" download="" style="padding: 0px; !important;">
+                <img src="" style="height: 18px; padding-bottom: 2px;">
+            </a>
+        </div>
+    {% endif %}
+{% else %}
+    <div id="cronograma-evidencia-modal-{{ cronograma.id }}" style="display: none">
+        {% include 'layouts/poa_cronograma_evidencia.html' %}
+    </div>
+    <div id="cronograma-evidencia-download-{{ cronograma.id }}" style="display: none">
+        <a href="" download="" style="padding: 0px; !important;">
+            <img src="" style="height: 18px; padding-bottom: 2px;">
+        </a>
+    </div>
+{% endif %}

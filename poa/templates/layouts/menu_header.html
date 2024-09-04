@@ -1,0 +1,233 @@
+
+{% load static %}
+{% load filters %}
+
+<!-- Header Section Start -->
+<div class="header-section header-fluid sticky-header section">
+  <div class="header-inner">
+    <div class="container position-relative">
+      <div class="row justify-content-between align-items-center">
+
+            <!-- Header Logo Start -->
+            <div class="col-2">
+              <div class="header-logo">
+                <a href="{% url 'home' %}" style="max-width: 245px!important;">
+                    {% if user.is_authenticated %}
+                        <img class="dark-logo" src="{% static 'images/logo/popin_banner.png' %}" alt="Learts Logo">
+                    {% else %}
+                        <img class="dark-logo" src="{% static 'images/logo/logo_uapa_banner.png' %}" alt="Learts Logo">
+                    {% endif %}
+                </a>
+              </div>
+            </div>
+            <!-- Header Logo End -->
+
+            <!-- Header Main Menu Start -->
+            <div class="col-7">
+              <nav class="site-main-menu">
+                <ul>
+                  {% if user.is_authenticated %}
+                      {% with estamento_id=estamento_id|get_estamento_id:user %}
+                          <li>
+                            <a href="#"><span class="menu-text"><i class="fas fa-cog"></i>&nbsp;Administrar</span></a>
+                              <ul class="sub-menu">
+                                  {% if user.is_superuser %}
+                                      <li class="position-static">
+                                          <a href="{% url 'usuarios_list' %}"><span class="menu-text">Usuarios</span></a>
+                                      </li>
+                                      <li class="position-static">
+                                          <a href="#"><span class="menu-text">Organigrama</span></a>
+                                          <ul class="sub-menu">
+                                              <li class="position-static">
+                                                  <a href="{% url 'sedes_list' %}"><span class="menu-text">Sedes</span></a>
+                                              </li>
+
+                                              {% for tipo_estamento in tipos_estamentos_list|get_tipos_estamentos %}
+                                                  <li class="position-static">
+                                                      <a href="{% url 'estamentos_list' tipo_code=tipo_estamento.tipo_code %}"><span class="menu-text">{{ tipo_estamento.tipo_name|lower|capfirst }}</span></a>
+                                                  </li>
+                                              {% endfor %}
+
+                                              <li class="position-static">
+                                                  <a href="{% url 'tipos_estamentos_list' %}"><span class="menu-text">Estamentos</span></a>
+                                              </li>
+                                          </ul>
+                                      </li>
+                                      <li class="position-static">
+                                          <a href="#"><span class="menu-text">Componentes del POA</span></a>
+                                          <ul class="sub-menu">
+                                              <li class="position-static">
+                                                  <a href="{% url 'ejes_list' %}"><span class="menu-text">Ejes</span></a>
+                                              </li>
+                                              <li class="position-static">
+                                                  <a href="{% url 'objetivos_list' %}"><span class="menu-text">Objetivos</span></a>
+                                              </li>
+                                              <li class="position-static">
+                                                  <a href="{% url 'lineas_list' %}"><span class="menu-text">Líneas</span></a>
+                                              </li>
+                                          </ul>
+                                      </li>
+
+                                      <li class="position-static">
+                                          <li class="position-static">
+                                              <a href="{% url 'parametros_list' %}"><span class="menu-text">Parámetros</span></a>
+                                          </li>
+                                      </li>
+
+                                      <li class="position-static">
+                                          <li class="position-static">
+                                              <a href="{% url 'tableros_list' %}"><span class="menu-text">Tableros</span></a>
+                                          </li>
+                                      </li>
+
+                                      <li class="position-static">
+                                          <li class="position-static">
+                                              <a href="{% url 'logs_list' %}"><span class="menu-text">Logs</span></a>
+                                          </li>
+                                      </li>
+                                  {% endif %}
+
+                                  {% if user|has_poa %}
+                                      <li class="position-static">
+                                          <a href="#"><span class="menu-text">Elementos del POA</span></a>
+                                          <ul class="sub-menu">
+                                              <li class="position-static">
+                                                  <a href="{% url 'indicadores_list' %}"><span class="menu-text">Indicadores verificables</span></a>
+                                              </li>
+                                              <li class="position-static">
+                                                  <a href="{% url 'responsables_list' %}"><span class="menu-text">Responsables</span></a>
+                                              </li>
+                                          </ul>
+                                      </li>
+
+                                      <li class="position-static">
+                                          <li class="position-static">
+                                              <a href="{% url 'notificaciones_list' %}"><span class="menu-text">Notificaciones</span></a>
+                                          </li>
+                                      </li>
+                                  {% endif %}
+                              </ul>
+                          </li>
+
+                          {% with poa_anno=poa_anno|get_poa_anno %}
+                              {% if user|has_poa %}
+                                  <li>
+                                      <a href="#"><span class="menu-text">POAs</span></a>
+                                      <ul class="sub-menu">
+                                          <li class="position-static">
+                                              <a href="{% url 'poa_card' estamento_id=estamento_id poa_anno=poa_anno pag=1 %}" onclick="Preload(false)"><span class="menu-text">Listado de POAs</span></a>
+                                          </li>
+
+                                          {% if user|has_editing_poa %}
+                                              <li class="position-static">
+                                                <a href="{% url 'poa_cronograma' estamento_id=estamento_id poa_anno=poa_anno %}" onclick="Preload(true)"><span class="menu-text">Cronograma</span></a>
+                                              </li>
+                                          {% endif %}
+
+                                          <li class="position-static">
+                                              <a href="{% url 'poa_tablero' estamento_id=estamento_id poa_anno=poa_anno pag=1 %}" onclick="Preload(false)"><span class="menu-text">Tableros</span></a>
+                                          </li>
+                                      </ul>
+                                  </li>
+                              {% endif %}
+                          {% endwith %}
+                      {% endwith %}
+
+                      <li>
+                          <a href="#"><span class="menu-text">Informativos</span></a>
+                          <ul class="sub-menu">
+                                <li class="position-static">
+                                    <a href="{% static 'docs/PLAN ESTRATEGICO INTERNO.pdf' %}" target="_blank">Plan Estratégico</a>
+                                </li>
+                                {% include 'layouts/menu_header_always.html' %}
+                          </ul>
+                      </li>
+                  {% else %}
+                      <li class="position-static">
+                        <a href="{% static 'docs/PLAN ESTRATEGICO.pdf' %}" target="_blank">Plan Estratégico</a>
+                      </li>
+                      {% include 'layouts/menu_header_always.html' %}
+                  {% endif %}
+
+                  <li class="position-static">
+                    <a href="{% url 'help' %}"><span class="menu-text"><i class="fas fa-question-circle"></i></span></a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+            <!-- Header Main Menu End -->
+
+            <div class="col-3">
+                <nav class="site-main-menu">
+                    <ul>
+                      {% if user.is_authenticated %}
+                          <li>
+                            <div class="dropdown custom-dropdown">
+                                <span id="dropdown-trigger" class="dropdown-link" aria-haspopup="true" aria-expanded="false">
+                                    <span class="wrap-icon icon-notifications"></span>
+                                    <div id="notificaciones-number" style="display: none">
+                                        <span class="number"></span>
+                                    </div>
+                                </span>
+
+                                <div id="dropdown-menu" class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                    <div id="notificaciones-marcar-leidas" class="title-wrap d-flex align-items-center" style="display: none">
+                                        <h3 class="title mb-0">Notificaciones</h3>
+                                        <a href="#" class="small ml-auto" onclick="NotificationMark(0, true)">Marcar todas como leída</a>
+                                    </div>
+
+                                    <div id="notificaciones_list">
+                                        <ul class="custom-notifications">
+                                        </ul>
+                                    </div>
+                                    <p class="text-center m-0 p-0"><a href="{% url 'notificaciones_list' %}" class="small">Ver todas las notificaciones</a></p>
+                                </div>
+                            </div>
+                          </li>
+
+                          <li>
+                              <a href="#"><span class="menu-text"><i class="fas fa-user-circle"></i>&nbsp;{{ user.username|title }}</span></a>
+                              <ul class="sub-menu">
+                                  <li class="position-static">
+                                      <a href="{% url 'account' %}"><span class="menu-text">Editar perfil</span></a>
+                                  </li>
+                                  <li class="position-static">
+                                      <a href="{% url 'update_password' %}"><span class="menu-text">Cambiar contraseña</span></a>
+                                  </li>
+                                  <li class="position-static">
+                                    <a href="{% url 'logout' %}"><span class="menu-text">Cerrar sesión</span></a>
+                                  </li>
+                              </ul>
+                          </li>
+                      {% else %}
+                          <li class="position-static">
+                            <a href="{% url 'login' %}#login"><span class="menu-text">Acceder</span></a>
+                          </li>
+                      {% endif %}
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Header Right Start -->
+            <div class="col-xl-3 col-auto">
+              <div class="header-right">
+                <div class="inner">
+                  <!-- Header Mobile Menu Toggle Start -->
+                  <div class="header-mobile-menu-toggle d-xl-none ml-sm-2">
+                    <button class="toggle">
+                      <i class="icon-top"></i>
+                      <i class="icon-middle"></i>
+                      <i class="icon-bottom"></i>
+                    </button>
+                  </div>
+                  <!-- Header Mobile Menu Toggle End -->
+                </div>
+              </div>
+            </div>
+            <!-- Header Right End -->
+
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Header Section End -->

@@ -1,0 +1,33 @@
+
+{% load static %}
+{% load filters %}
+
+{% if evidencia %}
+    <input name="evidencia_id" id="evidencia_id" type="text" class="form-control" value="{{ evidencia.id }}" hidden>
+    <input name="evidencia_description" id="evidencia_description" type="text" class="form-control" value="{{ evidencia.evidencia_description }}">
+
+    <div id="file-upload-image-saved-{{ cronograma.id }}" class="file-upload-image-saved">
+        {% include 'layouts/cronograma_evidencia_preview.html' %}
+    </div>
+{% else %}
+    <input name="evidencia_id" id="evidencia_id" type="text" class="form-control" value="" hidden>
+    <input name="evidencia_description" id="evidencia_description" type="text" class="form-control" value="{{ cronograma.cronograma_actividad.actividad_medio.medio_description }}">
+{% endif %}
+
+<div class="pt-3">
+    <div id="file-upload-content-{{ cronograma.id }}" class="file-upload-content">
+        <img id="file-upload-image-{{ cronograma.id }}" class="file-upload-image" src="#" alt="Vista previa" />
+        <!--
+        <div class="pb-2">
+            <span class="image-title">Archivo</span>
+        </div>
+        -->
+    </div>
+
+    <div class="image-upload-wrap">
+        <input id="evidencia_file" name="evidencia_file" class="file-upload-input" type='file' onchange="readURL(this, {{ cronograma.id }});" required/>
+        <div class="drag-text">
+            Subir un archivo
+        </div>
+    </div>
+</div>

@@ -1,0 +1,110 @@
+
+{% extends 'layouts/base.html' %}
+
+{% block title %}Cronograma{% endblock %}
+
+{% load filters %}
+
+{% block content %}
+    <div class="container-xl">
+        <div class="table-responsive pt-4">
+            <div class="table-wrapper-small">
+                <div class="text-center">
+                <h4 class="title">Cronograma de Actividades</h4>
+                </div>
+
+                {% include 'layouts/poa_estamentos_section.html' %}
+                {% include 'layouts/poa_menu_row.html' %}
+
+                <div class="row mt-3">
+                    <span class="pl-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="16" fill="#FFA649" class="bi bi-square-fill" viewBox="0 0 24 16">
+                          <path d="M0 2a2 2 0 0 1 2-2h20a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2z"/>
+                        </svg>
+                        En tiempo
+                    </span>
+                    <span class="pl-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="16" fill="#F17682" class="bi bi-square-fill" viewBox="0 0 24 16">
+                          <path d="M0 2a2 2 0 0 1 2-2h20a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2z"/>
+                        </svg>
+                        Atrasada
+                    </span>
+                    <span class="pl-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="16" fill="#B6EA7D" class="bi bi-square-fill" viewBox="0 0 24 16">
+                          <path d="M0 2a2 2 0 0 1 2-2h20a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2z"/>
+                        </svg>
+                        Realizada
+                    </span>
+                    <span class="pl-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="16" fill="#49A1FF" class="bi bi-square-fill" viewBox="0 0 24 16">
+                          <path d="M0 2a2 2 0 0 1 2-2h20a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2z"/>
+                        </svg>
+                        Realizada en otra fecha
+                    </span>
+                </div>
+
+                <div class="row pt-3">
+                    <div class="col-4">
+                        <select id="filtro_mes" name="filtro_mes" class="form-control" onchange="filterShowAndHide()">
+                            <option value="cronograma_mes_todas">Filtrar por Mes</option>
+                            {% if mes_anterior %}
+                                <option value="cronograma_mes_anterior">Mes Anterior</option>
+                            {% endif %}
+                            <option value="cronograma_mes_actual">Mes Actual</option>
+                            {% if mes_siguiente %}
+                                <option value="cronograma_mes_siguiente">Mes Siguiente</option>
+                            {% endif %}
+                            <option value="cronograma_mes_1">Enero</option>
+                            <option value="cronograma_mes_2">Febrero</option>
+                            <option value="cronograma_mes_3">Marzo</option>
+                            <option value="cronograma_mes_4">Abril</option>
+                            <option value="cronograma_mes_5">Mayo</option>
+                            <option value="cronograma_mes_6">Junio</option>
+                            <option value="cronograma_mes_7">Julio</option>
+                            <option value="cronograma_mes_8">Agosto</option>
+                            <option value="cronograma_mes_9">Septiembre</option>
+                            <option value="cronograma_mes_10">Octubre</option>
+                            <option value="cronograma_mes_11">Noviembre</option>
+                            <option value="cronograma_mes_12">Diciembre</option>
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        <select id="filtro_estado" name="filtro_estado" class="form-control" onchange="filterShowAndHide()">
+                            <option value="cronograma_estado_todas">Filtrar por Estado</option>
+                            <option value="cronograma_estado_planificada">Programadas</option>
+                            <option value="cronograma_estado_atrasada">Atrasadas</option>
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        <select id="filtro_meta" name="filtro_meta" class="form-control" onchange="filterShowAndHide()">
+                            <option value="cronograma_meta_todas">Filtrar por Metas</option>
+                            {% for meta in metas_list %}
+                                <option value="cronograma_meta_{{ meta.id }}">{{ meta.meta_operativo.operativo_order }}.{{ meta.meta_order }}. {{ meta.meta_description }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div id="cronograma_card">
+                    {% include 'layouts/poa_cronograma_card.html' %}
+                </div>
+
+                {% for item_list in cronogramas_list %}
+                    {% with cronogramas=item_list.cronogramas %}
+                        {% if cronogramas|length > 0 %}
+                            {% for cronograma in cronogramas %}
+                                {% with modal_edit='modal_edit_'|concat:cronograma.id %}
+                                    {% with actividad=cronograma.cronograma_actividad %}
+                                        {% with evidencia=evidencia|get_evidencia:cronograma.id %}
+                                            {% include 'layouts/cronograma_modal.html' %}
+                                        {% endwith %}
+                                    {% endwith %}
+                                {% endwith %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,35 @@
+
+{% load filters %}
+
+<!-- Delete Modal -->
+
+<div id="modal_clone" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="modal_clone_form" name="modal_clone_form" method="POST" action="{% url 'poa_clone' estamento_id=estamento_id poa_anno=poa_anno %}" class="mt-2" autocomplete="off">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+
+                <div class="modal-header">
+                    <h4 class="modal-title">Clonar POA</h4>
+                </div>
+
+                <div class="modal-body">
+                    <label class="float-left">Seleccionar año del POA</label>
+                    <select class="form-control" id="clone_anno" name="clone_anno">
+                        {% for clone_anno in clone_annos %}
+                            <option value="{{ clone_anno }}">{{ clone_anno }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar">
+                    <button type="submit" class="btn btn-accept">Clonar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- End Delete Modal -->

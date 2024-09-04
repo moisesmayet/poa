@@ -1,0 +1,28 @@
+
+{% for poa_year in poa_years %}
+  {% if poa_year not in new_years %}
+      <div>
+        &nbsp;>>
+        <a href="{% url 'poa_preview' estamento_id=item.id poa_anno=poa_year %}">
+            {% if poa_year != poa_anno or estamento_id != item.id %}
+                <div class="text-unselect-normal">{{ poa_year }}</div>
+            {% else %}
+                <div class="text-select">{{ poa_year }}</div>
+            {% endif %}
+        </a>
+      </div>
+  {% endif %}
+{% endfor %}
+
+{% for year in new_years %}
+   <div>
+    &nbsp;>>
+    <a href="{% url 'poa_preview' estamento_id=item.id poa_anno=year %}">
+        {% if year != poa_anno or estamento_id != item.id %}
+            <div class="text-unselect-normal">{{ year }} </div>
+        {% else %}
+            <div class="text-select">{{ year }} </div>
+        {% endif %}
+    </a>
+   </div>
+{% endfor %}

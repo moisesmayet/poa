@@ -1,0 +1,31 @@
+
+{% load static %}
+{% load filters %}
+
+{% if actividad.actividad_presupuesto > 0 %}
+    <td class="td-cronograma-actividad" style="width: 125px;">
+        <span class="pl-2 pr-2">{{ cronograma.cronograma_presupuesto|format_pesos }}</span>
+    </td>
+{% endif %}
+
+{% with evidencia=evidencia|get_evidencia:cronograma.id %}
+    {% if evidencia != None %}
+        {% if evidencia|exists_file %}
+            <td class="td-cronograma-actividad" style="width: 26px;">
+                {% with evidencia_icon=evidencia_icon|get_evidencia_icon:evidencia.id %}
+                    {% if evidencia.id|is_evidencia_image or evidencia.id|is_evidencia_pdf or evidencia.id|is_evidencia_office or evidencia.id|is_evidencia_video %}
+                        {% include 'layouts/poa_progreso_evidencia.html' %}
+                    {% else %}
+                        <a href="{{ evidencia.evidencia_file.url }}" download="{{ evidencia.evidencia_file.name }}" style="padding: 0px; !important;">
+                            <img src="{% static evidencia_icon %}" style="height: 25px;">
+                        </a>
+                    {% endif %}
+                {% endwith %}
+            </td>
+        {% endif %}
+    {% endif %}
+{% endwith %}
+
+<td class="td-cronograma-actividad">
+    <span class="pl-2 pr-2">{{ cronograma.cronograma_notas }}</span>
+</td>

@@ -1,0 +1,75 @@
+
+<!-- Start Section Edit Meta -->
+
+{% load filters %}
+
+{% with modal_edit='modal_section_meta_'|concat:meta.id|concat:'_edit_form' %}
+    {% with modal_delete='modal_section_meta_'|concat:meta.id|concat:'_del_form' %}
+        <div class="portlet-color-meta">
+            <div class="row">
+                <div class="portlet-col-9">
+                    <div class="portlet-header portlet-color-meta portlet-cursor">
+                        <span id="objetivo_order_{{ meta.meta_operativo.id }}" class="ml-2"> {{ meta.meta_operativo.operativo_order }}. </span>
+                        <span id="meta_order_{{ meta.id }}" class="ml-n1"> {{ meta.meta_order }}. </span>
+                        {% if meta.meta_peso != 100 %}
+                            <span><i class="fas fa-exclamation-triangle pl-3"></i> {{ meta.meta_peso }}%</span>
+                        {% endif %}
+                        {% if meta.meta_presupuesto > 0 %}
+                            <span><i class="fas fa-sack-dollar pl-3"></i> {{ meta.meta_presupuesto|format_pesos }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="portlet-col-3">
+                    <div class="row float-right">
+                        <div class="col">
+                            <a href="#{{ modal_edit }}" data-toggle="modal"><i class="fas fa-pen pr-2" title="Editar"></i></a>
+                            <a href="#{{ modal_delete }}" data-toggle="modal"><i class="fas fa-trash pr-2" title="Eliminar"></i></a>
+
+                            {% if not meta.meta_selected %}
+                                <span id="radio_meta_{{ meta.id }}_{{ meta.meta_selected }}"><input onclick="javascript:SelectShowAndHide('{{ meta.meta_portlet }}')" class="mr-2" type="radio" id="select_{{ meta.meta_portlet }}" name="select_meta_{{ meta.meta_operativo_id }}" value="{{ meta.meta_portlet }}" title="Mostrar actividades"></span>
+                            {% else %}
+                                <span id="radio_meta_{{ meta.id }}_{{ meta.meta_selected }}"><input onclick="javascript:SelectShowAndHide('{{ meta.meta_portlet }}')" class="mr-2" type="radio" id="select_{{ meta.meta_portlet }}" name="select_meta_{{ meta.meta_operativo_id }}" value="{{ meta.meta_portlet }}" title="Mostrar actividades" checked></span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="portlet-content">
+            <div class="pb-2">
+                {% with nota_itemid=meta.id %}
+                      {% with notas=meta.meta_notas %}
+                          {% with nota_itemname='meta' %}
+                              {% with form_id='form_meta_'|concat:nota_itemid %}
+                                  {% with description=meta.meta_description|slice:":110"|default_if_none:""|add:"..." %}
+                                      {% with title='Notas meta '|concat:meta.meta_index %}
+                                          {% with popover_id='popover_meta_'|concat:nota_itemid %}
+                                              {% with popover_action="popoverModal('"|concat:form_id|concat:"', '"|concat:poa.id|concat:"', '"|concat:nota_itemid|concat:"', '"|concat:nota_itemname|concat:"')" %}
+                                                  {% include 'layouts/poa_notas_popover.html' %}
+                                              {% endwith %}
+                                          {% endwith %}
+                                      {% endwith %}
+                                  {% endwith %}
+                              {% endwith %}
+                          {% endwith %}
+                      {% endwith %}
+                {% endwith %}
+            </div>
+
+            <div class="scrumboard row portlet-color-actividad">
+                <div class="column-actividad flex w-100" id="add_meta_actividad_{{ meta.id }}">
+                    <div id="total_{{ meta.meta_actividades }}">
+                        {% if not meta.meta_selected %}
+                            <div class="portlet-empty" id="add_{{ meta.meta_portlet }}" style="border: none !important;"></div>
+                        {% else %}
+                            <div class="portlet-empty" id="add_{{ meta.meta_portlet }}" style="border: none !important; display: none;"></div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endwith %}
+{% endwith %}
+
+<!-- End Section Edit Meta -->
