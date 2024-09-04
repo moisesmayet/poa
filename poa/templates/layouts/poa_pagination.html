@@ -1,33 +1,36 @@
 
 {% load filters %}
-{% if paginas|length > 1 %}
-    <div class="row justify-content-center mt-25 mb-50">
-        <nav aria-label="...">
-            <ul class="pagination">
-                {% if pag > 1 %}
-                    <li class="page-item disabled">
-                        <a class="fa fa-chevron-circle-left fa-2x page-link" href="{% url request_from estamento_id=estamento_id poa_anno=poa_anno pag=pag|dec %}" onclick="Preload(false)" tabindex="-1" style="font-size: 25px;color: #041147;"></a>
-                    </li>
-                {% endif %}
 
-                {% for pagina in paginas %}
-                    {% if pag != pagina %}
-                        <li class="page-item">
-                            <a class="page-link" href="{% url request_from estamento_id=estamento_id poa_anno=poa_anno pag=pagina %}" onclick="Preload(false)"> {{ pagina }} </a>
-                        </li>
-                    {% else %}
-                        <li class="page-item active">
-                            <a class="page-link" href="{% url request_from estamento_id=estamento_id poa_anno=poa_anno pag=pagina %}" onclick="Preload(false)"> {{ pagina }} </a>
+{% if request_from == 'poa_card' or poa.poa_include_subs %}
+    {% if paginas|length > 1 %}
+        <div class="row justify-content-center mt-25 mb-50">
+            <nav aria-label="...">
+                <ul class="pagination">
+                    {% if pag > 1 %}
+                        <li class="page-item disabled">
+                            <a class="fa fa-chevron-circle-left fa-2x page-link" href="{% url request_from estamento_id=estamento_id poa_anno=poa_anno pag=pag|dec %}" onclick="Preload(false)" tabindex="-1" style="font-size: 25px;color: #041147;"></a>
                         </li>
                     {% endif %}
-                {% endfor %}
 
-                {% if pag < paginas|length %}
-                    <li class="page-item">
-                        <a class="fa fa-chevron-circle-right fa-2x page-link" href="{% url request_from estamento_id=estamento_id poa_anno=poa_anno pag=pag|inc %}" onclick="Preload(false)" style="font-size: 25px;color: #041147;"></a>
-                    </li>
-                {% endif %}
-            </ul>
-        </nav>
-    </div>
+                    {% for pagina in paginas %}
+                        {% if pag != pagina %}
+                            <li class="page-item">
+                                <a class="page-link" href="{% url request_from estamento_id=estamento_id poa_anno=poa_anno pag=pagina %}" onclick="Preload(false)"> {{ pagina }} </a>
+                            </li>
+                        {% else %}
+                            <li class="page-item active">
+                                <a class="page-link" href="{% url request_from estamento_id=estamento_id poa_anno=poa_anno pag=pagina %}" onclick="Preload(false)"> {{ pagina }} </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if pag < paginas|length %}
+                        <li class="page-item">
+                            <a class="fa fa-chevron-circle-right fa-2x page-link" href="{% url request_from estamento_id=estamento_id poa_anno=poa_anno pag=pag|inc %}" onclick="Preload(false)" style="font-size: 25px;color: #041147;"></a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    {% endif %}
 {% endif %}
