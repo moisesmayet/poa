@@ -705,7 +705,7 @@ class POACard(View):
             poa.poa_color = '#B7BBCA'
             poa.poa_user_owner = IsPOAUser(estamento_id, user)
             users_roots = getUsersRoots(poa.poa_estamento, user)
-            poa_list.append({'poa': poa, 'notas_poa': '', 'poa_porciento': '0%', 'users_roots': users_roots})
+            poa_list.append({'poa': poa, 'notas_poa': '', 'poa_porciento': '0%', 'poa_porciento_parcial': '0%', 'users_roots': users_roots})
         clone_annos = getCloneYears(estamento_id)
 
         return render(request, "poa_card.html",
@@ -2170,7 +2170,7 @@ def POAEstamentosSubs(user, root_estamento_id, estamento_sub_id, poa_anno):
                                                             tablero_tableau__tableau_anno=poa_anno))
                     users_roots = getUsersRoots(poa.poa_estamento, user)
                     poas_sub_list.append(
-                        {"poa": poa, "notas_poa": notas_poa, 'poa_porciento': '0%', 'users_roots': users_roots})
+                        {"poa": poa, "notas_poa": notas_poa, 'poa_porciento': '0%', 'poa_porciento_parcial': '0%', 'users_roots': users_roots})
                 else:
                     poa = POA()
                     poa.id = 0
@@ -2181,7 +2181,7 @@ def POAEstamentosSubs(user, root_estamento_id, estamento_sub_id, poa_anno):
                     poa.poa_objetivos = 0
                     users_roots = getUsersRoots(poa.poa_estamento, user)
                     poas_sub_list.append(
-                        {'poa': poa, 'notas_poa': '', 'poa_porciento': '0%', 'users_roots': users_roots})
+                        {'poa': poa, 'notas_poa': '', 'poa_porciento': '0%', 'poa_porciento_parcial': '0%', 'users_roots': users_roots})
 
                 sub_add = POAEstamentosSubs(user, root_estamento_id, estamento_sub.id, poa_anno)
                 if len(sub_add) > 0:
