@@ -1009,7 +1009,7 @@ class POAEstado(View):
             except Exception:
                 messages.error(request, F'No se pudo enviar el correo de notificación')
 
-        return redirect("poa_preview", estamento_id=estamento_id, poa_anno=poa_anno)
+        return redirect("poa_preview", estamento_id=estamento_id, poa_anno=poa_anno, pag=1)
 
 
 class POAIncluirSubs(View):
@@ -1108,7 +1108,7 @@ class POAClone(View):
                 RegistrarLog(estamento_id, poa_anno, request.user, 'Update', f'Se clonó el poa del {poa_anno}')
                 return redirect("poa_edit_start", estamento_id=estamento_id, poa_anno=clone_poa.poa_anno)
             else:
-                return redirect("poa_preview", estamento_id=estamento_id, poa_anno=poa_anno)
+                return redirect("poa_preview", estamento_id=estamento_id, poa_anno=poa_anno, pag=1)
         except Exception as e:
             messages.error(request, F'Ocurrió un error. ' + str(e))
 
@@ -1124,7 +1124,7 @@ class POAEditStart(View):
             poa = NewPOA(estamento_id, poa_anno, 1, request.user)
         else:
             if poa_anno < datetime.date.today().year or poa.poa_estado_id > 2:
-                return redirect("poa_preview", estamento_id=estamento_id, poa_anno=poa_anno)
+                return redirect("poa_preview", estamento_id=estamento_id, poa_anno=poa_anno, pag=1)
 
         objetivo = ObjetivoOperativo.objects.filter(operativo_poa_id=poa.id).order_by('operativo_order').first()
         if objetivo:
@@ -1220,7 +1220,7 @@ class POAEdit(TemplateView):
             return "poa_card", {"estamento_id": estamento_id, "poa_anno": poa_anno}
 
         if poa.poa_anno < datetime.date.today().year or poa.poa_estado_id > 2:
-            return "poa_preview", {"estamento_id": estamento_id, "poa_anno": poa_anno}
+            return "poa_preview", {"estamento_id": estamento_id, "poa_anno": poa_anno, "pag": 1}
 
         return send_values
 
