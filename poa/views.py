@@ -556,7 +556,8 @@ class POALoad(View):
         poa_anno = self.poa_anno
 
         request_from = request.POST.get('request_from', 'poa_card')
-        if request_from == 'poa_edit':
+
+        if request_from == 'poa_edit' or request_from == 'poa_preview':
             estamento = Estamento.objects.filter(id=estamento_id, estamento_user=request.user).first()
             colaborador = Colaborador.objects.filter(colaborador_estamento_id=estamento_id,
                                                      colaborador_user=request.user).first()
@@ -564,7 +565,8 @@ class POALoad(View):
             if not ((estamento and estamento.estamento_has_poa)
                     or (colaborador and colaborador.colaborador_estamento.estamento_has_poa)) or (
                     poa and poa.poa_estado_id > 2):
-                request_from = 'poa_card'
+                if request_from == 'poa_edit':
+                    request_from = 'poa_card'
             else:
                 return redirect('poa_edit', estamento_id=estamento_id, poa_anno=poa_anno)
         elif request_from == 'poa_cronograma':
@@ -2540,8 +2542,8 @@ def ConvertHTMLtoDOC(request, template, poa_anno, poa, estamento, objetivos_list
             "margin-right": "0in"
         }
 
-        wkhtmltopdf_rute = r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"  # windows
-        # wkhtmltopdf_rute = r"/usr/bin/wkhtmltopdf"  # linux
+        # wkhtmltopdf_rute = r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"  # windows
+        wkhtmltopdf_rute = r"/usr/bin/wkhtmltopdf"  # linux
         config = pdfkit.configuration(wkhtmltopdf=wkhtmltopdf_rute)
 
         pdfkit.from_string(htmlString, doc_out, options=options, configuration=config)
