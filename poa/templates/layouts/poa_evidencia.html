@@ -54,9 +54,11 @@
 
                 <div class="modal-footer">
                     <input type="button" class="btn btn-success" data-dismiss="modal" value="Cancelar" style="margin-right: {{ left_marging }};">
-                    <a id="cronograma-evidencia-view-download-{{ cronograma.id }}" href="{{ evidencia.evidencia_file.url }}" download="{{ evidencia.evidencia_file.name }}">
-                        <input type="button" class="btn btn-accept" value="Descargar">
-                    </a>
+                    {% if evidencia and evidencia|exists_file %}
+                        <a id="cronograma-evidencia-view-download-{{ cronograma.id }}" href="{{ evidencia.evidencia_file.url }}" download="{{ evidencia.evidencia_file.name }}">
+                            <input type="button" class="btn btn-accept" value="Descargar">
+                        </a>
+                    {% endif %}
                 </div>
             </div>
         </div>
