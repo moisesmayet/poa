@@ -413,19 +413,19 @@ $(document).ready(function() {
 });
 
 //Actualizar cronograma
-function CronogramaUpdate(cronograma_id, mes_id) {
+function CronogramaUpdate(cronograma_id) {
     try {
         var url = `/poa_cronograma_update/${cronograma_id}`;
         $.post(url)
             .done(function(response) {
                 if (response.success) {
                     var check = document.getElementById("cronograma-check-" + cronograma_id);
-                    var cronogramaRow = document.getElementById("cronograma-row-" + cronograma_id);
                     var iconos = document.getElementById("cronograma-iconos-" + cronograma_id);
                     var icono_eliminar = document.getElementById("cronograma-iconos-eliminar-" + cronograma_id);
                     var icono_evidencia = document.getElementById("cronograma-evidencia-" + cronograma_id);
                     var defasada = document.getElementById("cronograma-defasada-" + cronograma_id);
                     var newdefasada = document.getElementById("cronograma-newdefasada-" + cronograma_id);
+                    //var cronogramaRow = document.getElementById("cronograma-row-" + cronograma_id);
 
                     var currentMonth = new Date().getMonth() + 1;
 
@@ -443,11 +443,13 @@ function CronogramaUpdate(cronograma_id, mes_id) {
                             icono_eliminar.style.display = 'block';
                         }
 
-                        if (mes_id == currentMonth) {
-                            cronogramaRow.style.backgroundColor = "#B5D9C8";
-                        } else {
-                            cronogramaRow.style.backgroundColor = "#DFB7D6";
+                        if (response.cronograma_defasado) {
                             newdefasada.style.display = 'block';
+                            //if (cronogramaRow != null) {
+                                //cronogramaRow.style.backgroundColor = "#DFB7D6";
+                            //}
+                        //} else {
+                            //cronogramaRow.style.backgroundColor = "#B5D9C8";
                         }
                     } else {
                         $('#cronograma-card-planificada-' + cronograma_id).show();
@@ -464,11 +466,11 @@ function CronogramaUpdate(cronograma_id, mes_id) {
                             check.classList.add("fa-square");
                         }
 
-                        if (mes_id < currentMonth) {
-                            cronogramaRow.style.backgroundColor = "#F8D7DA";
-                        } else {
-                            cronogramaRow.style.backgroundColor = "#ADD8E6";
-                        }
+                        //if (mes_id < currentMonth) {
+                            //cronogramaRow.style.backgroundColor = "#F8D7DA";
+                        //} else {
+                            //cronogramaRow.style.backgroundColor = "#ADD8E6";
+                        //}
                     }
                 } else {
                     showModal("Error al actualizar");

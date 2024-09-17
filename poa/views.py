@@ -11,6 +11,7 @@ from django.db.models.functions import Concat, Coalesce
 from django.http import JsonResponse, FileResponse
 from django.shortcuts import render, redirect
 from django.template.loader import get_template
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import TemplateView
@@ -791,9 +792,16 @@ class PoaCronogramaUpdate(View):
             if cronograma.cronograma_cumplimiento:
                 cronograma.cronograma_cumplimiento = False
                 cronograma.cronograma_cumplimiento_mes_id = cronograma.cronograma_mes_id
+                cronograma.cronograma_cumplimiento_date = timezone.now()
             else:
                 cronograma.cronograma_cumplimiento = True
-                cronograma.cronograma_cumplimiento_mes_id = datetime.date.today().month
+                cronograma_cumplimiento_date = cronograma.cronograma_cumplimiento_date
+                date_now = timezone.now()  # Usa timezone.now() aquí también
+                if not cronograma_cumplimiento_date or (
+                        cronograma_cumplimiento_date.year != date_now.year or
+                        cronograma_cumplimiento_date.month != date_now.month):
+                    cronograma.cronograma_cumplimiento_date = date_now
+                    cronograma.cronograma_cumplimiento_mes_id = timezone.now().month
 
             evidencia = Evidencia.objects.filter(evidencia_cronograma=cronograma).first()
             if evidencia and evidencia.evidencia_file != '' and os.path.exists(evidencia.evidencia_file.path):
@@ -802,8 +810,14 @@ class PoaCronogramaUpdate(View):
                 has_evidencia = False
 
             cronograma.save()
+
+            cronograma_defasado = False
+            if cronograma.cronograma_cumplimiento_mes_id != cronograma.cronograma_mes:
+                cronograma_defasado = True
+
             return JsonResponse({'success': True,
                                  'cronograma_cumplimiento': cronograma.cronograma_cumplimiento,
+                                 'cronograma_defasado': cronograma_defasado,
                                  'has_evidencia': has_evidencia})
         except Exception as e:
             return JsonResponse({'success': False, 'error': 'Valor no encontrado'})
@@ -1394,15 +1408,17 @@ class POAProgreso(View):
             poas_subs_list += send_values[10]
 
         objetivo_operativos_list = []
+        found_poa = False
         for item in poas_subs_list:
             poa = None
             if isinstance(item, POA):
                 if pag == 1:
                     poa = item
-            elif isinstance(item['poa'], POA):
+            elif isinstance(item, dict) and isinstance(item['poa'], POA):
                 poa = item['poa']
 
             if poa:
+                found_poa = True
                 objetivo_operativos = ObjetivoOperativo.objects.filter(operativo_poa=poa)
                 objetivos_list = []
                 suma_porciento_meta = 0
@@ -1478,6 +1494,9 @@ class POAProgreso(View):
                     objetivo_operativos_list.append(
                         {'estamento_name': poa.poa_estamento.estamento_name, 'poa_porciento': f'{poa_porciento}%',
                          'poa_porciento_parcial': f'{poa_porciento_parcial}%', 'objetivos_list': objetivos_list})
+
+        if not found_poa:
+            return redirect('poa_card', estamento_id=estamento_id, poa_anno=poa_anno, pag=1)
 
         clone_annos = getCloneYears(estamento_id)
 
@@ -2542,8 +2561,7 @@ def ConvertHTMLtoDOC(request, template, poa_anno, poa, estamento, objetivos_list
             "margin-right": "0in"
         }
 
-        # wkhtmltopdf_rute = r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"  # windows
-        wkhtmltopdf_rute = r"/usr/bin/wkhtmltopdf"  # linux
+        wkhtmltopdf_rute = Parametro.objects.filter(parametro_name='WKHTMLTOPDF_RUTE').first().parametro_value
         config = pdfkit.configuration(wkhtmltopdf=wkhtmltopdf_rute)
 
         pdfkit.from_string(htmlString, doc_out, options=options, configuration=config)

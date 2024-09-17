@@ -6,7 +6,7 @@
          <div class="col-8">
             <div class="row ml-2">
                 {% if poa and poa.poa_user_owner and not poa.poa_include_subs and poa.poa_estado_id == 4 %}
-                     <a style="font-size: 13px; margin-top: 2px; padding-right: 20px; color: #041147;" onclick="javascript:CronogramaUpdate('{{ cronograma.id }}', '{{ mes.id }}')">
+                     <a style="font-size: 13px; margin-top: 2px; padding-right: 20px; color: #041147;" onclick="javascript:CronogramaUpdate('{{ cronograma.id }}')">
                          <i class="fas fa-arrow-left fa-lg" title="Desmarcar como realizada"></i>
                      </a>
                 {% endif %}

@@ -4,7 +4,7 @@
 
 <div class="portlet-header">
     <div class="row">
-         <div class="col-11">
+         <div class="col-10">
              <a href="#{{ modal_edit }}_info" class="ml-2" style="color: #041147;" data-toggle="modal">
                  <img class="icons-coloured-header" src="{% static 'images/icons/informacion.png' %}" alt="Información de la actividad" title="Información de la actividad">
                  {% if not poa or poa.poa_include_subs %}
@@ -12,9 +12,13 @@
                  {% endif %}
              </a>
          </div>
-         <div class="col-1">
+         <div class="col-2">
              {% if poa and poa.poa_user_owner and not poa.poa_include_subs and poa.poa_estado_id == 4 %}
-                 <a class="pt-1 pr-2 float-right" style="font-size: 14px; margin-top: -2px; color: #041147;" onclick="javascript:CronogramaUpdate('{{ cronograma.id }}', '{{ mes.id }}')">
+                 {% if cronograma.cronograma_cumplimiento_date %}
+                     <i class="fas fa-flag" title="Estuvo marcada como realizada"></i>
+                 {% endif %}
+
+                 <a class="pt-1 pr-2 float-right" style="font-size: 14px; margin-top: -2px; color: #041147;" onclick="javascript:CronogramaUpdate('{{ cronograma.id }}')">
                      <i class="fas fa-arrow-right fa-lg" title="Marcar como realizada"></i>
                  </a>
              {% endif %}

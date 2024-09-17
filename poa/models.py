@@ -217,6 +217,7 @@ class Cronograma(models.Model):
     cronograma_presupuesto = models.DecimalField(null=False, default=0, max_digits=15, decimal_places=2, verbose_name='Presupuesto Gastado')
     cronograma_notas = models.TextField(null=False, default='', verbose_name='Notas')
     cronograma_cumplimiento_mes = models.ForeignKey(Mes, on_delete=models.CASCADE, default=1, verbose_name='Mes Cumplimiento', related_name='cronograma_cumplimiento_mes')
+    cronograma_cumplimiento_date = models.DateTimeField(null=True, verbose_name='Fecha Cumplimiento')
 
     def delete(self, *args, **kwargs):
         super(Cronograma, self).delete(*args, **kwargs)
