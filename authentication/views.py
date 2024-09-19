@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 from django.contrib import messages
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login, logout
 from django.contrib.auth.hashers import make_password
 from poa.models import POA
 from poa.views import RegistrarLog
@@ -27,11 +27,9 @@ class Login(View):
     def post(self, request):
         form = CustomAuthenticationForm(request, data=request.POST)
         if form.is_valid():
-            email = form.cleaned_data.get("username")
-            password = form.cleaned_data.get("password")
-            user = authenticate(email=email, password=password)
-            if user.is_active:
-                if user is not None:
+            user = form.get_user()
+            if user:
+                if user.is_active:
                     request.session.modified = True
                     try:
                         login(request, user)
@@ -53,9 +51,9 @@ class Login(View):
                     POA.objects.filter(poa_estamento_id__in=estamentos_ids).update(poa_include_subs=False)
                     return redirect("home")
                 else:
-                    messages.error(request, F"Correo o contraseña incorrecta")
+                    messages.error(request, F"Usuario suspendido. Póngase en contacto con el administrador")
             else:
-                messages.error(request, F"Usuario suspendido. Póngase en contacto con el administrador")
+                messages.error(request, F"Correo o contraseña incorrecta")
         else:
             messages.error(request, F"Los datos son incorrectos")
 
