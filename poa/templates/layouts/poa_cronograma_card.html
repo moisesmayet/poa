@@ -47,23 +47,25 @@
                     {% for item_list in cronogramas_list %}
                         {% with cronogramas=item_list.realizadas %}
                             {% with mes=item_list|item:'mes' %}
-                                <div class="pt-2 d-flex align-items-center">
-                                    <h5><span class="underline">{{ mes.mes_name }}&nbsp;&nbsp;</span></h5>
-                                </div>
+                                <div id="filtro_mes_{{ mes.id }}">
+                                    <div class="pt-2 d-flex align-items-center">
+                                        <h5><span class="underline">{{ mes.mes_name }}&nbsp;&nbsp;</span></h5>
+                                    </div>
 
-                                {% if cronogramas|length > 0 %}
-                                    {% for cronograma in cronogramas %}
-                                        {% if cronograma.cronograma_cumplimiento %}
-                                            <div id="cronograma-card-realizada-{{ cronograma.id }}">
-                                                {% include 'layouts/cronograma_card_realizadas.html' %}
-                                            </div>
-                                        {% else %}
-                                            <div id="cronograma-card-realizada-{{ cronograma.id }}" style="display: none">
-                                                {% include 'layouts/cronograma_card_realizadas.html' %}
-                                            </div>
-                                        {% endif %}
-                                    {% endfor %}
-                                {% endif %}
+                                    {% if cronogramas|length > 0 %}
+                                        {% for cronograma in cronogramas %}
+                                            {% if cronograma.cronograma_cumplimiento %}
+                                                <div id="cronograma-card-realizada-{{ cronograma.id }}">
+                                                    {% include 'layouts/cronograma_card_realizadas.html' %}
+                                                </div>
+                                            {% else %}
+                                                <div id="cronograma-card-realizada-{{ cronograma.id }}" style="display: none">
+                                                    {% include 'layouts/cronograma_card_realizadas.html' %}
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
                             {% endwith %}
                         {% endwith %}
                     {% endfor %}

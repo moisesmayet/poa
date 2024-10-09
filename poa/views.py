@@ -6,7 +6,7 @@ import pdfkit
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.files.storage import FileSystemStorage
-from django.db.models import F, Value, Case, When, Count, Sum, IntegerField, CharField, BooleanField
+from django.db.models import F, Value, Case, When, Count, Sum, IntegerField, CharField, BooleanField, Q
 from django.db.models.functions import Concat, Coalesce
 from django.http import JsonResponse, FileResponse
 from django.shortcuts import render, redirect
@@ -83,7 +83,7 @@ class ObjetivosList:
                                                     tablero_tableau__tableau_anno=poa_root.poa_anno))
 
         includeSubs = IncludeSubs(estamento_id, poa_anno)
-        if filtred_by == "card" or includeSubs:
+        if includeSubs:
             poas_list += poas_subs
 
         if filtred_by == "tablero" or includeSubs:
@@ -902,6 +902,7 @@ class PoaCronograma(View):
             elif action == 'eliminar':
                 evidencia = Evidencia.objects.filter(evidencia_cronograma=cronograma).first()
                 if evidencia:
+                    RegistrarLog(estamento_id, poa_anno, request.user, 'Delete', f'Se eliminó la evidencia de la actividad {evidencia.evidencia_cronograma.cronograma_actividad.id}')
                     evidencia.delete()
             elif action == 'evidencia':
                 evidencia = Evidencia.objects.filter(evidencia_cronograma=cronograma).first()
@@ -913,7 +914,9 @@ class PoaCronograma(View):
                         evidencia = Evidencia()
                         evidencia.evidencia_cronograma = cronograma
                         evidencia.save()
+                        RegistrarLog(estamento_id, poa_anno, request.user, 'Create', f'Se creó una nueva evidencia con id {evidencia.id}')
                     elif evidencia.evidencia_file:
+                        RegistrarLog(estamento_id, poa_anno, request.user, 'Update', f'Se cambió la evidencia con id {evidencia.id}')
                         if os.path.exists(evidencia.evidencia_file.path):
                             os.remove(evidencia.evidencia_file.path)
 
@@ -2479,12 +2482,11 @@ def CalcularPorcientos(actividad, presupuesto, porciento_meta, porciento_parcial
     porciento_actividad = porciento[1]
 
     current_month = datetime.date.today().month
-    cronogramas = Cronograma.objects.filter(cronograma_actividad=actividad, cronograma_mes_id__lte=current_month)
-    cronogramas_terminados = Cronograma.objects.filter(cronograma_actividad=actividad,
-                                                       cronograma_mes_id__lte=current_month,
-                                                       cronograma_cumplimiento=True)
-    no_cronogramas = cronogramas.count()
-    no_cronogramas_terminados = cronogramas_terminados.count()
+    no_cronogramas_terminados = Cronograma.objects.filter(
+        Q(cronograma_actividad=actividad, cronograma_cumplimiento=True) |
+        Q(cronograma_actividad=actividad, cronograma_mes_id__gt=current_month)
+    ).count()
+
     porciento = CalcularPorcentajes(actividad, no_cronogramas, no_cronogramas_terminados, porciento_parcial_meta)
     porciento_parcial_meta = porciento[0]
     porciento_parcial_actividad = porciento[1]
