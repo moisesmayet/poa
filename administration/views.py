@@ -584,7 +584,9 @@ class LogsList(View):
     # noinspection PyMethodMayBeStatic
     def get(self, request):
         search = request.GET.get('search', '')
-        logs_list = Log.objects.filter(log_description__icontains=search)
+        logs_list = Log.objects.filter(Q(log_description__icontains=search) |
+                                       Q(log_username__icontains=search) |
+                                       Q(log_poaname__icontains=search))
         return render(request, "logs_list.html", {"logs_list": logs_list})
 
 

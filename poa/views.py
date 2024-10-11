@@ -793,10 +793,12 @@ class PoaCronogramaUpdate(View):
                 cronograma.cronograma_cumplimiento = False
                 cronograma.cronograma_cumplimiento_mes_id = cronograma.cronograma_mes_id
                 cronograma.cronograma_cumplimiento_date = timezone.now()
+                cumplimiento = '"Planificada"'
             else:
                 cronograma.cronograma_cumplimiento = True
                 cronograma_cumplimiento_date = cronograma.cronograma_cumplimiento_date
-                date_now = timezone.now()  # Usa timezone.now() aquí también
+                date_now = timezone.now()
+                cumplimiento = '"Realizada"'
                 if not cronograma_cumplimiento_date or (
                         cronograma_cumplimiento_date.year != date_now.year or
                         cronograma_cumplimiento_date.month != date_now.month):
@@ -814,6 +816,11 @@ class PoaCronogramaUpdate(View):
             cronograma_defasado = False
             if cronograma.cronograma_cumplimiento_mes_id != cronograma.cronograma_mes:
                 cronograma_defasado = True
+
+            poa = cronograma.cronograma_actividad.actividad_meta.meta_operativo.operativo_poa
+            RegistrarLog(poa.poa_estado_id, poa.poa_anno, request.user, 'Update',
+                         f'La actividad con id {cronograma.cronograma_actividad_id} '
+                         f'del mes {cronograma.cronograma_mes.mes_name} se marcó como {cumplimiento}')
 
             return JsonResponse({'success': True,
                                  'cronograma_cumplimiento': cronograma.cronograma_cumplimiento,
