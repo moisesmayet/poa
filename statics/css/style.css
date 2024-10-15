@@ -25219,6 +25219,10 @@ ul { list-style-type: none; }
   transition: all 0.4s ease;
 }
 
+.accordion .link-off {
+    cursor: default !important;
+}
+
 .accordion li:last-child .link { border-bottom: 0; }
 
 .accordion li i {
