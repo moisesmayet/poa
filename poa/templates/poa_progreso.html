@@ -31,71 +31,71 @@
                                               </div>
                                               <div>
                                                 {% with metas_list=objetivo_item|item:'metas_list' %}
-                                                          {% for meta_item in metas_list %}
-                                                              {% with meta=meta_item|item:'meta' %}
-                                                                  <li>
-                                                                        <div class="link">
-                                                                            <div class="progress" style="width: 95%;">
-                                                                                {% with porciento_meta=meta_item|item:'porciento_meta' %}
-                                                                                    <div class="progress-bar" role="progressbar" style="width: {{ porciento_meta|format_int }}%;" aria-valuenow="{{ porciento_meta|format_int }}" aria-valuemin="0" aria-valuemax="100">{{ porciento_meta }}%</div>
-                                                                                {% endwith %}
-                                                                            </div>
-                                                                            <div class="pt-2" style="width: 95%;">
-                                                                                {% with meta_index=meta_item|item:'meta_index' %}
-                                                                                    <p>{{ meta_index }} {{ meta.meta_description }}</p>
-                                                                                {% endwith %}
-                                                                            </div>
-                                                                            <div>
-                                                                                <i class="fa fa-chevron-down"></i>
-                                                                            </div>
+                                                      {% for meta_item in metas_list %}
+                                                          {% with meta=meta_item|item:'meta' %}
+                                                              <li>
+                                                                    <div class="link">
+                                                                        <div class="progress" style="width: 95%;">
+                                                                            {% with porciento_meta=meta_item|item:'porciento_meta' %}
+                                                                                <div class="progress-bar" role="progressbar" style="width: {{ porciento_meta|format_int }}%;" aria-valuenow="{{ porciento_meta|format_int }}" aria-valuemin="0" aria-valuemax="100">{{ porciento_meta }}%</div>
+                                                                            {% endwith %}
                                                                         </div>
-                                                                        <ul class="submenu">
-                                                                            {% with actividades=meta_item|item:'actividades_list' %}
-                                                                                {% for actividad_item in actividades %}
-                                                                                    {% with actividad=actividad_item|item:'actividad' %}
-                                                                                        <div class="border-cronograma">
-                                                                                            <div class="row pl-3 pt-2">
-                                                                                                <div class="col-8">
-                                                                                                    <div>
-                                                                                                        {% with actividad_index=actividad_item|item:'actividad_index' %}
-                                                                                                            <p>{{ actividad_index }} {{ actividad.actividad_description }}</p>
+                                                                        <div class="pt-2" style="width: 95%;">
+                                                                            {% with meta_index=meta_item|item:'meta_index' %}
+                                                                                <p>{{ meta_index }} {{ meta.meta_description }}</p>
+                                                                            {% endwith %}
+                                                                        </div>
+                                                                        <div>
+                                                                            <i class="fa fa-chevron-down"></i>
+                                                                        </div>
+                                                                    </div>
+                                                                    <ul class="submenu">
+                                                                        {% with actividades=meta_item|item:'actividades_list' %}
+                                                                            {% for actividad_item in actividades %}
+                                                                                {% with actividad=actividad_item|item:'actividad' %}
+                                                                                    <div class="border-cronograma">
+                                                                                        <div class="row pl-3 pt-2">
+                                                                                            <div class="col-8">
+                                                                                                <div>
+                                                                                                    {% with actividad_index=actividad_item|item:'actividad_index' %}
+                                                                                                        <p>{{ actividad_index }} {{ actividad.actividad_description }}</p>
+                                                                                                    {% endwith %}
+                                                                                                    {% if actividad.actividad_presupuesto > 0 %}
+                                                                                                        {% with presupuesto_gastado=actividad_item|item:'presupuesto_gastado' %}
+                                                                                                            <p>Presupuesto (<b>{{ actividad.actividad_presupuesto|format_pesos }}</b>)&nbsp;&nbsp;&nbsp;&nbsp;Usado (<b><span class="{% if presupuesto_gastado > actividad.actividad_presupuesto %}text-danger{% endif %}">{{ presupuesto_gastado|format_pesos }}</span></b>)</p>
                                                                                                         {% endwith %}
-                                                                                                        {% if actividad.actividad_presupuesto > 0 %}
-                                                                                                            {% with presupuesto_gastado=actividad_item|item:'presupuesto_gastado' %}
-                                                                                                                <p>Presupuesto (<b>{{ actividad.actividad_presupuesto|format_pesos }}</b>)&nbsp;&nbsp;&nbsp;&nbsp;Usado (<b><span class="{% if presupuesto_gastado > actividad.actividad_presupuesto %}text-danger{% endif %}">{{ presupuesto_gastado|format_pesos }}</span></b>)</p>
-                                                                                                            {% endwith %}
-                                                                                                        {% endif %}
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                                <div class="col-4" style="margin-left: -15px">
-                                                                                                    <div class="row">
-                                                                                                        {% with porciento_actividad=actividad_item|item:'porciento_actividad' %}
-                                                                                                            <div class="col-1" style="padding-right: 40px">
-                                                                                                                <p>{{ porciento_actividad }}%</p>
-                                                                                                            </div>
-                                                                                                            <div class="col-4">
-                                                                                                                <div class="progress">
-                                                                                                                  <div class="progress-bar" role="progressbar" style="width: {{ porciento_actividad|format_int }}%;" aria-valuenow="{{ porciento_actividad|format_int }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                                                                                                </div>
-                                                                                                            </div>
-                                                                                                            <div class="col-5">
-                                                                                                                <p>{{ actividad.actividad_responsable.responsable_description }}</p>
-                                                                                                            </div>
-                                                                                                        {% endwith %}
-                                                                                                    </div>
+                                                                                                    {% endif %}
                                                                                                 </div>
                                                                                             </div>
-                                                                                            <div class="pl-3 pb-2">
-                                                                                                {% include 'layouts/poa_progreso_cronograma.html' %}
+                                                                                            <div class="col-4" style="margin-left: -15px">
+                                                                                                <div class="row">
+                                                                                                    {% with porciento_actividad=actividad_item|item:'porciento_actividad' %}
+                                                                                                        <div class="col-1" style="padding-right: 40px">
+                                                                                                            <p>{{ porciento_actividad }}%</p>
+                                                                                                        </div>
+                                                                                                        <div class="col-4">
+                                                                                                            <div class="progress">
+                                                                                                              <div class="progress-bar" role="progressbar" style="width: {{ porciento_actividad|format_int }}%;" aria-valuenow="{{ porciento_actividad|format_int }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <div class="col-5">
+                                                                                                            <p>{{ actividad.actividad_responsable.responsable_description }}</p>
+                                                                                                        </div>
+                                                                                                    {% endwith %}
+                                                                                                </div>
                                                                                             </div>
                                                                                         </div>
-                                                                                    {% endwith %}
-                                                                                {% endfor %}
-                                                                            {% endwith %}
-                                                                        </ul>
-                                                                  </li>
-                                                              {% endwith %}
-                                                          {% endfor %}
+                                                                                        <div class="pl-3 pb-2">
+                                                                                            {% include 'layouts/poa_progreso_cronograma.html' %}
+                                                                                        </div>
+                                                                                    </div>
+                                                                                {% endwith %}
+                                                                            {% endfor %}
+                                                                        {% endwith %}
+                                                                    </ul>
+                                                              </li>
+                                                          {% endwith %}
+                                                      {% endfor %}
                                                   {% endwith %}
                                               </div>
                                           </div>

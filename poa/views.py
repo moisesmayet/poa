@@ -1447,73 +1447,71 @@ class POAProgreso(View):
                 total_parcial_meta = 0
                 for objetivo_operativo in objetivo_operativos:
                     metas = Meta.objects.filter(meta_operativo=objetivo_operativo)
-                    if metas.count() > 0:
-                        objetivo_index = str(objetivo_operativo.operativo_order) + '.'
-                        metas_list = []
-                        for meta in metas:
-                            actividades = Actividad.objects.filter(actividad_meta=meta)
-                            if actividades.count() > 0:
-                                meta_index = objetivo_index + str(meta.meta_order) + '.'
-                                actividades_list = []
-                                total_meta += 1
-                                presupuesto = 0
-                                porciento_meta = 0
-                                porciento_parcial_meta = 0
-                                peso_parcial_meta = 0
-                                for actividad in actividades:
-                                    porcientos = CalcularPorcientos(actividad, presupuesto, porciento_meta,
-                                                                    porciento_parcial_meta, peso_parcial_meta)
-                                    presupuesto_gastado = porcientos[1]
-                                    porciento_meta = porcientos[2]
-                                    porciento_actividad = porcientos[3]
-                                    porciento_parcial_meta = porcientos[4]
-                                    porciento_parcial_actividad = porcientos[5]
-                                    peso_parcial_meta = porcientos[6]
-                                    cronogramas = Cronograma.objects.filter(cronograma_actividad=actividad)
+                    #if metas.count() > 0:
+                    objetivo_index = str(objetivo_operativo.operativo_order) + '.'
+                    metas_list = []
+                    for meta in metas:
+                        actividades = Actividad.objects.filter(actividad_meta=meta)
+                        #if actividades.count() > 0:
+                        meta_index = objetivo_index + str(meta.meta_order) + '.'
+                        actividades_list = []
+                        total_meta += 1
+                        presupuesto = 0
+                        porciento_meta = 0
+                        porciento_parcial_meta = 0
+                        peso_parcial_meta = 0
+                        for actividad in actividades:
+                            porcientos = CalcularPorcientos(actividad, presupuesto, porciento_meta,
+                                                            porciento_parcial_meta, peso_parcial_meta)
+                            presupuesto_gastado = porcientos[1]
+                            porciento_meta = porcientos[2]
+                            porciento_actividad = porcientos[3]
+                            porciento_parcial_meta = porcientos[4]
+                            porciento_parcial_actividad = porcientos[5]
+                            peso_parcial_meta = porcientos[6]
+                            cronogramas = Cronograma.objects.filter(cronograma_actividad=actividad)
 
-                                    actividad_index = meta_index + str(actividad.actividad_order) + '.'
-                                    actividades_list.append(
-                                        {'actividad_index': actividad_index, 'actividad': actividad,
-                                         'porciento_actividad': porciento_actividad,
-                                         'porciento_parcial_actividad': porciento_parcial_actividad,
-                                         'presupuesto_gastado': presupuesto_gastado,
-                                         'cronogramas': cronogramas})
+                            actividad_index = meta_index + str(actividad.actividad_order) + '.'
+                            actividades_list.append(
+                                {'actividad_index': actividad_index, 'actividad': actividad,
+                                 'porciento_actividad': porciento_actividad,
+                                 'porciento_parcial_actividad': porciento_parcial_actividad,
+                                 'presupuesto_gastado': presupuesto_gastado,
+                                 'cronogramas': cronogramas})
 
-                                porciento_meta = GetFormatPorciento(porciento_meta)
-                                porciento_parcial_meta = GetFormatPorciento(porciento_parcial_meta)
-                                suma_porciento_meta += porciento_meta
-                                if peso_parcial_meta:
-                                    suma_porciento_parcial_meta += porciento_parcial_meta * 100 / peso_parcial_meta
-                                    suma_porciento_parcial_meta = round(suma_porciento_parcial_meta, 2)
-                                    total_parcial_meta += 1
+                        porciento_meta = GetFormatPorciento(porciento_meta)
+                        porciento_parcial_meta = GetFormatPorciento(porciento_parcial_meta)
+                        suma_porciento_meta += porciento_meta
+                        if peso_parcial_meta:
+                            suma_porciento_parcial_meta += porciento_parcial_meta * 100 / peso_parcial_meta
+                            suma_porciento_parcial_meta = round(suma_porciento_parcial_meta, 2)
+                            total_parcial_meta += 1
 
-                                metas_list.append(
-                                    {'meta_index': meta_index, 'meta': meta, 'porciento_meta': porciento_meta,
-                                     'porciento_parcial_meta': porciento_parcial_meta,
-                                     'actividades_list': actividades_list})
+                        metas_list.append(
+                            {'meta_index': meta_index, 'meta': meta, 'porciento_meta': porciento_meta,
+                             'porciento_parcial_meta': porciento_parcial_meta,
+                             'actividades_list': actividades_list})
 
-                        if len(metas_list) > 0:
-                            objetivos_list.append(
-                                {'objetivo_index': objetivo_index, 'objetivo_operativo': objetivo_operativo,
-                                 'metas_list': metas_list})
+                    objetivos_list.append(
+                        {'objetivo_index': objetivo_index, 'objetivo_operativo': objetivo_operativo,
+                         'metas_list': metas_list})
 
-                if len(objetivos_list) > 0:
-                    if total_meta > 0:
-                        poa_porciento = suma_porciento_meta / total_meta
-                        poa_porciento = round(poa_porciento, 2)
-                    else:
-                        poa_porciento = 0
-                    if total_parcial_meta > 0:
-                        poa_porciento_parcial = suma_porciento_parcial_meta / total_parcial_meta
-                        poa_porciento_parcial = round(poa_porciento_parcial, 2)
-                    else:
-                        poa_porciento_parcial = 0
+                if total_meta > 0:
+                    poa_porciento = suma_porciento_meta / total_meta
+                    poa_porciento = round(poa_porciento, 2)
+                else:
+                    poa_porciento = 0
+                if total_parcial_meta > 0:
+                    poa_porciento_parcial = suma_porciento_parcial_meta / total_parcial_meta
+                    poa_porciento_parcial = round(poa_porciento_parcial, 2)
+                else:
+                    poa_porciento_parcial = 0
 
-                    poa_porciento = GetFormatPorciento(poa_porciento)
-                    poa_porciento_parcial = GetFormatPorciento(poa_porciento_parcial)
-                    objetivo_operativos_list.append(
-                        {'estamento_name': poa.poa_estamento.estamento_name, 'poa_porciento': f'{poa_porciento}%',
-                         'poa_porciento_parcial': f'{poa_porciento_parcial}%', 'objetivos_list': objetivos_list})
+                poa_porciento = GetFormatPorciento(poa_porciento)
+                poa_porciento_parcial = GetFormatPorciento(poa_porciento_parcial)
+                objetivo_operativos_list.append(
+                    {'estamento_name': poa.poa_estamento.estamento_name, 'poa_porciento': f'{poa_porciento}%',
+                     'poa_porciento_parcial': f'{poa_porciento_parcial}%', 'objetivos_list': objetivos_list})
 
         if not found_poa:
             return redirect('poa_card', estamento_id=estamento_id, poa_anno=poa_anno, pag=1)
@@ -2492,6 +2490,8 @@ def CalcularPorcientos(actividad, presupuesto, porciento_meta, porciento_parcial
     for cronograma in cronogramas_terminados:
         presupuesto_gastado += cronograma.cronograma_presupuesto
 
+    if actividad.id == 15687:
+        presupuesto = presupuesto
     no_cronogramas = cronogramas.count()
     no_cronogramas_terminados = cronogramas_terminados.count()
     porciento = CalcularPorcentajes(actividad, no_cronogramas, no_cronogramas_terminados, porciento_meta)
@@ -2499,10 +2499,11 @@ def CalcularPorcientos(actividad, presupuesto, porciento_meta, porciento_parcial
     porciento_actividad = porciento[1]
 
     current_month = datetime.date.today().month
-    no_cronogramas_terminados = Cronograma.objects.filter(
-        Q(cronograma_actividad=actividad, cronograma_cumplimiento=True) |
-        Q(cronograma_actividad=actividad, cronograma_mes_id__gt=current_month)
-    ).count()
+    if no_cronogramas_terminados > 0:
+        no_cronogramas_terminados = Cronograma.objects.filter(
+            Q(cronograma_actividad=actividad, cronograma_cumplimiento=True) |
+            Q(cronograma_actividad=actividad, cronograma_mes_id__gt=current_month)
+        ).count()
 
     porciento = CalcularPorcentajes(actividad, no_cronogramas, no_cronogramas_terminados, porciento_parcial_meta)
     porciento_parcial_meta = porciento[0]
