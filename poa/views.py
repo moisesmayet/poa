@@ -112,67 +112,66 @@ class ObjetivosList:
                                 F('meta_order'), Value('.'),
                                 output_field=CharField()
                             ))
-                        if metas.count() > 0:
-                            metas_list = []
-                            for meta in metas:
-                                actividades = Actividad.objects.filter(actividad_meta_id=meta.id).annotate(
-                                    actividad_index=Concat(
-                                        F('actividad_meta__meta_operativo__operativo_order'), Value('.'),
-                                        F('actividad_meta__meta_order'), Value('.'),
-                                        F('actividad_order'), Value('.'),
-                                        output_field=CharField()
-                                    ))
-                                if actividades.count() > 0:
-                                    actividades_list = []
-                                    total_meta += 1
-                                    porciento_meta = 0
-                                    porciento_parcial_meta = 0
-                                    peso_parcial_meta = 0
-                                    presupuesto = 0
-                                    presupuesto_gastado = 0
-                                    for actividad in actividades:
-                                        porcientos = CalcularPorcientos(actividad, presupuesto, porciento_meta,
-                                                                        porciento_parcial_meta, peso_parcial_meta)
-                                        presupuesto = porcientos[0]
-                                        presupuesto_gastado += porcientos[1]
-                                        porciento_meta = porcientos[2]
-                                        porciento_parcial_meta = porcientos[4]
-                                        peso_parcial_meta = porcientos[6]
+                        #if metas.count() > 0:
+                        metas_list = []
+                        for meta in metas:
+                            actividades = Actividad.objects.filter(actividad_meta_id=meta.id).annotate(
+                                actividad_index=Concat(
+                                    F('actividad_meta__meta_operativo__operativo_order'), Value('.'),
+                                    F('actividad_meta__meta_order'), Value('.'),
+                                    F('actividad_order'), Value('.'),
+                                    output_field=CharField()
+                                ))
+                            #if actividades.count() > 0:
+                            actividades_list = []
+                            total_meta += 1
+                            porciento_meta = 0
+                            porciento_parcial_meta = 0
+                            peso_parcial_meta = 0
+                            presupuesto = 0
+                            presupuesto_gastado = 0
+                            for actividad in actividades:
+                                porcientos = CalcularPorcientos(actividad, presupuesto, porciento_meta,
+                                                                porciento_parcial_meta, peso_parcial_meta)
+                                presupuesto = porcientos[0]
+                                presupuesto_gastado += porcientos[1]
+                                porciento_meta = porcientos[2]
+                                porciento_parcial_meta = porcientos[4]
+                                peso_parcial_meta = porcientos[6]
 
-                                        meses_cronograma_list = []
-                                        meses_list = Mes.objects.all()
-                                        for mes in meses_list:
-                                            cronograma = Cronograma.objects.filter(cronograma_actividad_id=actividad.id,
-                                                                                   cronograma_mes_id=mes.id).first()
-                                            if cronograma is None:
-                                                meses_cronograma_list.append('')
-                                            else:
-                                                meses_cronograma_list.append('X')
+                                meses_cronograma_list = []
+                                meses_list = Mes.objects.all()
+                                for mes in meses_list:
+                                    cronograma = Cronograma.objects.filter(cronograma_actividad_id=actividad.id,
+                                                                           cronograma_mes_id=mes.id).first()
+                                    if cronograma is None:
+                                        meses_cronograma_list.append('')
+                                    else:
+                                        meses_cronograma_list.append('X')
 
-                                        actividades_sorted.append(actividad)
-                                        notas = GetNotas(poa.id, actividad.id, "actividad", user)
-                                        actividades_list.append(
-                                            {'actividad': actividad, 'meses_cronograma_list': meses_cronograma_list,
-                                             'notas': notas})
+                                actividades_sorted.append(actividad)
+                                notas = GetNotas(poa.id, actividad.id, "actividad", user)
+                                actividades_list.append(
+                                    {'actividad': actividad, 'meses_cronograma_list': meses_cronograma_list,
+                                     'notas': notas})
 
-                                    porciento_meta = GetFormatPorciento(porciento_meta)
-                                    porciento_parcial_meta = GetFormatPorciento(porciento_parcial_meta)
-                                    suma_porciento_meta += porciento_meta
-                                    if peso_parcial_meta:
-                                        suma_porciento_parcial_meta += porciento_parcial_meta * 100 / peso_parcial_meta
-                                        suma_porciento_parcial_meta = round(suma_porciento_parcial_meta, 2)
-                                        total_parcial_meta += 1
+                            porciento_meta = GetFormatPorciento(porciento_meta)
+                            porciento_parcial_meta = GetFormatPorciento(porciento_parcial_meta)
+                            suma_porciento_meta += porciento_meta
+                            if peso_parcial_meta:
+                                suma_porciento_parcial_meta += porciento_parcial_meta * 100 / peso_parcial_meta
+                                suma_porciento_parcial_meta = round(suma_porciento_parcial_meta, 2)
+                                total_parcial_meta += 1
 
-                                    notas = GetNotas(poa.id, meta.id, "meta", user)
-                                    metas_list.append(
-                                        {'meta': meta, 'porciento': porciento_meta,
-                                         'porciento_parcial': porciento_parcial_meta,
-                                         'presupuesto': presupuesto, 'presupuesto_gastado': presupuesto_gastado,
-                                         'actividades_list': actividades_list, 'notas': notas})
+                            notas = GetNotas(poa.id, meta.id, "meta", user)
+                            metas_list.append(
+                                {'meta': meta, 'porciento': porciento_meta,
+                                 'porciento_parcial': porciento_parcial_meta,
+                                 'presupuesto': presupuesto, 'presupuesto_gastado': presupuesto_gastado,
+                                 'actividades_list': actividades_list, 'notas': notas})
 
-                            if len(metas_list) > 0:
-                                notas = GetNotas(poa.id, objetivo.id, "objetivo", user)
-                                objetivos_list.append({'objetivo': objetivo, 'metas_list': metas_list, 'notas': notas})
+                        notas = GetNotas(poa.id, objetivo.id, "objetivo", user)
+                        objetivos_list.append({'objetivo': objetivo, 'metas_list': metas_list, 'notas': notas})
 
                     if len(objetivos_list) > 0:
                         if total_meta > 0:
@@ -818,8 +817,11 @@ class PoaCronogramaUpdate(View):
                 cronograma_defasado = True
 
             poa = cronograma.cronograma_actividad.actividad_meta.meta_operativo.operativo_poa
-            RegistrarLog(poa.poa_estado_id, poa.poa_anno, request.user, 'Update',
-                         f'La actividad con id {cronograma.cronograma_actividad_id} '
+            index = f'{cronograma.cronograma_actividad.actividad_meta.meta_operativo.operativo_order}.' \
+                    f'{cronograma.cronograma_actividad.actividad_meta.meta_order}.' \
+                    f'{cronograma.cronograma_actividad.actividad_order}.'
+            RegistrarLog(poa.poa_estamento_id, poa.poa_anno, request.user, 'Update',
+                         f'La actividad {index} con id {cronograma.cronograma_actividad_id} '
                          f'del mes {cronograma.cronograma_mes.mes_name} se marcó como {cumplimiento}')
 
             return JsonResponse({'success': True,
@@ -896,6 +898,9 @@ class PoaCronograma(View):
             evidencia_type = ''
             evidencia_preview = False
             file_name = ''
+            index = f'{cronograma.cronograma_actividad.actividad_meta.meta_operativo.operativo_order}.' \
+                    f'{cronograma.cronograma_actividad.actividad_meta.meta_order}.' \
+                    f'{cronograma.cronograma_actividad.actividad_order}.'
 
             if action == 'notas':
                 cronograma.cronograma_notas = request.POST.get('cronograma_notas', '')
@@ -909,7 +914,7 @@ class PoaCronograma(View):
             elif action == 'eliminar':
                 evidencia = Evidencia.objects.filter(evidencia_cronograma=cronograma).first()
                 if evidencia:
-                    RegistrarLog(estamento_id, poa_anno, request.user, 'Delete', f'Se eliminó la evidencia de la actividad {evidencia.evidencia_cronograma.cronograma_actividad.id}')
+                    RegistrarLog(estamento_id, poa_anno, request.user, 'Delete', f'Se eliminó la evidencia del mes de {cronograma.cronograma_mes.mes_name} de la actividad {index} con id {evidencia.evidencia_cronograma.cronograma_actividad.id}')
                     evidencia.delete()
             elif action == 'evidencia':
                 evidencia = Evidencia.objects.filter(evidencia_cronograma=cronograma).first()
@@ -921,9 +926,9 @@ class PoaCronograma(View):
                         evidencia = Evidencia()
                         evidencia.evidencia_cronograma = cronograma
                         evidencia.save()
-                        RegistrarLog(estamento_id, poa_anno, request.user, 'Create', f'Se creó una nueva evidencia con id {evidencia.id}')
+                        RegistrarLog(estamento_id, poa_anno, request.user, 'Create', f'Se creó una nueva evidencia con id {evidencia.id} del mes de {cronograma.cronograma_mes.mes_name} en la actividad {index}')
                     elif evidencia.evidencia_file:
-                        RegistrarLog(estamento_id, poa_anno, request.user, 'Update', f'Se cambió la evidencia con id {evidencia.id}')
+                        RegistrarLog(estamento_id, poa_anno, request.user, 'Update', f'Se cambió la evidencia con id {evidencia.id} del mes de {cronograma.cronograma_mes.mes_name} en la actividad {index}')
                         if os.path.exists(evidencia.evidencia_file.path):
                             os.remove(evidencia.evidencia_file.path)
 
@@ -1187,9 +1192,13 @@ class POAEditUpdate(View):
                 Meta.objects.filter(meta_operativo_id=meta.meta_operativo_id).update(meta_selected=False)
                 meta.meta_selected = True
                 meta.save()
+
+                index = f'{meta.meta_operativo.operativo_order}.' \
+                        f'{meta.meta_order}.'
+
                 RegistrarLog(meta.meta_operativo.operativo_poa.poa_estamento_id,
                              meta.meta_operativo.operativo_poa.poa_anno, request.user, 'Selected',
-                             f'Se seleccionó la meta {meta.id}')
+                             f'Se seleccionó la meta {index} con id {meta.id}')
             else:
                 objetivo = ObjetivoOperativo.objects.filter(id=selected_id).first()
                 ObjetivoOperativo.objects.filter(operativo_poa_id=objetivo.operativo_poa_id).update(
@@ -1199,8 +1208,9 @@ class POAEditUpdate(View):
                 metas = Meta.objects.filter(meta_operativo_id=selected_id)
                 if metas.count() == 0:
                     exists_metas = False
+
                 RegistrarLog(objetivo.operativo_poa.poa_estamento_id, objetivo.operativo_poa.poa_anno, request.user,
-                             'Selected', f'Se seleccionó el objetivo {objetivo.id}')
+                             'Selected', f'Se seleccionó el objetivo {objetivo.operativo_order}. con id {objetivo.id}')
             return JsonResponse({'success': True, 'exists_metas': exists_metas})
         except Exception as e:
             return JsonResponse({'success': False, 'error': 'Valor no encontrado'})
@@ -1708,8 +1718,6 @@ def SaveEdit(request, estamento_id, poa_anno, action):
                 objetivo_exists = None
                 if objetivo is None:
                     objetivo = ObjetivoOperativo()
-                    log_action = 'Create'
-                    log_description = f'Se creó un nuevo objetivo con id '
                     objetivos = ObjetivoOperativo.objects.filter(operativo_poa=operativo_poa)
                     order = len(objetivos) + 1
                     objetivo.operativo_order = order
@@ -1718,12 +1726,14 @@ def SaveEdit(request, estamento_id, poa_anno, action):
                         if poa.poa_estado_id == 1:
                             poa.poa_estado_id = 2
                             poa.save()
+                    log_action = 'Create'
+                    log_description = f'Se creó un nuevo objetivo {objetivo.operativo_order}. con id '
 
                     objetivo_exists = ObjetivoOperativo.objects.filter(operativo_poa=operativo_poa,
                                                                        operativo_linea=operativo_linea,
                                                                        operativo_description=operativo_description).first()
                 else:
-                    log_description = f'Se actualizó el objetivo con id '
+                    log_description = f'Se actualizó el objetivo {objetivo.operativo_order}. con id '
 
                 if objetivo_exists is None:
                     objetivo.operativo_poa = operativo_poa
@@ -1747,15 +1757,15 @@ def SaveEdit(request, estamento_id, poa_anno, action):
                 meta = Meta.objects.filter(id=request.POST["meta_id"]).first()
                 if meta is None:
                     meta = Meta()
-                    log_action = 'Create'
-                    log_description = f'Se creó una nueva meta con id '
                     metas = Meta.objects.filter(meta_operativo=objetivo)
                     order = len(metas) + 1
                     meta.meta_order = order
                     if order == 1:
                         meta.meta_selected = True
+                    log_action = 'Create'
+                    log_description = f'Se creó una nueva meta {objetivo.operativo_order}.{meta.meta_order}. con id '
                 else:
-                    log_description = f'Se actualizó la meta con id '
+                    log_description = f'Se actualizó la meta {objetivo.operativo_order}.{meta.meta_order}. con id '
 
                 meta.meta_operativo = objetivo
                 meta.meta_description = request.POST["meta_description"]
@@ -1776,12 +1786,12 @@ def SaveEdit(request, estamento_id, poa_anno, action):
                 actividad = Actividad.objects.filter(id=request.POST.get("actividad_id")).first()
                 if actividad is None:
                     actividad = Actividad()
-                    log_action = 'Create'
-                    log_description = f'Se creó una nueva actividad con id '
                     actividades = Actividad.objects.filter(actividad_meta=meta)
                     actividad.actividad_order = len(actividades) + 1
+                    log_action = 'Create'
+                    log_description = f'Se creó una nueva actividad {meta.meta_order}.{actividad.actividad_order}. con id '
                 else:
-                    log_description = f'Se actualizó la actividad con id '
+                    log_description = f'Se actualizó la actividad {meta.meta_order}.{actividad.actividad_order}. con id '
 
                 actividad.actividad_meta = meta
                 actividad.actividad_description = request.POST.get("actividad_description")
@@ -1871,19 +1881,19 @@ def DeleteEdit(request, action, del_id):
             objetivo = ObjetivoOperativo.objects.get(id=del_id)
             estamento_id = objetivo.operativo_poa.poa_estamento_id
             poa_anno = objetivo.operativo_poa.poa_anno
-            log_description = f'Se eliminó el objetivo {del_id}'
+            log_description = f'Se eliminó el objetivo {objetivo.operativo_order}. con id {del_id}'
             DeleteObjetivoOperativo(del_id)
         elif action == "meta":
             meta = Meta.objects.get(id=del_id)
             estamento_id = meta.meta_operativo.operativo_poa.poa_estamento_id
             poa_anno = meta.meta_operativo.operativo_poa.poa_anno
-            log_description = f'Se eliminó la meta {del_id}'
+            log_description = f'Se eliminó la meta {meta.meta_operativo.operativo_order}.{meta.meta_order}. con id {del_id}'
             DeleteMeta(del_id)
         elif action == "actividad":
             actividad = Actividad.objects.get(id=del_id)
             estamento_id = actividad.actividad_meta.meta_operativo.operativo_poa.poa_estamento_id
             poa_anno = actividad.actividad_meta.meta_operativo.operativo_poa.poa_anno
-            log_description = f'Se eliminó la actividad {del_id}'
+            log_description = f'Se eliminó la actividad {actividad.actividad_meta.meta_operativo.operativo_order}.{actividad.actividad_meta.meta_order}.{actividad.actividad_order}. con id {del_id}'
             DeleteActividad(del_id)
         RegistrarLog(estamento_id, poa_anno, request.user, "Delete", log_description)
     except Exception as e:

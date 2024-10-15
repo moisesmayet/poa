@@ -311,7 +311,7 @@ class Log(models.Model):
         db_table = 'Log'
         verbose_name = 'Log'
         verbose_name_plural = 'Logs'
-        ordering = ['log_date']
+        ordering = ['-log_date']
 
 
 class Bug(models.Model):

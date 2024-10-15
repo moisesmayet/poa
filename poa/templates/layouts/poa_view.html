@@ -83,26 +83,58 @@
                                             {% for meta_item in objetivo_item.metas_list %}
                                                 {% with meta_index=meta_item.meta.meta_index %}
                                                     {% with actividades_count=meta_item.actividades_list|length %}
-                                                        {% for actividad_item in meta_item.actividades_list %}
-                                                            {% with actividad_index=actividad_item.actividad.actividad_index %}
-                                                                <tr>
-                                                                  {% if forloop.counter == 1 %}
-                                                                      {% with meta_id_view='meta_'|concat:meta_item.meta.id %}
-                                                                         <div id="{{ meta_id_view }}">
+                                                        {% if actividades_count > 0 %}
+                                                            {% for actividad_item in meta_item.actividades_list %}
+                                                                {% with actividad_index=actividad_item.actividad.actividad_index %}
+                                                                    <tr>
+                                                                      {% if forloop.counter == 1 %}
+                                                                          {% with meta_id_view='meta_'|concat:meta_item.meta.id %}
+                                                                             <div id="{{ meta_id_view }}">
+                                                                                  {% if not edit_notas %}
+                                                                                      <td class="td-meta-text" colspan="1" rowspan="{{ actividades_count }}">
+                                                                                        <span>{{ meta_index }} {{ meta_item.meta.meta_description }} </span>
+                                                                                      </td>
+                                                                                  {% else %}
+                                                                                      {% with nota_itemid=meta_item.meta.id %}
+                                                                                          {% with notas=meta_item.notas %}
+                                                                                              {% with nota_itemname='meta' %}
+                                                                                                  {% with form_id='form_meta_'|concat:nota_itemid %}
+                                                                                                      {% with description=meta_index|concat:' '|concat:meta_item.meta.meta_description %}
+                                                                                                          {% with title='Notas meta '|concat:meta_index %}
+                                                                                                              {% with popover_id='popover_meta_'|concat:nota_itemid %}
+                                                                                                                  {% with popover_action="popoverModal('"|concat:form_id|concat:"', '"|concat:poa.id|concat:"', '"|concat:nota_itemid|concat:"', '"|concat:nota_itemname|concat:"')" %}
+                                                                                                                      <td class="td-meta-text popover-cell" colspan="1" rowspan="{{ actividades_count }}" {% include 'layouts/poa_notas_popover_data.html' %} colspan="1" rowspan="{{ actividades_count }}">
+                                                                                                                        {% include 'layouts/poa_notas_popover_decription.html' %}
+                                                                                                                      </td>
+                                                                                                                  {% endwith %}
+                                                                                                              {% endwith %}
+                                                                                                          {% endwith %}
+                                                                                                      {% endwith %}
+                                                                                                  {% endwith %}
+                                                                                              {% endwith %}
+                                                                                          {% endwith %}
+                                                                                      {% endwith %}
+                                                                                  {% endif %}
+                                                                             </div>
+                                                                          {% endwith %}
+                                                                      {% endif %}
+
+                                                                      {% with actividad_id_view='actividad_'|concat:actividad_item.actividad.id %}
+                                                                         <div id="{{ actividad_id_view }}">
                                                                               {% if not edit_notas %}
-                                                                                  <td class="td-meta-text" colspan="1" rowspan="{{ actividades_count }}">
-                                                                                    <span>{{ meta_index }} {{ meta_item.meta.meta_description }} </span>
+                                                                                  <td class="td-actividad-text">
+                                                                                    <span>{{ actividad_index }} {{ actividad_item.actividad.actividad_description }} </span>
                                                                                   </td>
                                                                               {% else %}
-                                                                                  {% with nota_itemid=meta_item.meta.id %}
-                                                                                      {% with notas=meta_item.notas %}
-                                                                                          {% with nota_itemname='meta' %}
-                                                                                              {% with form_id='form_meta_'|concat:nota_itemid %}
-                                                                                                  {% with description=meta_index|concat:' '|concat:meta_item.meta.meta_description %}
-                                                                                                      {% with title='Notas meta '|concat:meta_index %}
-                                                                                                          {% with popover_id='popover_meta_'|concat:nota_itemid %}
+                                                                                  {% with nota_itemid=actividad_item.actividad.id %}
+                                                                                      {% with notas=actividad_item.notas %}
+                                                                                          {% with nota_itemname='actividad' %}
+                                                                                              {% with form_id='form_actividad_'|concat:nota_itemid %}
+                                                                                                  {% with description=actividad_index|concat:' '|concat:actividad_item.actividad.actividad_description %}
+                                                                                                      {% with title='Notas actividad '|concat:actividad_index %}
+                                                                                                          {% with popover_id='popover_actividad_'|concat:nota_itemid %}
                                                                                                               {% with popover_action="popoverModal('"|concat:form_id|concat:"', '"|concat:poa.id|concat:"', '"|concat:nota_itemid|concat:"', '"|concat:nota_itemname|concat:"')" %}
-                                                                                                                  <td class="td-meta-text popover-cell" colspan="1" rowspan="{{ actividades_count }}" {% include 'layouts/poa_notas_popover_data.html' %} colspan="1" rowspan="{{ actividades_count }}">
+                                                                                                                  <td class="td-actividad-text popover-cell" {% include 'layouts/poa_notas_popover_data.html' %}>
                                                                                                                     {% include 'layouts/poa_notas_popover_decription.html' %}
                                                                                                                   </td>
                                                                                                               {% endwith %}
@@ -116,27 +148,43 @@
                                                                               {% endif %}
                                                                          </div>
                                                                       {% endwith %}
-                                                                  {% endif %}
+                                                                      <td class="td-peso-text"><span>{{ actividad_item.actividad.actividad_peso }}%</span></td>
+                                                                      <td class="td-medio-text"><span>{{ actividad_item.actividad.actividad_medio }} </span></td>
+                                                                      {% with actividad_presupuesto=actividad_item.actividad.actividad_presupuesto|format_pesos %}
+                                                                            <td class="td-presupuesto-text"><b><span>{{ actividad_presupuesto }} </span></b></td>
+                                                                      {% endwith %}
+                                                                      <td class="td-responsable-text"><span>{{ actividad_item.actividad.actividad_responsable }} </span></td>
 
-                                                                  {% with actividad_id_view='actividad_'|concat:actividad_item.actividad.id %}
-                                                                     <div id="{{ actividad_id_view }}">
-                                                                          {% if not edit_notas %}
-                                                                              <td class="td-actividad-text">
-                                                                                <span>{{ actividad_index }} {{ actividad_item.actividad.actividad_description }} </span>
-                                                                              </td>
+                                                                      {% for mes in actividad_item.meses_cronograma_list %}
+                                                                          {% if mes == '' %}
+                                                                            <td></td>
                                                                           {% else %}
-                                                                              {% with nota_itemid=actividad_item.actividad.id %}
-                                                                                  {% with notas=actividad_item.notas %}
-                                                                                      {% with nota_itemname='actividad' %}
-                                                                                          {% with form_id='form_actividad_'|concat:nota_itemid %}
-                                                                                              {% with description=actividad_index|concat:' '|concat:actividad_item.actividad.actividad_description %}
-                                                                                                  {% with title='Notas actividad '|concat:actividad_index %}
-                                                                                                      {% with popover_id='popover_actividad_'|concat:nota_itemid %}
-                                                                                                          {% with popover_action="popoverModal('"|concat:form_id|concat:"', '"|concat:poa.id|concat:"', '"|concat:nota_itemid|concat:"', '"|concat:nota_itemname|concat:"')" %}
-                                                                                                              <td class="td-actividad-text popover-cell" {% include 'layouts/poa_notas_popover_data.html' %}>
-                                                                                                                {% include 'layouts/poa_notas_popover_decription.html' %}
-                                                                                                              </td>
-                                                                                                          {% endwith %}
+                                                                            <td class="td-mes"></td>
+                                                                          {% endif %}
+                                                                      {% endfor %}
+                                                                    </tr>
+                                                                {% endwith %}
+                                                            {% endfor %}
+                                                        {% else %}
+                                                            <tr>
+                                                              {% with meta_id_view='meta_'|concat:meta_item.meta.id %}
+                                                                 <div id="{{ meta_id_view }}">
+                                                                      {% if not edit_notas %}
+                                                                          <td class="td-meta-text" colspan="1" rowspan="1">
+                                                                            <span>{{ meta_index }} {{ meta_item.meta.meta_description }} </span>
+                                                                          </td>
+                                                                      {% else %}
+                                                                          {% with nota_itemid=meta_item.meta.id %}
+                                                                              {% with notas=meta_item.notas %}
+                                                                                  {% with nota_itemname='meta' %}
+                                                                                      {% with form_id='form_meta_'|concat:nota_itemid %}
+                                                                                          {% with description=meta_index|concat:' '|concat:meta_item.meta.meta_description %}
+                                                                                              {% with title='Notas meta '|concat:meta_index %}
+                                                                                                  {% with popover_id='popover_meta_'|concat:nota_itemid %}
+                                                                                                      {% with popover_action="popoverModal('"|concat:form_id|concat:"', '"|concat:poa.id|concat:"', '"|concat:nota_itemid|concat:"', '"|concat:nota_itemname|concat:"')" %}
+                                                                                                          <td class="td-meta-text popover-cell" colspan="1" rowspan="1" {% include 'layouts/poa_notas_popover_data.html' %} colspan="1" rowspan="{{ actividades_count }}">
+                                                                                                            {% include 'layouts/poa_notas_popover_decription.html' %}
+                                                                                                          </td>
                                                                                                       {% endwith %}
                                                                                                   {% endwith %}
                                                                                               {% endwith %}
@@ -144,26 +192,32 @@
                                                                                       {% endwith %}
                                                                                   {% endwith %}
                                                                               {% endwith %}
-                                                                          {% endif %}
-                                                                     </div>
-                                                                  {% endwith %}
-                                                                  <td class="td-peso-text"><span>{{ actividad_item.actividad.actividad_peso }}%</span></td>
-                                                                  <td class="td-medio-text"><span>{{ actividad_item.actividad.actividad_medio }} </span></td>
-                                                                  {% with actividad_presupuesto=actividad_item.actividad.actividad_presupuesto|format_pesos %}
-                                                                        <td class="td-presupuesto-text"><b><span>{{ actividad_presupuesto }} </span></b></td>
-                                                                  {% endwith %}
-                                                                  <td class="td-responsable-text"><span>{{ actividad_item.actividad.actividad_responsable }} </span></td>
-
-                                                                  {% for mes in actividad_item.meses_cronograma_list %}
-                                                                      {% if mes == '' %}
-                                                                        <td></td>
-                                                                      {% else %}
-                                                                        <td class="td-mes"></td>
+                                                                          {% endwith %}
                                                                       {% endif %}
-                                                                  {% endfor %}
-                                                                </tr>
-                                                            {% endwith %}
-                                                        {% endfor %}
+                                                                 </div>
+                                                              {% endwith %}
+
+                                                              <div>
+                                                                  <td class="td-actividad-text"></td>
+                                                              </div>
+                                                              <td class="td-peso-text"></td>
+                                                              <td class="td-medio-text"></td>
+                                                              <td class="td-presupuesto-text"></td>
+                                                              <td class="td-responsable-text"></td>
+                                                              <td></td>
+                                                              <td></td>
+                                                              <td></td>
+                                                              <td></td>
+                                                              <td></td>
+                                                              <td></td>
+                                                              <td></td>
+                                                              <td></td>
+                                                              <td></td>
+                                                              <td></td>
+                                                              <td></td>
+                                                              <td></td>
+                                                            </tr>
+                                                        {% endif %}
                                                     {% endwith %}
                                                 {% endwith %}
                                             {% endfor %}
