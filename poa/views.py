@@ -633,6 +633,18 @@ class PoaPreview(TemplateView):
 
         return context
 
+    # noinspection PyMethodMayBeStatic
+    def post(self, request, *args, **kwargs):
+        action = str(request.POST.get('action'))
+        if action == "order_all":
+            try:
+                request_from = request.POST.get('request_from')
+                OrderAll(self.estamento_id, self.poa_anno, request.user, request_from)
+            except Exception as e:
+                messages.error(request, str(e))
+
+        return redirect("poa_preview", estamento_id=self.estamento_id, poa_anno=self.poa_anno, pag=self.pag)
+
 
 class PoaTablero(View):
     @method_decorator(csrf_exempt)
@@ -1024,6 +1036,7 @@ class POAEstado(View):
                 subject = "Solicitud de revisión"
                 message = "Se le solicita revisar el POA(" + estamento.estamento_name + "). Puede agregar notas en caso de ser necesario, para que el responsable pueda realizar los cambios sugeridos"
                 estado = 'revisión'
+                OrderAll(self.estamento_id, self.poa_anno, request.user, "la solicitud de revisión")
             else:
                 notificacion_user = estamento.estamento_user
                 user_name = estamento.estamento_user.username
@@ -1270,6 +1283,12 @@ class POAEdit(TemplateView):
                 position = int(request.POST.get('new_position'))
                 data = OrderEdit(column, dragged, position)
                 return JsonResponse(data=data)
+            except Exception as e:
+                messages.error(request, str(e))
+        elif action == "order_all":
+            try:
+                request_from = request.POST.get('request_from')
+                OrderAll(self.estamento_id, self.poa_anno, request.user, request_from)
             except Exception as e:
                 messages.error(request, str(e))
         elif action == "edit":
@@ -1565,19 +1584,24 @@ def OrderEdit(column, dragged, position):
             actividad = Actividad.objects.filter(id=actividad_id).first()
 
             if actividad.actividad_order > position:
-                Actividad.objects.filter(
-                    actividad_meta_id=meta_id, actividad_order__gte=position,
-                    actividad_order__lt=actividad.actividad_order
-                ).update(actividad_order=F('actividad_order') + 1)
+                index = position + 1
+                actividades = Actividad.objects.filter(
+                    actividad_meta_id=meta_id,
+                    actividad_order__gte=position
+                ).exclude(id=actividad_id)
             else:
-                if actividad.actividad_order < position:
-                    Actividad.objects.filter(
-                        actividad_meta_id=meta_id, actividad_order__gt=actividad.actividad_order,
-                        actividad_order__lte=position
-                    ).update(actividad_order=F('actividad_order') - 1)
+                index = 1
+                actividades = Actividad.objects.filter(
+                    actividad_meta_id=meta_id,
+                    actividad_order__lte=position
+                ).exclude(id=actividad_id)
+
+            for act in actividades:
+                act.actividad_order = index
+                act.save()
+                index += 1
 
             actividad.actividad_order = position
-
             actividad.save()
 
             updated_actividades = Actividad.objects.filter(actividad_meta_id=meta_id).order_by(
@@ -1595,7 +1619,8 @@ def OrderEdit(column, dragged, position):
             if column_id != meta_id:
                 actividad_order = actividad.actividad_order
                 Actividad.objects.filter(
-                    actividad_meta_id=meta_id, actividad_order__gt=actividad_order
+                    actividad_meta_id=meta_id,
+                    actividad_order__gt=actividad_order
                 ).update(actividad_order=F('actividad_order') - 1)
                 actividad.actividad_meta_id = column_id
                 actividad.actividad_order = position
@@ -1611,16 +1636,23 @@ def OrderEdit(column, dragged, position):
                     meta = Meta.objects.filter(id=meta_id).first()
 
                     if meta.meta_order > position:
-                        Meta.objects.filter(
-                            meta_operativo_id=objetivo_id, meta_order__gte=position,
-                            meta_order__lt=meta.meta_order
-                        ).update(meta_order=F('meta_order') + 1)
+                        index = position + 1
+                        metas = Meta.objects.filter(
+                            meta_operativo_id=objetivo_id,
+                            meta_order__gte=position
+                        ).exclude(id=meta_id)
                     else:
-                        if meta.meta_order < position:
-                            Meta.objects.filter(
-                                meta_operativo_id=objetivo_id, meta_order__gt=meta.meta_order,
-                                meta_order__lte=position
-                            ).update(meta_order=F('meta_order') - 1)
+                        index = 1
+                        metas = Meta.objects.filter(
+                            meta_operativo_id=objetivo_id,
+                            meta_order__gt=meta.meta_order,
+                            meta_order__lte=position
+                        ).exclude(id=meta_id)
+
+                    for met in metas:
+                        met.meta_order = index
+                        met.save()
+                        index += 1
 
                     meta.meta_order = position
                     meta.save()
@@ -1639,7 +1671,8 @@ def OrderEdit(column, dragged, position):
                     if column_id != objetivo_id:
                         meta_order = meta.meta_order
                         Meta.objects.filter(
-                            meta_operativo_id=objetivo_id, meta_order__gt=meta_order
+                            meta_operativo_id=objetivo_id,
+                            meta_order__gt=meta_order
                         ).update(meta_order=F('meta_order') - 1)
                         if meta.meta_selected:
                             Meta.objects.filter(
@@ -1655,19 +1688,24 @@ def OrderEdit(column, dragged, position):
                         dragged_id = int(dragged.rsplit('_', 1)[1])
                         objetivo_id = dragged_id
                         objetivo = ObjetivoOperativo.objects.filter(id=objetivo_id).first()
+
                         if objetivo.operativo_order > position:
-                            ObjetivoOperativo.objects.filter(
+                            index = position + 1
+                            objetivos = ObjetivoOperativo.objects.filter(
                                 operativo_poa_id=objetivo.operativo_poa_id,
-                                operativo_order__gte=position,
-                                operativo_order__lt=objetivo.operativo_order
-                            ).update(operativo_order=F('operativo_order') + 1)
+                                operativo_order__gte=position
+                            ).exclude(id=objetivo_id)
                         else:
-                            if objetivo.operativo_order < position:
-                                ObjetivoOperativo.objects.filter(
-                                    operativo_poa_id=objetivo.operativo_poa_id,
-                                    operativo_order__gt=objetivo.operativo_order,
-                                    operativo_order__lte=position
-                                ).update(operativo_order=F('operativo_order') - 1)
+                            index = 1
+                            objetivos = ObjetivoOperativo.objects.filter(
+                                operativo_poa_id=objetivo.operativo_poa_id,
+                                operativo_order__lte=position
+                            ).exclude(id=objetivo_id)
+
+                        for obj in objetivos:
+                            obj.operativo_order = index
+                            obj.save()
+                            index += 1
 
                         objetivo.operativo_order = position
                         objetivo.save()
@@ -2973,3 +3011,28 @@ def GetFormatPorciento(porciento):
     if porciento % 1 == 0:
         porciento = int(porciento)
     return porciento
+
+
+def OrderAll(estamento_id, poa_anno, user, request_from):
+    poa = POA.objects.filter(poa_estamento_id=estamento_id, poa_anno=poa_anno).first()
+    objetivos = ObjetivoOperativo.objects.filter(operativo_poa=poa)
+    operativo_order = 1
+    for objetivo in objetivos:
+        objetivo.operativo_order = operativo_order
+        objetivo.save()
+        operativo_order += 1
+        metas = Meta.objects.filter(meta_operativo=objetivo)
+        meta_order = 1
+        for meta in metas:
+            meta.meta_order = meta_order
+            meta.save()
+            meta_order += 1
+            actividad_order = 1
+            actividades = Actividad.objects.filter(actividad_meta=meta)
+            for actividad in actividades:
+                actividad.actividad_order = actividad_order
+                actividad.save()
+                actividad_order += 1
+
+    RegistrarLog(estamento_id, poa_anno, user, "Order",
+                 f"Se reorganizaron todos los índices desde {request_from}")

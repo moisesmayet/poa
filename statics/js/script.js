@@ -118,6 +118,7 @@ $(function() {
                     newPosition = parseInt(totalDivId.substring(totalLastUnderscoreIndex + 1)) || 0;
                 }
                 $(`#${draggedItem}`).remove();
+                Preload();
             }
 
             $.post(order_update, { dragged_item: draggedItem, target_column: targetColumn, new_position: newPosition, action: "order" }, function(response) {
@@ -264,6 +265,11 @@ function UpdateColaboradores(estamentoId, colaboradorIds) {
             console.error('Error al actualizar colaborador:', error);
         }
     });
+}
+
+function submitOrderForm() {
+    document.getElementById('order_form').submit();
+    Preload();
 }
 
 $(document).ready(function() {

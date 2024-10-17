@@ -1,0 +1,10 @@
+
+{% load static %}
+
+<form id="order_form" name="order_form" method="POST" action="" class="ajax-form mt-2" autocomplete="off">
+    {% csrf_token %}
+    <input name="action" id="action" type="text" class="form-control" value="order_all" hidden>
+    <input name="request_from" id="request_from" type="text" class="form-control" value="{{ request_from }}" hidden>
+
+    <img class="icons-coloured" src="{% static 'images/icons/order.png' %}" alt="Reordenar índices" title="Reordenar índices" onclick="submitOrderForm()" style="cursor: pointer;">
+</form>

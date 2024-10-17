@@ -139,3 +139,11 @@
     </div>
     <!-- End Messages -->
 {% endif %}
+
+{% if not menu_poa.poa_include_subs %}
+    {% if request_from == 'poa_edit' %}
+        {% include 'layouts/poa_menu_icons_order.html' %}
+    {% elif request_from == 'poa_preview' and user.is_superuser %}
+        {% include 'layouts/poa_menu_icons_order.html' %}
+    {% endif %}
+{% endif %}
