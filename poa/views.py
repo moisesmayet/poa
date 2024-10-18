@@ -2509,7 +2509,7 @@ def GetPOAsLists(user, estamento, poa_anno, poa, poas, pag):
         if poa.poa_estado_id < 3 and poa.poa_anno >= current_day.year and poa.poa_estamento_id in estamentos_id_list:
             can_edit = True
         if currentUser.is_superuser or (poa.poa_estado_id > 1 and (isCurrentUser or isColaborador)) or (
-                poa.poa_estado_id == 3 and poa.poa_estamento in estamentos_sub_list):
+                poa.poa_estado_id <= 3 and poa.poa_estamento in estamentos_sub_list):
             edit_notas = True
     else:
         can_edit = IsPOAUser(estamento.id, user)
