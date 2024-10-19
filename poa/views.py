@@ -563,12 +563,15 @@ class POALoad(View):
                                                      colaborador_user=request.user).first()
             poa = POA.objects.filter(poa_estamento_id=estamento_id, poa_anno=poa_anno).first()
             if not ((estamento and estamento.estamento_has_poa)
-                    or (colaborador and colaborador.colaborador_estamento.estamento_has_poa)) or (
-                    poa and poa.poa_estado_id > 2):
+                    or (colaborador and colaborador.colaborador_estamento.estamento_has_poa)) \
+                    or (poa and poa.poa_estado_id > 2):
                 if request_from == 'poa_edit':
                     request_from = 'poa_card'
             else:
-                return redirect('poa_edit', estamento_id=estamento_id, poa_anno=poa_anno)
+                if request_from == 'poa_preview':
+                    return redirect('poa_preview', estamento_id=estamento_id, poa_anno=poa_anno, pag=1)
+                else:
+                    return redirect('poa_edit', estamento_id=estamento_id, poa_anno=poa_anno)
         elif request_from == 'poa_cronograma':
             return redirect('poa_cronograma', estamento_id=estamento_id, poa_anno=poa_anno)
 
@@ -2398,6 +2401,9 @@ def GetPOAs(user, estamento_id, poa_anno, pag, filtred_by):
                         notas_poa = GetNotasPoa(poa.id)
                     users_roots = getUsersRoots(estamento, user)
 
+            if (poa and not poa.poa_include_subs) or len(poas_list) < 2:
+                paginas = 1
+
     return [poa_redirect, estamentos_select, estamentos_list, estamentos_options_todos, can_edit, edit_notas, new_years,
             poa_years, poa, objetivos_list, poas_subs_list, cronogramas_list, notas_poa, tablero_list, poas_list,
             users_roots, paginas, paginado]
@@ -2506,9 +2512,9 @@ def GetPOAsLists(user, estamento, poa_anno, poa, poas, pag):
     can_edit = False
     edit_notas = False
     if poa:
-        """
         if poa.poa_estado_id < 3 and poa.poa_anno >= current_day.year and poa.poa_estamento_id in estamentos_id_list:
             can_edit = True
+        """
         if currentUser.is_superuser or (poa.poa_estado_id > 1 and (isCurrentUser or isColaborador)) or (
                 poa.poa_estado_id <= 3 and poa.poa_estamento in estamentos_sub_list):
             edit_notas = True
