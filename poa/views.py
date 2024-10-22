@@ -377,7 +377,7 @@ class POANotas(View):
             nota_id = request.POST.get('nota_id', '')
             nota_description = request.POST.get('nota_description', '')
             if nota_description or nota_id:
-                nota = CrearNota(request, estamento_id, poa_anno, nota_description)
+                nota = CrearNota(request, estamento_id, poa_anno, nota_description, True, True)
                 if nota:
                     data = {
                         'success': True,
@@ -2836,7 +2836,7 @@ def UpdateNota(request, estamento_id, poa_anno, nota_description, nota_id, reque
             count_notas = -1
     else:
         action = "save"
-        nota = CrearNota(request, estamento_id, poa_anno, nota_description)
+        nota = CrearNota(request, estamento_id, poa_anno, nota_description, False, True)
 
     count_notas += Nota.objects.filter(nota_poa_id=nota.nota_poa_id, nota_itemid=nota.nota_itemid,
                                        nota_itemname=nota.nota_itemname,
@@ -2849,7 +2849,7 @@ def UpdateNota(request, estamento_id, poa_anno, nota_description, nota_id, reque
     return updatedValue
 
 
-def CrearNota(request, estamento_id, poa_anno, nota_description):
+def CrearNota(request, estamento_id, poa_anno, nota_description, send_mail, send_notification):
     nota = Nota()
     nota.nota_poa_id = request.POST["poa_id"]
     nota.nota_user = request.user
@@ -2869,8 +2869,10 @@ def CrearNota(request, estamento_id, poa_anno, nota_description):
             subject = "Tienes una nueva notificación"
             message = nota.nota_description
             firma = GetURL(request) + "/static/images/logo/popin_firma.png"
-            SendMail(user_name, user_mail, subject, template, message, "", firma)
-            SendNotification(request.user, poa.poa_estamento.estamento_user, "ntf", message)
+            if send_mail:
+                SendMail(user_name, user_mail, subject, template, message, "", firma)
+            if send_notification:
+                SendNotification(request.user, poa.poa_estamento.estamento_user, "ntf", message)
         except Exception as e:
             pass
 
