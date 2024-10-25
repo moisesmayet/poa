@@ -372,12 +372,10 @@ class POANotas(View):
     # noinspection PyMethodMayBeStatic
     def post(self, request, *args, **kwargs):
         try:
-            estamento_id = request.POST.get('estamento_id', '')
-            poa_anno = request.POST.get('poa_anno', '')
             nota_id = request.POST.get('nota_id', '')
             nota_description = request.POST.get('nota_description', '')
             if nota_description or nota_id:
-                nota = CrearNota(request, estamento_id, poa_anno, nota_description, True, True)
+                nota = CrearNota(request, nota_description, True, True)
                 if nota:
                     data = {
                         'success': True,
@@ -409,13 +407,11 @@ class PopoverNotas(View):
 
     def post(self, request, *args, **kwargs):
         try:
-            estamento_id = request.POST["estamento_id"]
-            poa_anno = request.POST["poa_anno"]
             request_from = request.POST["request_from"]
             nota_description = request.POST["nota_description"]
             nota_id = request.POST["nota_id"]
             if nota_description or nota_id:
-                updatedValue = UpdateNota(request, estamento_id, poa_anno, nota_description, nota_id, request_from)
+                updatedValue = UpdateNota(request, nota_description, nota_id, request_from)
                 return JsonResponse({'updatedValue': updatedValue})
         except Exception as e:
             messages.error(request, F'Ocurrió un error. ' + str(e))
@@ -2822,7 +2818,7 @@ def GetNotaValue(nota, count_notas, user, action, request_from):
             'nota_description': nota.nota_description, 'nota_order': nota_order}
 
 
-def UpdateNota(request, estamento_id, poa_anno, nota_description, nota_id, request_from):
+def UpdateNota(request, nota_description, nota_id, request_from):
     delete_nota = False
     count_notas = 0
     if nota_id:
@@ -2836,7 +2832,7 @@ def UpdateNota(request, estamento_id, poa_anno, nota_description, nota_id, reque
             count_notas = -1
     else:
         action = "save"
-        nota = CrearNota(request, estamento_id, poa_anno, nota_description, False, True)
+        nota = CrearNota(request, nota_description, False, True)
 
     count_notas += Nota.objects.filter(nota_poa_id=nota.nota_poa_id, nota_itemid=nota.nota_itemid,
                                        nota_itemname=nota.nota_itemname,
@@ -2849,20 +2845,24 @@ def UpdateNota(request, estamento_id, poa_anno, nota_description, nota_id, reque
     return updatedValue
 
 
-def CrearNota(request, estamento_id, poa_anno, nota_description, send_mail, send_notification):
+def CrearNota(request, nota_description, send_mail, send_notification):
     nota = Nota()
-    nota.nota_poa_id = request.POST["poa_id"]
     nota.nota_user = request.user
     nota.nota_description = nota_description
     nota.nota_itemid = request.POST["nota_itemid"]
     nota.nota_itemname = request.POST["nota_itemname"]
+    if "nota_itempoaid" in request.POST:
+        nota.nota_poa_id = request.POST["nota_itempoaid"]
+    else:
+        nota.nota_poa_id = request.POST["poa_id"]
+
     if request.POST.get("nota_checked"):
         nota.nota_checked = True
     nota.save()
 
     if request.POST.get("nota_send"):
         try:
-            poa = POA.objects.filter(poa_estamento_id=estamento_id, poa_anno=poa_anno).first()
+            poa = POA.objects.filter(id=nota.nota_poa_id).first()
             template = "basic_email.html"
             user_name = poa.poa_estamento.estamento_user.username
             user_mail = poa.poa_estamento.estamento_user.email

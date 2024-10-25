@@ -32,22 +32,24 @@
         </div>
 
         <div class="portlet-content">
-            {% with nota_itemid=actividad.id %}
-                {% with notas=actividad.actividad_notas %}
-                    {% with nota_itemname='actividad' %}
-                        {% with form_id='form_actividad_'|concat:nota_itemid %}
-                            {% with description=actividad.actividad_description|slice:":115"|default_if_none:""|add:"..." %}
-                                {% with title='Notas actividad '|concat:actividad.actividad_index %}
-                                    {% with popover_id='popover_actividad_'|concat:nota_itemid %}
-                                        {% with popover_action="popoverModal('"|concat:form_id|concat:"', '"|concat:poa.id|concat:"', '"|concat:nota_itemid|concat:"', '"|concat:nota_itemname|concat:"')" %}
-                                            {% include 'layouts/poa_notas_popover.html' %}
+            {% with nota_itempoaid=actividad.actividad_meta.meta_operativo.operativo_poa_id %}
+                {% with nota_itemid=actividad.id %}
+                    {% with notas=actividad.actividad_notas %}
+                        {% with nota_itemname='actividad' %}
+                            {% with form_id='form_actividad_'|concat:nota_itemid %}
+                                {% with description=actividad.actividad_description|slice:":115"|default_if_none:""|add:"..." %}
+                                    {% with title='Notas actividad '|concat:actividad.actividad_index %}
+                                        {% with popover_id='popover_actividad_'|concat:nota_itemid %}
+                                            {% with popover_action="popoverModal('"|concat:form_id|concat:"', '"|concat:nota_itempoaid|concat:"', '"|concat:nota_itemid|concat:"', '"|concat:nota_itemname|concat:"')" %}
+                                                {% include 'layouts/poa_notas_popover.html' %}
+                                            {% endwith %}
                                         {% endwith %}
                                     {% endwith %}
                                 {% endwith %}
                             {% endwith %}
                         {% endwith %}
-                    {% endwith %}
-                 {% endwith %}
+                     {% endwith %}
+                {% endwith %}
             {% endwith %}
         </div>
     {% endwith %}

@@ -557,7 +557,9 @@ function poaAddNota(modalId, nota_id, nota_user, nota_date, nota_description, no
     `;
     containerId = '#' + containerId;
     $(containerId).append(contenidoHtml);
-    $(containerId).scrollTop($(containerId)[0].scrollHeight);
+    if ($(containerId).length) {
+        $(containerId).scrollTop($(containerId)[0].scrollHeight);
+    }
 }
 
 function submitForm(formId, actionId) {
@@ -571,6 +573,7 @@ function submitForm(formId, actionId) {
         success: function(data) {
             var updatedValue = data.updatedValue;
             if (updatedValue !== undefined && updatedValue !== null) {
+                $('#color_' + formId).css('background-color', updatedValue.color);
                 if (updatedValue.action === 'save') {
                     popoverAddNota(formId, updatedValue);
                     $('#' + formId).find('textarea').val('');
@@ -581,7 +584,6 @@ function submitForm(formId, actionId) {
                         $('#container_modal_form_nota_poa_' + updatedValue.nota_poa + '_' + updatedValue.nota_id).remove();
                     }
                 }
-                $('#color_' + formId).css('background-color', updatedValue.color);
             } else {
                 // Agregar notas al POA
                 var modalId = 'modal_' + formId;
