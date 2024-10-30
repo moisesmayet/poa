@@ -2534,8 +2534,6 @@ def CalcularPorcientos(actividad, presupuesto, porciento_meta, porciento_parcial
     for cronograma in cronogramas_terminados:
         presupuesto_gastado += cronograma.cronograma_presupuesto
 
-    if actividad.id == 15687:
-        presupuesto = presupuesto
     no_cronogramas = cronogramas.count()
     no_cronogramas_terminados = cronogramas_terminados.count()
     porciento = CalcularPorcentajes(actividad, no_cronogramas, no_cronogramas_terminados, porciento_meta)
@@ -2543,11 +2541,14 @@ def CalcularPorcientos(actividad, presupuesto, porciento_meta, porciento_parcial
     porciento_actividad = porciento[1]
 
     current_month = datetime.date.today().month
+    no_cronogramas_futuro = Cronograma.objects.filter(cronograma_actividad=actividad, cronograma_mes_id__gt=current_month).count()
     if no_cronogramas_terminados > 0:
         no_cronogramas_terminados = Cronograma.objects.filter(
             Q(cronograma_actividad=actividad, cronograma_cumplimiento=True) |
             Q(cronograma_actividad=actividad, cronograma_mes_id__gt=current_month)
         ).count()
+    elif no_cronogramas_futuro == no_cronogramas:
+        no_cronogramas_terminados = no_cronogramas_futuro
 
     porciento = CalcularPorcentajes(actividad, no_cronogramas, no_cronogramas_terminados, porciento_parcial_meta)
     porciento_parcial_meta = porciento[0]
