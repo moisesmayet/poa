@@ -2974,9 +2974,10 @@ def getUsersRoots(estamento, user):
         estamento_roots = [est_id for est_id in estamento_roots if est_id != 1]
         for estamento_id in estamento_roots:
             root = Estamento.objects.filter(id=estamento_id).first()
-            users_root.append(root.estamento_user)
-            colaboradores = Colaborador.objects.filter(colaborador_estamento=root)
-            users_root += getUsersColaboradores(colaboradores)
+            if root:
+                users_root.append(root.estamento_user)
+                colaboradores = Colaborador.objects.filter(colaborador_estamento=root)
+                users_root += getUsersColaboradores(colaboradores)
 
     return users_root
 
