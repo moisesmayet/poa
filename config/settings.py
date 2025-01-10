@@ -1,8 +1,22 @@
 import os
+from dotenv import load_dotenv
 from pathlib import Path
 from .db import POSTGRES
 from django.contrib.messages import constants as message_constants
 from decouple import config
+
+
+load_dotenv()
+
+
+GOOGLE_OAUTH_CLIENT_ID = os.environ.get('GOOGLE_OAUTH_CLIENT_ID')
+if not GOOGLE_OAUTH_CLIENT_ID:
+    raise ValueError('GOOGLE_OAUTH_CLIENT_ID is missing. Have you put it in a file at core/.env ?')
+print(f'{GOOGLE_OAUTH_CLIENT_ID = }')
+
+
+SECURE_REFERRER_POLICY = 'no-referrer-when-downgrade'
+SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -17,6 +31,12 @@ SECRET_KEY = 'django-insecure-o9y3#dv7pxw4!kg(9-c5ig9f@9)3yaqlcy+4i*$3!sp_@3wlco
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+]
+
 
 # Application definition
 

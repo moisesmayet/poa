@@ -321,6 +321,39 @@ $(document).ready(function() {
             } else if (formId.startsWith('section_meta_')) {
                 Loading(formId, ' la meta');
             } else if (formId.startsWith('section_actividad_')) {
+                let valid = true;
+                $('[id^="section_actividad_"][id$="_required_view"]').each(function() {
+                    if ($(this).is(':visible')) {
+                        var sectionId = $(this).attr('id');
+                        var inputName = $(this).find('select, input').attr('name');
+                        var inputValue = $form.find(`[name="${inputName}"]`).val();
+
+                        if (!inputValue) {
+                            var errorDivId = sectionId.replace('_required_view', '_error');
+                            $(`#${errorDivId}`).show();
+                            valid = false;
+                        }
+                    }
+                });
+
+                $('[id^="section_actividad_"][id$="_required_edit"]').each(function() {
+                    if ($(this).is(':visible')) {
+                        var sectionId = $(this).attr('id');
+                        var inputName = $(this).find('select, input').attr('name');
+                        var inputValue = $form.find(`[name="${inputName}"]`).val();
+
+                        if (!inputValue) {
+                            var errorDivId = sectionId.replace('_required_edit', '_error');
+                            $(`#${errorDivId}`).show();
+                            valid = false;
+                        }
+                    }
+                });
+
+                if (!valid) {
+                    return false;
+                }
+
                 Loading(formId, ' la actividad');
             }
             else {

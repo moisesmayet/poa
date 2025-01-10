@@ -579,7 +579,7 @@ class PoaPreview(TemplateView):
     estamento_id = 0
     poa_anno = 0
     pag = 0
-    poa_request = None
+    send_values = None
 
     @method_decorator(csrf_exempt)
     @method_decorator(login_required)
@@ -587,26 +587,26 @@ class PoaPreview(TemplateView):
         self.estamento_id = kwargs.get('estamento_id')
         self.poa_anno = kwargs.get('poa_anno')
         self.pag = kwargs.get('pag')
-        self.poa_request = request
+
+        # Redirección antes de renderizar la plantilla
+        self.send_values = GetPOAList(request, request.user, self.estamento_id, self.poa_anno, self.pag, "")
+        if self.send_values[0] == "home":
+            return redirect("home")
+        elif self.send_values[0] == "poa_edit_start":
+            return redirect("poa_edit_start", estamento_id=self.estamento_id, poa_anno=self.poa_anno)
+
         return super().dispatch(request, *args, **kwargs)
 
     # noinspection PyMethodMayBeStatic
     def get_context_data(self, **kwargs):
-        poa_anno = self.poa_anno
         estamento_id = self.estamento_id
+        poa_anno = self.poa_anno
         pag = self.pag
-        user = self.request.user
-        send_values = GetPOAList(self.poa_request, user, estamento_id, poa_anno, pag, "")
-
-        if send_values[0] == "home":
-            return redirect("home")
-        else:
-            if send_values[0] == "poa_edit_start":
-                return redirect("poa_edit_start", estamento_id=estamento_id, poa_anno=poa_anno)
+        send_values = self.send_values
 
         estamento = Estamento.objects.get(id=estamento_id)
         clone_annos = getCloneYears(estamento_id)
-        POA.poa_estado
+
         context = super().get_context_data(**kwargs)
         context['estamento_id'] = estamento_id
         context['poa_anno'] = poa_anno
@@ -1137,8 +1137,8 @@ class POAClone(View):
                             clone_actividad.actividad_description = actividad.actividad_description
                             clone_actividad.actividad_peso = actividad.actividad_peso
                             clone_actividad.actividad_presupuesto = actividad.actividad_presupuesto
-                            clone_actividad.actividad_medio = actividad.actividad_medio
-                            clone_actividad.actividad_responsable = actividad.actividad_responsable
+                            clone_actividad.actividad_medio_id = actividad.actividad_medio_id
+                            clone_actividad.actividad_responsable_id = actividad.actividad_responsable_id
                             clone_actividad.save()
 
                             cronogramas = Cronograma.objects.filter(cronograma_actividad_id=actividad.id)
@@ -1968,11 +1968,11 @@ def GetModalForms(poa_id, user_id):
                 peso_total += actividad.actividad_peso
 
                 form_actividad.fields['actividad_medio'].queryset = MedioVerificacion.objects.filter(
-                    medio_user_id=user_id)
+                    Q(medio_user_id=user_id) | Q(id=actividad.actividad_medio_id))
                 form_actividad.fields['actividad_medio'].initial = actividad.actividad_medio_id
 
                 form_actividad.fields['actividad_responsable'].queryset = Responsable.objects.filter(
-                    responsable_user_id=user_id)
+                    Q(responsable_user_id=user_id) | Q(id=actividad.actividad_responsable_id))
                 form_actividad.fields['actividad_responsable'].initial = actividad.actividad_responsable_id
 
                 actividad_cronograma = [cronograma for cronograma in Cronograma.objects.filter(

@@ -96,7 +96,7 @@
                             {{ form_actividad_add.actividad_peso }}
                         </div>
 
-                        <div id="section_actividad_add_medio_view" class="pt-2">
+                        <div id="section_actividad_add_medio_required_view" class="pt-2">
                             <label for="{{ form_actividad_add.actividad_medio.id_for_label }}">Indicador Verificable*</label>
                             {% if form_actividad_add.actividad_medio.field.choices.queryset.count %}
                                 {{ form_actividad_add.actividad_medio }}
@@ -104,23 +104,23 @@
                                 <input type="text" placeholder='Debe ingresar un "Nuevo Indicador"' style="font-style:italic" disabled>
                             {% endif %}
                             <div class="text-right">
-                                <a onclick="javascript:ShowAndHide('section_actividad_add_medio')" class="text-primary"><strong>Nuevo Indicador </strong></a>
+                                <a onclick="javascript:ShowAndHide('section_actividad_add_medio_required')" class="text-primary"><strong>Nuevo Indicador </strong></a>
                             </div>
                         </div>
 
-                        <div id="section_actividad_add_medio_edit" style="display: none;">
+                        <div id="section_actividad_add_medio_required_edit" style="display: none;">
                             <label for="{{ form_actividad_add.actividad_medio_nuevo.id_for_label }}">Indicador Verificable (nuevo)*</label>
                             {{ form_actividad_add.actividad_medio_nuevo }}
                             <div class="text-right">
-                                <a onclick="javascript:ShowAndHide('section_actividad_add_medio')" class="text-primary"><strong>Cancelar </strong></a>
+                                <a onclick="javascript:ShowAndHide('section_actividad_add_medio_required')" class="text-primary"><strong>Cancelar </strong></a>
                             </div>
                         </div>
 
-                        <div id="medio_add_error" style="display: none;">
+                        <div id="section_actividad_add_medio_error" style="display: none;">
                             <label class="text-danger">Debe seleccionar un indicador verificable </label>
                         </div>
 
-                        <div id="section_actividad_add_responsable_view">
+                        <div id="section_actividad_add_responsable_required_view">
                             <label for="{{ form_actividad_add.actividad_responsable.id_for_label }}">Responsable*</label>
                             {% if form_actividad_add.actividad_responsable.field.choices.queryset.count %}
                                 {{ form_actividad_add.actividad_responsable }}
@@ -128,19 +128,19 @@
                                 <input type="text" placeholder='Debe ingresar un "Nuevo Responsable"' style="font-style:italic" disabled>
                             {% endif %}
                             <div class="text-right">
-                                <a onclick="javascript:ShowAndHide('section_actividad_add_responsable')" class="text-primary"><strong>Nuevo Responsable </strong></a>
+                                <a onclick="javascript:ShowAndHide('section_actividad_add_responsable_required')" class="text-primary"><strong>Nuevo Responsable </strong></a>
                             </div>
                         </div>
 
-                        <div id="section_actividad_add_responsable_edit" style="display: none;">
+                        <div id="section_actividad_add_responsable_required_edit" style="display: none;">
                             <label for="{{ form_actividad_add.actividad_responsable_nuevo.id_for_label }}">Responsable (nuevo)*</label>
                             {{ form_actividad_add.actividad_responsable_nuevo }}
                             <div class="text-right">
-                                <a onclick="javascript:ShowAndHide('section_actividad_add_responsable')" class="text-primary"><strong>Cancelar </strong></a>
+                                <a onclick="javascript:ShowAndHide('section_actividad_add_responsable_required')" class="text-primary"><strong>Cancelar </strong></a>
                             </div>
                         </div>
 
-                        <div id="responsable_add_error" style="display: none;">
+                        <div id="section_actividad_add_responsable_error" style="display: none;">
                             <label class="text-danger">Debe seleccionar un responsable </label>
                         </div>
 
@@ -385,43 +385,43 @@
                                                                         <label for="{{ form_actividad.actividad_description.id_for_label }}">Peso (%)</label>
                                                                         {{ form_actividad.actividad_peso }}
 
-                                                                        <div id="{{ section_actividad }}_medio_view">
+                                                                        <div id="{{ section_actividad }}_medio_required_view">
                                                                             <label for="{{ form_actividad.actividad_medio.id_for_label }}">Indicador Verificable*</label>
                                                                             {{ form_actividad.actividad_medio }}
                                                                             <div class="text-right">
-                                                                                <a onclick="javascript:ShowAndHide('{{ section_actividad }}_medio')" class="text-primary"><strong>Nuevo Indicador </strong></a>
+                                                                                <a onclick="javascript:ShowAndHide('{{ section_actividad }}_medio_required')" class="text-primary"><strong>Nuevo Indicador </strong></a>
                                                                             </div>
                                                                         </div>
 
-                                                                        <div id="{{ section_actividad }}_medio_edit" style="display: none;">
+                                                                        <div id="{{ section_actividad }}_medio_required_edit" style="display: none;">
                                                                             <label for="{{ form_actividad.actividad_medio_nuevo.id_for_label }}">Indicador Verificable (nuevo)*</label>
                                                                             {{ form_actividad.actividad_medio_nuevo }}
                                                                             <div class="text-right">
-                                                                                <a onclick="javascript:ShowAndHide('{{ section_actividad }}_medio')" class="text-primary"><strong>Cancelar </strong></a>
+                                                                                <a onclick="javascript:ShowAndHide('{{ section_actividad }}_medio_required')" class="text-primary"><strong>Cancelar </strong></a>
                                                                             </div>
                                                                         </div>
 
-                                                                        <div id="{{ medio_error }}" style="display: none;">
+                                                                        <div id="{{ section_actividad }}_medio_error" style="display: none;">
                                                                             <label class="text-danger">Debe seleccionar un indicador verificable </label>
                                                                         </div>
 
-                                                                        <div id="{{ section_actividad }}_responsable_view">
+                                                                        <div id="{{ section_actividad }}_responsable_required_view">
                                                                             <label for="{{ form_actividad.actividad_responsable.id_for_label }}">Responsable*</label>
                                                                             {{ form_actividad.actividad_responsable }}
                                                                             <div class="text-right">
-                                                                                <a onclick="javascript:ShowAndHide('{{ section_actividad }}_responsable')" class="text-primary"><strong>Nuevo Responsable </strong></a>
+                                                                                <a onclick="javascript:ShowAndHide('{{ section_actividad }}_responsable_required')" class="text-primary"><strong>Nuevo Responsable </strong></a>
                                                                             </div>
                                                                         </div>
 
-                                                                        <div id="{{ section_actividad }}_responsable_edit" style="display: none;">
+                                                                        <div id="{{ section_actividad }}_responsable_required_edit" style="display: none;">
                                                                             <label for="{{ form_actividad.actividad_responsable_nuevo.id_for_label }}">Responsable (nuevo)*</label>
                                                                             {{ form_actividad.actividad_responsable_nuevo }}
                                                                             <div class="text-right">
-                                                                                <a onclick="javascript:ShowAndHide('{{ section_actividad }}_responsable')" class="text-primary"><strong>Cancelar </strong></a>
+                                                                                <a onclick="javascript:ShowAndHide('{{ section_actividad }}_responsable_required')" class="text-primary"><strong>Cancelar </strong></a>
                                                                             </div>
                                                                         </div>
 
-                                                                        <div id="{{ responsable_error }}" style="display: none;">
+                                                                        <div id="{{ section_actividad }}_responsable_error" style="display: none;">
                                                                             <label class="text-danger">Debe seleccionar un responsable </label>
                                                                         </div>
 

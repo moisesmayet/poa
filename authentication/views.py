@@ -1,4 +1,6 @@
+import os
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.utils.crypto import get_random_string
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
@@ -7,11 +9,59 @@ from django.views.generic import View
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.hashers import make_password
+from google.oauth2 import id_token
+from google.auth.transport import requests
 from poa.models import POA
 from poa.views import RegistrarLog
 from uapa.models import Colaborador, Estamento
 from .forms import *
 from notification.views import SendMail, GetURL
+
+
+class AuthReceiver(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    # noinspection PyMethodMayBeStatic
+    def post(self, request, *args, **kwargs):
+        token = request.POST.get('credential')
+        if not token:
+            return HttpResponse(status=400)
+
+        try:
+            user_data = id_token.verify_oauth2_token(
+                token, requests.Request(), os.environ['GOOGLE_OAUTH_CLIENT_ID']
+            )
+        except ValueError:
+            return HttpResponse(status=403)
+
+        email = user_data.get('email')
+        if not email:
+            messages.error(request, "Error al obtener el correo electrónico de Google.")
+            return redirect("login")
+        elif user_data.get('hd') != "uapa.edu.do":
+            messages.error(request, "Solo se permiten correos de la UAPA(uapa.edu.do)")
+            return redirect("login")
+
+        user = CustomUser.objects.filter(email=email).first()
+        if not user:
+            messages.error(request, f"Usuario({email}) no está registrado en el PopIn")
+            return redirect("login")
+
+        if user.is_active:
+            try:
+                login(request, user)
+                if user.activation_key != '':
+                    user.activation_key = ''
+                    user.save()
+                return redirect("home")
+            except Exception as e:
+                messages.error(request, f"Error al iniciar sesión: {str(e)}")
+        else:
+            messages.error(request, "Usuario suspendido. Póngase en contacto con el administrador.")
+
+        return redirect("login")
 
 
 class Login(View):
