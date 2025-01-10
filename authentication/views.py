@@ -1,4 +1,4 @@
-import os
+
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.utils.crypto import get_random_string
@@ -11,6 +11,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.hashers import make_password
 from google.oauth2 import id_token
 from google.auth.transport import requests
+from config.settings import GOOGLE_OAUTH_CLIENT_ID
 from poa.models import POA
 from poa.views import RegistrarLog
 from uapa.models import Colaborador, Estamento
@@ -31,7 +32,7 @@ class AuthReceiver(View):
 
         try:
             user_data = id_token.verify_oauth2_token(
-                token, requests.Request(), os.environ['GOOGLE_OAUTH_CLIENT_ID']
+                token, requests.Request(), GOOGLE_OAUTH_CLIENT_ID
             )
         except ValueError:
             return HttpResponse(status=403)

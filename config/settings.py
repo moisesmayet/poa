@@ -9,10 +9,9 @@ from decouple import config
 load_dotenv()
 
 
-GOOGLE_OAUTH_CLIENT_ID = os.environ.get('GOOGLE_OAUTH_CLIENT_ID')
+GOOGLE_OAUTH_CLIENT_ID = os.environ.get('GOOGLE_OAUTH_CLIENT_ID', default="583274939927-8jfvbaucg7om5q611ccgl41ii2i1lejg.apps.googleusercontent.com")
 if not GOOGLE_OAUTH_CLIENT_ID:
     raise ValueError('GOOGLE_OAUTH_CLIENT_ID is missing. Have you put it in a file at core/.env ?')
-print(f'{GOOGLE_OAUTH_CLIENT_ID = }')
 
 
 SECURE_REFERRER_POLICY = 'no-referrer-when-downgrade'
