@@ -6,17 +6,6 @@ from django.contrib.messages import constants as message_constants
 from decouple import config
 
 
-load_dotenv()
-
-
-GOOGLE_OAUTH_CLIENT_ID = os.environ.get('GOOGLE_OAUTH_CLIENT_ID', default="583274939927-8jfvbaucg7om5q611ccgl41ii2i1lejg.apps.googleusercontent.com")
-if not GOOGLE_OAUTH_CLIENT_ID:
-    raise ValueError('GOOGLE_OAUTH_CLIENT_ID is missing. Have you put it in a file at core/.env ?')
-
-
-SECURE_REFERRER_POLICY = 'no-referrer-when-downgrade'
-SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -35,6 +24,9 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
     'http://127.0.0.1:8000',
 ]
+
+SECURE_REFERRER_POLICY = 'no-referrer-when-downgrade'
+SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
 
 
 # Application definition
