@@ -1410,17 +1410,17 @@ class EjecutoriaToDOC(View):
             poas = POA.objects.filter(poa_estamento=estamento)
             if poas.count() == 0:
                 return redirect("home")
+
+            if estamento.estamento_user == user:
+                is_current_user = True
+            else:
+                is_current_user = False
         else:
             return redirect("home")
 
         poa = POA.objects.filter(poa_estamento_id=estamento_id, poa_anno=poa_anno).first()
         values = GetPOAList(request, user, estamento_id, poa_anno, 0, "")
         objetivos_list = values[9]
-
-        if poa.poa_estamento.estamento_user == user:
-            is_current_user = True
-        else:
-            is_current_user = False
 
         template = "ejecutoria_to_doc.html"
         doc_out = ConvertHTMLtoDOC(request, template, poa_anno, poa, estamento, objetivos_list, is_current_user,
