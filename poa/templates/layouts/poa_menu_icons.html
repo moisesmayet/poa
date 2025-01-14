@@ -92,6 +92,15 @@
             {% endwith %}
         {% endwith %}
     {% endif %}
+{% else %}
+    {% if objetivos_list|length > 0 and request_from == 'poa_preview' %}
+        <a href="{% url 'ejecutoria_to_doc' estamento_id=menu_estamento_id poa_anno=poa_anno doc_type="docx" %}" target="_blank">
+            <img class="icons-coloured" src="{% static 'images/icons/descargarword.png' %}" alt="Imprimir el POA" title="Imprimir el POA en Word">
+        </a>
+        <a href="{% url 'ejecutoria_to_doc' estamento_id=menu_estamento_id poa_anno=poa_anno doc_type="pdf" %}" target="_blank">
+            <img class="icons-coloured" src="{% static 'images/icons/descargarpdf.png' %}" alt="Imprimir el POA" title="Imprimir el POA en PDF">
+        </a>
+    {% endif %}
 {% endif %}
 
 {% if request_from != 'poa_card' %}
